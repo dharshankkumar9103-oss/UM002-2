@@ -1,0 +1,30 @@
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 2fa19ea..f680729 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -68,7 +68,7 @@ export default function HomePage() {
+   const toggleOverlays = () => setShowOverlays((prev) => !prev);
+ 
+   return (
+-    <div className="relative min-h-screen bg-background text-foreground">
++    <div className="relative min-h-screen text-foreground">
+       {!isLoaded && (
+         <div
+           className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+diff --git a/src/components/video/VideoBackground.tsx b/src/components/video/VideoBackground.tsx
+index 23dc5b7..a1b686d 100644
+--- a/src/components/video/VideoBackground.tsx
++++ b/src/components/video/VideoBackground.tsx
+@@ -199,7 +199,11 @@ export function VideoBackground({
+       return;
+     }
+ 
+-    if (currentIndex !== lastSegmentIndexRef.current) {
++    if (!activeVideoRef.current) {
++      // First activation: no segment change has fired yet (e.g. the page
++      // loaded inside the first segment), so start the video immediately.
++      switchVideo(currentSegment, true);
++    } else if (currentIndex !== lastSegmentIndexRef.current) {
+       switchVideo(currentSegment, false);
+     } else if (activeVideoRef.current === videoRefs.current.get(currentSegment.src)) {
+       const progressDiff = Math.abs(globalProgress - lastGlobalProgressRef.current);

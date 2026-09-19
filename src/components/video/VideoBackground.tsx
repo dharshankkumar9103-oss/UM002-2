@@ -199,7 +199,11 @@ export function VideoBackground({
       return;
     }
 
-    if (currentIndex !== lastSegmentIndexRef.current) {
+    if (!activeVideoRef.current) {
+      // First activation: no segment change has fired yet (e.g. the page
+      // loaded inside the first segment), so start the video immediately.
+      switchVideo(currentSegment, true);
+    } else if (currentIndex !== lastSegmentIndexRef.current) {
       switchVideo(currentSegment, false);
     } else if (activeVideoRef.current === videoRefs.current.get(currentSegment.src)) {
       const progressDiff = Math.abs(globalProgress - lastGlobalProgressRef.current);
