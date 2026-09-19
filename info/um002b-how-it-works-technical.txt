@@ -1,0 +1,179 @@
+What Is the Architecture and How It Works -- Technical Perspective
+The UM002B Universal-Memory Chip
+Technical Perspective September 2026
+
+UM002B -- What Is the Architecture and How It Works (Technical Perspective)
+1. The Idea in One Paragraph
+Conventional computer systems maintain two separate memory hierarchies: fast, volatile working memory (DRAM) and slow, nonvolatile storage (flash/SSD). Every byte of consequence lives in both places at different times, and the system pays a continuous tax -- in latency, energy, and software complexity -- copying data between them. The UM002B collapses this boundary. It is a memory chip in which each cell contains both a volatile high-speed storage element and a nonvolatile shadow element, managed by an on-die controller. In normal operation the chip behaves exactly like DRAM. When power fails, each cell's content is transferred into its nonvolatile shadow using on-board reserve energy; when power returns, the contents are transferred back and full-speed operation resumes. The host system sees a single pool of memory that never needs to be "saved to disk" -- because there is no disk, and nothing is ever lost to volatility.
+2. The 2T1C1M Cell
+The UM002B cell -- the "002B" cell -- is named for its contents: 2 transistors, 1 capacitor, 1 memristor (2T1C1M). Every bit in the array is stored in one such cell, and every cell carries both sides of the universal-memory duality.
+The two transistors. The cell contains two access transistors with deliberately different characteristics:
+· T_DRAM -- a thin-oxide transistor serving the capacitor. Thin gate oxide means a
+smaller, faster device operating at the low core voltage. This transistor is the gatekeeper of the volatile path: it connects the capacitor to the bitline during normal reads and writes. Everything about T_DRAM is optimized for speed.
+· T_NVM -- a thick-oxide transistor (approximately 7 nm oxide in the modeled design)
+serving the memristor. Thick gate oxide means a larger device that tolerates substantially higher voltages without breakdown. This matters because programming the memristor -- forming and rupturing its conductive filament -- requires program voltages well above the DRAM core voltage. T_NVM is the gatekeeper of the nonvolatile path, and it is built to survive those voltages repeatedly.
+The capacitor. A conventional DRAM-style trench or stacked capacitor holding data as electrical charge. Charge on the capacitor is the "working copy" of the bit.
+The memristor. A hafnium-oxide (HfO) resistive device: a metal­insulator­metal stack in which a conductive filament of oxygen vacancies can be formed (low-resistance state) or ruptured (high-resistance state) by applied voltage. Resistance is the "shadow copy" of the bit.
+Cell topology. Each cell therefore presents two independent access paths sharing one logical bit: the T_DRAM + capacitor path for everyday operation, and the T_NVM + memristor path for power-event backup and restore. The two paths are electrically isolated from each other -- activity on one does not disturb the other -- and only one is active at a time, selected by the operating mode.
+3. Two Ways to Hold a Bit: Charge vs. Resistance
+The architecture's entire behavior follows from the physical difference between its two
+1
+
+UM002B -- What Is the Architecture and How It Works (Technical Perspective)
+storage mechanisms.
+Charge (capacitor). Data is stored as electrons on a capacitor plate. Reading and writing charge is extremely fast -- the DRAM path accesses in approximately 2.8 ns -- and costs little energy per operation. But charge is restless: it leaks away through the access transistor and the dielectric, which is why DRAM must be refreshed every few tens of milliseconds, and why all charge is gone within a fraction of a second after power is removed. Charge is the sprinter: blazingly fast, with no endurance.
+Resistance (memristor). Data is stored as the physical configuration of atoms in the HfO film -- a filament of oxygen vacancies either bridging the electrodes (low resistance, one logic state) or broken (high resistance, the other). Changing resistance means physically rearranging atoms, which takes tens of nanoseconds and a higher voltage than a DRAM write. But once arranged, the atoms stay arranged with no power applied and no refresh. Resistance is the marathoner: slower to change, but it holds its state indefinitely with zero energy.
+The division of labor. The UM002B never asks either mechanism to do the other's job. The capacitor handles everything the host does -- every read, every write, at full DRAM speed. The memristor does exactly one thing: it holds a copy of the capacitor's content across power interruptions. This is why the memristor's slower write speed never appears in system performance: it is not on the critical path of any host operation.
+4. Operating Modes
+The chip operates in four modes. Transitions between them are driven by the power state and managed entirely by the on-die controller, invisible to the host.
+4.1 NORMAL -- Everyday Operation In NORMAL mode, the chip is simply a DRAM. Host reads and writes flow through T_DRAM to the capacitor at DRAM speed (~2.8 ns access). Refresh runs in the background exactly as in conventional DRAM, sustaining the charge on every capacitor. The memristor in each cell sits idle -- programmed once during the last RESTORE, untouched since. From the host's perspective, there is no indication that the nonvolatile shadow exists at all: latency, bandwidth, and protocol are those of standard DRAM.
+4.2 SAVE -- Power-Fail Backup When the controller detects that main power is failing, it switches the array into SAVE mode. Row by row, each cell's capacitor charge is sensed and translated into the corresponding resistance state in that cell's memristor: a charged capacitor becomes one resistance state, a discharged capacitor the other. T_NVM connects each memristor for programming at the required higher voltage while T_DRAM isolates the capacitor side.
+SAVE is powered not by the dying main supply but by on-board reserve capacitors -- energy storage sized to complete the full-array transfer after the power-fail signal. The operation proceeds autonomously: no host involvement, no software, no bus traffic. When the last row is written, the array's entire working state exists as resistance.
+4.3 OFF -- Zero-Standby Retention With SAVE complete and main power gone, the chip is OFF. No refresh, no clocks, no leakage-powered retention -- the transistors are unpowered and the capacitors' charge decays within milliseconds, irrelevantly. The array's state persists purely as the physical
+2
+
+UM002B -- What Is the Architecture and How It Works (Technical Perspective)
+resistance of millions of HfO filaments. Standby energy consumption is zero. The chip can remain in this state indefinitely from the architecture's point of view: there is nothing to sustain.
+4.4 RESTORE -- Power-Up Recovery When main power returns, the controller enters RESTORE mode before the host is allowed to touch the array. Row by row, each memristor's resistance is sensed (with a small, non-disturbing read voltage) and the corresponding charge is written back into that cell's capacitor through the DRAM path. Error-correction logic verifies the recovered data as it is restored. When the last row is complete, every capacitor holds exactly the charge it held when SAVE ran, refresh resumes, and the chip re-enters NORMAL mode at full DRAM speed.
+The observable effect: the memory array after a power cycle contains bit-for-bit what it contained before. The host never reloaded anything, because nothing was ever unloaded.
+4.5 Walkthrough: One Bit Through SAVE and RESTORE To make the mechanism concrete, follow a single bit -- currently logic 1, held as charge on its cell's capacitor -- through a power event.
+1. In NORMAL mode, the bit sits as charge. The host may read it at any time through T_DRAM; each read is an ordinary DRAM access. The cell's memristor holds the resistance state recorded during the previous RESTORE and is electrically disconnected.
+2. Main power begins to fail. The controller's power-fail detector trips, host traffic is quiesced, and the array enters SAVE mode. The on-board reserve capacitors now supply the array.
+3. The cell's row is activated for SAVE. T_NVM connects the memristor while the sense circuitry reads the capacitor's charge state. The controller applies the program conditions corresponding to logic 1, and the HfO filament is driven into the matching resistance state. The charge itself is irrelevant after this point -- its information now lives in the filament's physical configuration.
+4. Every other row follows, in the controller's fixed sequence, until the whole array's working state exists as resistance. The chip enters OFF: zero standby energy.
+5. Main power returns. Before the host is granted access, the controller enters RESTORE mode. The cell's row is activated; T_NVM connects the memristor, which is sensed with a small non-disturbing voltage to determine its resistance state. The controller then writes the corresponding charge back into the capacitor through the DRAM path (T_DRAM), and ECC logic checks the recovered bit.
+6. NORMAL mode resumes. The capacitor again holds the bit as charge, refresh restarts, and the host reads logic 1 -- the same value, through the same path, at the same speed as before the outage.
+Nothing in this sequence involves the host processor, the system software, or any bus beyond the die. The bit's journey -- charge to resistance and back to charge -- is a purely local, controller-driven translation.
+5. The Backup/Restore Controller
+SAVE and RESTORE are orchestrated by a dedicated controller implemented in the on-die array periphery -- the logic surrounding the memory array on the same silicon die. Placing the controller on-die is architecturally significant: each die is self-sufficient, able to save and restore its own array without depending on any external chip, bus, or
+3
+
+UM002B -- What Is the Architecture and How It Works (Technical Perspective)
+processor.
+The controller's responsibilities:
+· Power-fail detection. Continuously monitors the supply rails. On detecting a genuine power-fail event (distinguishing it from normal voltage noise), it immediately quiesces host traffic and launches the SAVE sequence.
+· SAVE/RESTORE sequencing. Generates the precise row-by-row timing: which wordlines fire, in what order, at what voltages, for the capacitor-to-memristor transfer and its reverse. It manages the two transistor paths so that programming voltages reach the memristors while the DRAM-side circuitry is protected.
+· Error correction (ECC). Applies error-correcting codes to the data as it is saved and verifies it as it is restored, so that the recovered array matches the pre-power-fail state.
+· Retained metadata. Maintains a small amount of its own nonvolatile bookkeeping -- array status, SAVE/RESTORE progress markers, configuration -- in an on-die NVM register file, so the controller itself resumes coherently across the power event it is managing.
+· Test access. Provides manufacturing and bring-up access to both the DRAM and NVM paths independently, so each can be exercised, characterized, and validated on its own.
+Because the controller lives with the array it manages, the backup guarantee scales with the die: every die carries its own power-fail detection, its own sequencing, and its own reserve-energy budget.
+6. The Host and OS View
+One of the architecture's defining choices is that the host system needs no new protocol. The UM002B presents a standard DDR-style memory interface and behaves, for all host purposes, like an NVDIMM-N-class persistent memory module: DRAM performance with nonvolatility underneath.
+No CPU or GPU changes. The processor issues ordinary memory reads and writes. It does not know -- and does not need to know -- that each cell carries a memristor shadow, that a controller performed a SAVE during the last outage, or that a RESTORE ran at boot. The memory controller on the host side speaks the same command protocol it speaks to conventional DRAM.
+One pool, dynamically shared. Because the entire array is both working memory and retained storage, the system is free to treat the physical pool as a single resource. Capacity that holds a file system page at one moment can hold a process heap page the next; the boundary between "memory" and "storage" becomes a software allocation decision rather than a hardware boundary. Data never needs to be copied from a storage device into RAM before use -- it is already in RAM, because the storage is RAM.
+What disappears. The entire software machinery built around the volatility gap becomes unnecessary: paging data in from SSD on application launch, writing dirty pages back to disk, swap space management, file-system flush barriers for durability, and the boot-time ritual of reloading the working set from slow storage. The operating system still manages allocation, protection, and naming -- but it no longer shuttles bytes between two physical media.
+4
+
+UM002B -- What Is the Architecture and How It Works (Technical Perspective)
+
+7. What Using It Feels Like at System Level
+The architecture's behavior is best understood through what an operator observes.
+Power on. A conventional machine spends its boot time copying the operating system, drivers, and applications from slow storage into RAM. A UM002B-based machine has nothing to copy: the working set is already in the array, restored to capacitors during RESTORE. Startup converges toward simply re-establishing the processor and device state -- the memory contents were never gone.
+Application launch. Launching an application is the same non-event. The application's code and data pages are already resident in the pool. There is no "loading" phase because loading -- the act of moving bytes from storage into memory -- has no meaning when storage and memory are the same physical cells.
+Power loss. When main power fails, the machine does not crash in the conventional sense. From the user's perspective, power loss behaves like a pause: the controller's SAVE captures the complete working state into resistance, and everything stops. When power returns, RESTORE reconstitutes the working state into charge, and the system continues. Open documents, running processes, in-memory data structures -- everything that was in the pool is in the pool again. The machine resumes rather than reboots.
+The mental model. The most compact way to hold the architecture in mind: a DRAM that cannot forget. Every property of DRAM that software relies on -- byte addressability, nanosecond access, unlimited read endurance, in-place updates -- is preserved. The one property software has always worked around -- that everything vanishes when the power dies -- is removed by the per-cell nonvolatile shadow and the controller that maintains it.
+
+8. Architecture at a Glance
+
+Element
+
+Role
+
+Key characteristic
+
+T_DRAM
+
+(thin-oxide Access device for the Small, fast, core-voltage
+
+transistor)
+
+volatile path
+
+operation
+
+Capacitor
+
+Working storage element
+
+Holds data as charge; ~2.8 ns access; requires refresh
+
+Tolerates the higher
+
+T_NVM
+
+(thick-oxide Access device for the
+
+voltages of memristor
+
+transistor, ~7 nm modeled) nonvolatile path
+
+programming
+
+Holds data as filament
+
+HfO memristor
+
+Shadow storage element resistance; zero standby
+
+energy
+
+Power the full-array
+
+Reserve capacitors
+
+Energy source for SAVE chargeresistance transfer
+
+after power-fail
+
+5
+
+UM002B -- What Is the Architecture and How It Works (Technical Perspective)
+
+Element On-die controller Host interface
+
+Role
+
+Key characteristic
+
+Power-fail
+
+detect,
+
+SAVE/RESTORE
+
+Self-sufficient per die; no
+
+sequencing,
+
+ECC, host involvement
+
+metadata, test
+
+DDR-style / NVDIMM-N-like
+
+Standard protocol; no CPU/GPU changes required
+
+Mode summary. NORMAL: host I/O through the capacitor path at DRAM speed; memristor idle and off the critical path. SAVE: on power-fail detection, capacitor charge  memristor resistance, row by row, on reserve energy. OFF: zero standby energy; state persists as resistance. RESTORE: on power-up, memristor resistance  capacitor charge with ECC verification; array returns to full-speed DRAM operation.
+9. Glossary of Terms
+· 2T1C1M -- the UM002B cell structure: two transistors, one capacitor, one memristor per bit.
+· T_DRAM -- the cell's thin-oxide access transistor, serving the capacitor on the volatile (DRAM) path.
+· T_NVM -- the cell's thick-oxide access transistor (~7 nm modeled oxide), serving the memristor on the nonvolatile path and tolerating memristor program voltages.
+· HfO memristor -- a metal­insulator­metal resistive device whose HfO film holds data as the resistance of a conductive filament.
+· Filament -- a nanoscale conductive path of oxygen vacancies in the HfO film; formed for one resistance state, ruptured for the other.
+· SET / RESET -- the two memristor programming operations: driving the filament into the low-resistance state and the high-resistance state, respectively.
+· SAVE -- the controller-driven transfer of each cell's capacitor charge into its memristor resistance on power-fail detection, powered by reserve capacitors.
+· RESTORE -- the controller-driven transfer of each memristor's resistance back into capacitor charge on power-up, verified by ECC.
+· Reserve capacitors -- on-board energy storage that powers the SAVE sequence after main power fails.
+· ECC (error-correcting code) -- logic that encodes data with redundancy on SAVE and verifies/corrects it on RESTORE.
+· NVDIMM-N -- an industry module category combining DRAM with a nonvolatile shadow and power-fail backup; the closest established reference for the UM002B's system behavior.
+· Refresh -- the periodic re-reading and rewriting of capacitor charge that counteracts leakage in NORMAL mode, identical in principle to conventional DRAM refresh.
+10. Closing
+The UM002B architecture is a study in division of labor. The capacitor does what charge does best -- serve the host at DRAM speed. The memristor does what resistance does best -- hold state with no power. The controller does what neither can do alone -- translate between them exactly when power events demand it. The host, finally, does what it has always done -- issue memory commands -- and receives in
+
+6
+
+UM002B -- What Is the Architecture and How It Works (Technical Perspective)
+return a memory that behaves like DRAM in every respect except the one that always hurt: it no longer forgets. Document scope: this paper describes the architecture's mechanisms -- what each element is and how the elements work together. Performance figures cited (~2.8 ns DRAM-path access) describe the modeled design point. Statements about retention and operating conditions describe architectural intent, not measured or qualified specifications. UM002B -- What Is the Architecture and How It Works (Technical Perspective)
+7
+
+

@@ -1,0 +1,154 @@
+From PDK & JDA to Silicon: The UM002B Roadmap
+Engineering Perspective -- the step-by-step plan from foundry engagement to qualified silicon
+Engineering Perspective September 2026
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+1. Introduction -- where we stand
+1.1 Starting point
+The UM002B program has completed its pre-silicon Manufacturing Readiness phase (items 16.1­16.4, 17.1­17.2, 18.1­18.3, plus the Phase 4 validation matrix) with a verdict of PASS WITH HONEST FAILURES: coherence audit 15/15 clean, TORR v3 at 8 closed / 9 partial / 7 requires-fab, and the sign-off subset at 0 closed / 5 partial / 2 requires-fab. Everything below builds on that baseline -- nothing here re-litigates it.
+The modeled design point, for reference:
+· Cell: 2T1C1M. T_DRAM (thin-oxide) + capacitor forms the volatile DRAM path (~2.8 ns access, refresh-maintained). T_NVM (thick-oxide, ~7 nm modeled) + HfO memristor forms the nonvolatile shadow (data as resistance, retained without power).
+· Modes: NORMAL (all host traffic on the DRAM path; memristor idle, off the critical path), SAVE (power-fail event: charge  resistance, row by row, powered by onboard reserve capacitors), OFF (zero standby energy), RESTORE (power-up: resistance  charge, with ECC).
+· Controller: backup/restore sequencing, power-fail detection, ECC, test access, and retained metadata live in the on-die array periphery.
+· Characterization basis: backup energy and timing (~34 µs, ~12.5 µJ) were established on the modeled 68×148 array only and must not be extrapolated to product-scale arrays.
+1.2 Open device issues to be closed on this roadmap
+Three issues are on record as honest failures. Each is re-stated here with its current numbers, because the roadmap's job is to close them -- not to redescribe them optimistically.
+1. Cold-corner RESET misses REQ-006 (30 ns) at -40 °C. Real-device (SPICEclass) simulation shows 0.00× margin against the 1.5× target -- it fails even at 3.3 V with 8× drive strength. Known recovery paths: program voltage of 4.06­4.48 V (outside the 3.3 V domain, implying charge-pump circuitry) or a device-level voltage-acceleration factor of   0.40 eV/V (projected 8.44 ns RESET -- projection only, pending measured data).
+2
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+2. Shared-bitline disturb fails at 85 °C. Passes cold, marginal at nominal, fails hot. Modeled safe window 2.0­4.45 V at nominal; the disturb threshold sags to ~4.07 V (assumed analytical value) at 85 °C, collapsing the window. All figures are modeled under assumed parameters -- not silicon proof.
+3. Far-row IR drop 80­98 mV vs 75 mV budget at nominal/hot. SET remains functional, but margin is consumed. Buried wordline does not rescue the 132 nm pitch; the standing recommendation is 132×288 nm (47.2  48.5 F²). Bounding design rules carried forward: HS-5, IR-5, HS-1 amended 6.4  6.8 µs, 20 ns thermal pulse ceiling.
+1.3 What the PDK changes, and what the JDA changes
+The PDK is descriptive. It supplies silicon-calibrated transistor models, real design rules, the real metal stack, and the foundry's sign-off decks. With it, every simulation, layout, and margin in the program is re-baselined against fab truth. It fixes the designclosable portion of the three issues: driver sizing, biasing schemes, wire sizing, pitch, grid. The JDA is prescriptive. The HfO stack's switching kinetics, voltage acceleration, disturb threshold, and retention are properties of materials and factory recipes -- they cannot be changed in a layout editor. The JDA buys wafer splits, measurement, model extraction, and iteration with the foundry until the device meets its targets. It fixes the material portion. For 100% of the custom-device vision, there is no substitute; the alternative (a node with qualified embedded ReRAM, PDK-only) is a different program and out of scope here. The two tracks run in parallel wherever possible: Phase 1 (PDK hardening) and Phase 2 (JDA device development) overlap, and both feed Phase 3 (full-chip build).
+2. Phase 1 -- PDK hardening
+Objective: re-baseline the entire design against fab truth; close everything closable in design; quantify the remainder and hand it to the JDA track with numbers, not adjectives.
+3
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+2.1 PDK install and flow setup
+· Acquire the PDK under foundry NDA. Pin the PDK version and place it under version control; document NDA and export-control handling -- the PDK is the foundry's confidential property and the program's legal footing starts here.
+· Assemble the design flow from PDK-delivered decks: SPICE-class simulator with calibrated compact models, schematic/layout capture, parasitic extraction (PEX) deck, and DRC/LVS decks. Prefer no-cost tooling wherever the PDK supports it; the foundry's sign-off decks are mandatory regardless of tool choice.
+· Regression first: re-run the existing netlists unmodified against the calibrated models before changing anything. This isolates model deltas from design deltas -- if a result moves, you know whether the model or your edit moved it.
+2.2 Cell and array re-layout to real rules
+· Port the 2T1C1M cell to the real DRC rule set. Select the T_NVM thick-oxide device from the PDK's IO device offerings (verify its voltage tolerance against the program-voltage range under evaluation, including the 4.06­4.48 V recovery option).
+· Validate the 132×288 nm pitch recommendation against real rules -- confirm or revise with written justification. The buried-wordline experiment's negative result stands; do not re-spend effort there without new evidence.
+· Deliverable: a DRC/LVS-clean array tile, with a rule-waiver log (every waiver justified in writing, none silent).
+2.3 PEX-based parasitic re-extraction
+· Extract with the real metal stack: bitline RC, inter-wire coupling capacitance (the disturb analysis input), and wire resistance (the IR-drop input).
+· Back-annotate into the simulation benches and archive the extraction corners alongside the schematics. From this point, no bench runs on assumed parasitics.
+2.4 Corner re-simulation
+· Full matrix: -40 / 25 / 85 °C × SS / TT / FF, plus Monte Carlo on the sense and ECC paths for mismatch.
+· Re-run the three issue benches with calibrated transistor models: · RESET timing at -40 °C against REQ-006 (30 ns, 1.5× margin target);
+4
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+· disturb window at 85 °C against the (still assumed, pending JDA measurement) threshold;
+· IR drop at nominal/hot on the extracted grid against the 75 mV budget. · Output: a quantified gap-to-target per issue, in numbers. "Marginal" is retired as a
+status -- every issue gets a value and a margin.
+2.5 Per-issue design actions
+· Cold RESET: upsize the T_NVM driver for cold-corner drive strength using calibrated models. In parallel, evaluate the charge-pump option for the 4.06­4.48 V domain -- cost it honestly (level shifters, sequencing, area, standby leakage) before committing. Device- improvement stays on the JDA track; do not burn design margin chasing a device-physics problem with transistors.
+· Disturb: evaluate biasing-scheme variants and bitline segmentation using PDKavailable devices. Requirement: worst-case unselected-cell bias stays below the disturb threshold with explicit margin at 85 °C. If no biasing scheme closes it with the assumed threshold, that is a finding, not a failure -- it sets the JDA's disturbthreshold target (§3.1).
+· IR drop: power-grid strap widening, grid planning, and pitch finalization against the real sheet resistance. Close the 75 mV budget on the extracted grid. Carry forward HS-5, IR-5, HS-1 at 6.8 µs, and the 20 ns thermal pulse ceiling; re-validate each against the real stack.
+2.6 Entry / exit criteria
+· Entry: PDK installed, version-pinned, NDA documented; prior netlists under version control; per-issue success metrics written down before any editing begins.
+· Exit: DRC/LVS-clean array tile; corner simulations complete with calibrated models; each open issue re-baselined with a number and explicitly partitioned into design-closable vs JDA-required. Nothing proceeds to Phase 3 on assumed models.
+3. Phase 2 -- JDA device development
+Objective: make the HfO device real -- measured on wafers, modeled from data, frozen as a characterized device in the private flow.
+5
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+3.1 Device target agreement
+Before any wafer runs, agree the targets with the foundry in writing, in numbers:
+· Switching kinetics:   0.40 eV/V (projected 8.44 ns RESET at target drive -- labeled as projection until measured).
+· Disturb threshold at 85 °C: must clear the worst-case unselected bias selected in §2.5 with explicit margin. The numeric value is set by the Phase 1 biasing choice -- the two phases handshake here.
+· Retention: 10-year at 85 °C as the design target; the bake methodology (acceleration model, sample sizes, read criteria) is agreed now, and the proof is collected in Phase 4. Target defined today, evidence later -- never conflated.
+3.2 Test-chip planning
+· This is a device test chip, not the product: 1T1R test arrays (statistical switching distributions across hundreds of devices -- no hero-device reporting), Kelvin / 4point structures (isolate filament resistance from series parasitics), and processcontrol monitors on every split.
+· Stack splits: HfO thickness, electrode material/workfunction, oxygen stoichiometry, post-deposition anneal conditions. Each split is a hypothesis about , disturb immunity, or retention -- logged as such.
+· Tester requirements: temperature chuck covering -40 °C to 125 °C, fast pulsing (sub-30 ns resolution) for RESET kinetics, and low-current sense for disturb detection.
+· Secure the JDA shuttle slot and plan sample counts for statistics, not anecdotes.
+3.3 Measurement and Verilog-A extraction
+· Measure switching kinetics vs voltage and temperature  extract  and thermal activation energy. Measure disturb threshold vs temperature. Run the agreed retention bake.
+· Fit the Verilog-A compact model to the measured data. Then QA the model against the data across the full matrix -- typical and corners. A model that fits only typical is a liability; reject it.
+· Deliverable: extracted model + extraction report with residuals, so any engineer can see where the model is trustworthy and where it is thin.
+6
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+3.4 Iteration spins
+· Plan for multiple spins; a single-spin success is the exception in device R&D, not the plan.
+· Define per-spin go/no-go against the §3.1 targets before the wafers run. Record negative results with the same care as positive ones -- a split that fails cleanly teaches the next split.
+3.5 Stack freeze
+· Freeze the stack recipe, freeze the Verilog-A model, freeze the ReRAM-module design rules. From here the device is treated like a PDK device: characterized, versioned, and trusted within its qualified envelope.
+· Hand back to design: re-run the Phase 1 benches with the frozen model and confirm the closure numbers. The loop between Phase 1 and Phase 2 closes here.
+3.6 Entry / exit criteria
+· Entry: JDA signed; §3.1 targets agreed in writing; test-chip shuttle slot secured; tester capability confirmed.
+· Exit: stack frozen; model extracted and QA'd; all three device targets demonstrated on measured silicon -- or a documented waiver with a recovery plan. No waiver is silent.
+4. Phase 3 -- Full-chip build
+Objective: integrate the hardened array tile, the verified controller, and the frozen device model into a signed-off, tapeout-ready chip. 4.1 Integration
+· Array: tile  full array with row/column decoding, sense amplifiers, and write drivers sized per the §2.5 outcomes.
+· Controller RTL: power-fail detection, SAVE/RESTORE sequencing, ECC encode/ decode, test access ports, and retained-metadata register file. The RTL must be functionally verified (constrained-random + directed tests, including power-fail injection at arbitrary points in a SAVE sequence) before it touches layout.
+7
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+· IO ring: pad ring with ESD protection per the foundry's ESD rules; signal integrity on high-speed interfaces validated against the PDK's IO models.
+· Top-level power grid: designed to the IR-drop budget closed in §2.5, verified on the extracted full-chip grid -- not the tile grid.
+· Clock and reset distribution: skew and integrity checked; the power-fail detector's own supply domain reviewed (it must stay alive long enough to launch SAVE -- its hold-up is a design requirement, not an assumption).
+4.2 Physical implementation
+· Full-chip DRC/LVS with the foundry decks; zero violations or a written waiver log. · Full-chip PEX. Re-check: bitline RC at array scale, grid resistance at chip scale,
+coupling on long routes.
+4.3 Sign-off
+· STA across all corners (-40/25/85 °C × SS/TT/FF), including the SAVE/RESTORE sequencing paths -- the emergency path gets the same timing rigor as the functional path.
+· Power integrity: IR-drop and electromigration sign-off with the foundry's decks on the extracted grid.
+· Reliability checks per foundry requirements (electromigration and other required mechanisms -- use the foundry's checklist, not a generic one).
+· Issue re-verification at full-chip level: all three open issues re-run with extracted full-chip parasitics and the frozen JDA device model. An issue is closed only when it passes here -- tile-level closure is necessary but not sufficient.
+4.4 DFT and test modes
+· Array BIST for manufacturing test; scan/ATPG per foundry requirements. · SAVE/RESTORE test modes: forced power-fail injection with snapshot verify, so
+the tester -- and later the qualification lab -- can exercise the backup path deterministically rather than hoping a real power cut arrives on schedule.
+4.5 Tapeout
+· First tapeout goes on an MPW (multi-project wafer) shuttle: mask costs shared across projects, which keeps first silicon affordable. Accept the trade -- fewer samples, shuttle-schedule timing -- with eyes open.
+8
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+· The bring-up board and the tester program are ready before silicon returns. Silicon waiting on a test board is schedule burned for nothing.
+4.6 Entry / exit criteria
+· Entry: frozen device model in the flow; DRC/LVS-clean tiles; controller RTL functionally verified including power-fail injection; written test plan.
+· Exit: signed-off GDSII taped out on MPW; bring-up hardware and tester program ready.
+5. Phase 4 -- Silicon validation
+Objective: replace every remaining "modeled" and "target" in the evidence ledger with measured data -- or write down exactly where reality diverged and what happens next.
+5.1 Bring-up
+· Power-on, controller communication, then the basic SAVE  OFF  RESTORE loopback on the tester using the §4.4 test modes.
+· Shmoo the program voltages: find the real operating window on silicon and compare it against the modeled 2.0­4.45 V window. Record the delta -- it calibrates every model downstream.
+5.2 Issue-mapped characterization
+Each open issue gets a dedicated measurement campaign, mapped one-to-one:
+· Cold RESET: temperature chamber at -40 °C; measure the RESET time distribution across many cells and dies. Pass criterion: REQ-006 (30 ns) with the 1.5× margin target, on statistics -- not on the best cell.
+· Disturb: 85 °C hammer testing -- repeatedly write selected cells while monitoring unselected neighbors for resistance drift. Compare against the threshold agreed in §3.1.
+· Retention: accelerated high-temperature bake with Arrhenius extrapolation toward the 10-year/85 °C design target, using the methodology agreed with the foundry in §3.1. This is industry-standard inference, and it is labeled as inference -- the honest statement is "bake data extrapolates to X," never "ten years measured."
+9
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+5.3 Debug and re-spin criteria
+Decide the rules before silicon arrives, while heads are cool:
+· Functional failure (controller bug, sequencing error, dead test mode)  rootcause, then ECO/metal-layer fix if possible, else full re-spin.
+· Parametric miss (RESET too slow, disturb too high, drop too large)  classify as design-fixable (re-spin with a design change from the Phase 1 playbook) or devicelimited (back to the JDA track for another stack iteration). The classification, not the disappointment, drives the next step.
+5.4 Qualification and the honest claim ladder
+· Run the foundry's required JEDEC-style qualification flow (high-temperature operating life and related stresses, per the qualification checklist -- described here generically because the exact flow is the foundry's to specify). Qualification is what stands between "characterized" and "production-worthy."
+· The claim ladder -- the discipline this whole program has followed: · After Phase 4 characterization: internal claims only ("RESET measured at X ns at
+-40 °C across N cells/dies"). · After qualification: product claims (temperature rating, retention) may be stated
+externally. · No claim moves up a rung without the data behind it. The ledger from the pre-
+silicon program (proven / modeled / target / requires-fab) stays live through silicon -- rows get promoted on evidence, never on optimism.
+6. Parallel software track
+The hardware program above does not block the software program, and the software program must not become an excuse to delay hardware decisions.
+· OS persistent-memory enablement and the shutdown/resume firmware (graceful-shutdown orchestration, clean-shutdown flag, hibernation-style resume) are developed in parallel on emulators and FPGA models of the array -- no silicon required.
+· Freeze the host interface spec early (DDR-style / NVDIMM-N-like command and timing interface). The interface is the contract between the two tracks; once frozen,
+10
+
+UM002B -- From PDK & JDA to Silicon: The Roadmap (Engineering Perspective)
+hardware and software proceed independently and integrate at defined checkpoints. · Deliverable of this track: a software stack that is ready to exercise real silicon the week it arrives -- not a stack that starts when silicon arrives.
+7. Residual risks register
+Short, honest, and kept live -- a risk not written down is a risk not managed. 1. JDA partner and schedule. A JDA is negotiated, not purchased; foundries choose
+their partners and set their pace. Mitigation: begin engagement early, keep the PDK-only fallback (§1.3) as a live option. 2. Device target achievability.   0.40 eV/V, 85 °C disturb immunity, and the retention target are goals, not entitlements. Mitigation: multi-spin budget in the plan; per-spin go/no-go (§3.4). 3. Retention extrapolation. Accelerated bake is inference, however standard. Mitigation: label it as such; widen sample sizes; never let marketing outrun the bake data. 4. First-silicon bugs. Expect a re-spin; the industry norm, not a failure. Mitigation: MPW keeps the cost survivable; §5.3 rules decided in advance. 5. Funding phase-gates. JDA fees, MPW runs, and qualification each need capital. Mitigation: align financing milestones with the phase exits defined above -- each exit is a fundable proof point. 6. Model risk. Every simulation is only as good as its models. Mitigation: the measured-data checkpoints (§3.3 extraction QA, §5.1 shmoo, §5.2 characterization) are the backstops; no model survives contact with contradicting silicon.
+End of document. This roadmap describes the forward plan from PDK acquisition and JDA signature to qualified silicon. All pre-silicon figures cited are the modeled design point; all targets are labeled as targets until measured.
+11
+
+

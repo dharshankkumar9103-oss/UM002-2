@@ -1,0 +1,594 @@
+You are the lead creative technologist, senior frontend engineer, interaction designer, WebGL engineer, and digital experience architect for **SAN-D**, a semiconductor technology company.
+
+Your task is to design and implement a complete, production-quality company website for SAN-D.
+
+The website must feel like a **next-generation semiconductor research and engineering company**, not a generic corporate website.
+
+The central concept of the website is:
+
+**The user scrolls through the physical scale of semiconductor technology.**
+
+The visual journey begins at the atomic/transistor level and progressively expands outward until the complete chip is revealed.
+
+I will provide multiple video assets representing this journey.
+
+Use those video assets as a core part of the website experience.
+
+==================================================
+
+1. CORE EXPERIENCE
+   ==================================================
+
+The website should create the feeling that the visitor is traveling through the physical architecture of SAN-D's technology.
+
+The primary visual progression is:
+
+ATOM
+→ TRANSISTOR
+→ TRANSISTOR GROUP
+→ LOGIC CELL
+→ CELL ARRAY
+→ FUNCTIONAL BLOCKS
+→ COMPLETE DIE
+→ MACRO CHIP
+
+The background experience should persist across the website.
+
+Do not treat the videos as ordinary embedded videos.
+
+Instead, build a scroll-driven visual system where the user's scrolling controls the progression through the manufacturing animation.
+
+The website should feel like an interactive scientific instrument.
+
+==================================================
+2. VIDEO SYSTEM
+===============
+
+I will provide the following video segments:
+
+01_atomic_scale
+02_transistor
+03_transistor_group
+04_logic_cell
+05_cell_array
+06_functional_blocks
+07_complete_die
+08_macro_chip
+
+Build a reusable video-sequence system that can combine these clips into one continuous visual narrative.
+
+The system should:
+
+* preload intelligently
+* avoid visible transition gaps
+* maintain playback synchronization
+* support scroll-controlled progression
+* support forward and reverse scrolling
+* handle variable scroll speed
+* preserve smoothness
+* degrade gracefully on lower-powered devices
+* support mobile layouts
+* avoid blocking the page while videos load
+
+Prefer a technically robust implementation rather than a fragile visual trick.
+
+If necessary, use:
+
+* HTML5 video
+* requestAnimationFrame
+* scroll position mapping
+* IntersectionObserver
+* GSAP
+* WebGL
+* Canvas
+* frame-sequence logic
+
+Choose the architecture that produces the best combination of quality and performance.
+
+Do NOT blindly introduce libraries.
+
+Use the simplest architecture capable of achieving the intended experience.
+
+==================================================
+3. HERO SECTION
+===============
+
+The hero should immediately communicate that SAN-D is a semiconductor technology company.
+
+The user should enter into an immersive dark environment with the semiconductor visualization already active.
+
+The hero should contain minimal but powerful messaging.
+
+Example conceptual structure:
+
+SAN-D
+
+ENGINEERING THE FUTURE AT THE SMALLEST SCALE
+
+A next-generation semiconductor technology company.
+
+Do not copy these exact words unless appropriate.
+
+Develop stronger final copy based on the actual SAN-D brand/content available in the project.
+
+The hero text should remain readable over the moving chip visualization.
+
+Use intelligent contrast management.
+
+==================================================
+4. SCROLL STORYTELLING
+======================
+
+As the user scrolls, the website should progressively reveal different conceptual stages.
+
+Example structure:
+
+SECTION 01
+ATOMIC SCALE
+
+Explain the smallest physical foundations of semiconductor technology.
+
+SECTION 02
+TRANSISTOR
+
+Explain how engineered materials become switching devices.
+
+SECTION 03
+LOGIC
+
+Explain how transistors become computational structures.
+
+SECTION 04
+ARRAY
+
+Explain how repeated cells create scalable architectures.
+
+SECTION 05
+ARCHITECTURE
+
+Explain how functional blocks become a complete computing system.
+
+SECTION 06
+CHIP
+
+Reveal the complete semiconductor die.
+
+SECTION 07
+SAN-D
+
+Transition from technical visualization into SAN-D's actual company, technology, products, research, or mission.
+
+The content should appear as the visual journey progresses.
+
+==================================================
+5. VISUAL DESIGN LANGUAGE
+=========================
+
+The visual language should be:
+
+* futuristic
+* scientific
+* premium
+* minimalist
+* technically credible
+* immersive
+* sophisticated
+* cinematic
+
+Avoid:
+
+* generic neon cyberpunk
+* excessive gradients
+* cheap-looking glowing cards
+* generic AI startup aesthetics
+* excessive glassmorphism
+* meaningless particle effects
+* stock imagery
+* cliché circuit-board graphics
+
+The website should feel like a serious semiconductor company operating at the frontier of technology.
+
+Imagine:
+
+advanced semiconductor laboratory
++
+scientific visualization system
++
+premium technology brand
++
+futuristic engineering interface
+
+==================================================
+6. SCI-FI INTERACTION SYSTEM
+============================
+
+Introduce sophisticated but restrained interactive effects.
+
+Examples:
+
+* cursor-reactive micro-particles
+* subtle field distortions
+* holographic UI layers
+* animated measurement lines
+* technical labels
+* nanoscale coordinate systems
+* dynamic grid structures
+* subtle scan effects
+* chip-region highlighting
+* animated signal paths
+* depth/parallax effects
+* scroll-reactive typography
+* section transitions that feel spatial rather than like ordinary webpage transitions
+
+Every effect must have a reason.
+
+Avoid visual noise.
+
+==================================================
+7. TECHNICAL VISUALIZATION
+==========================
+
+Where appropriate, supplement the provided videos with real-time graphics.
+
+Use Three.js / React Three Fiber / WebGL only where it materially improves the experience.
+
+Possible uses:
+
+* interactive chip models
+* particle systems
+* geometric fields
+* 3D diagrams
+* dynamic overlays
+* signal-flow visualization
+* architectural visualization
+
+Do not create unnecessary 3D scenes simply because Three.js is available.
+
+The semiconductor manufacturing video remains the primary visual narrative.
+
+==================================================
+8. TYPOGRAPHY
+=============
+
+Typography must feel highly engineered.
+
+Use a strong editorial hierarchy:
+
+Large display typography
++
+technical labels
++
+compact metadata typography
++
+high readability body text
+
+Possible visual distinction:
+
+Primary:
+clean modern sans-serif
+
+Secondary:
+technical / monospaced typography
+
+Use typography carefully.
+
+Do not turn the entire website into a developer dashboard.
+
+==================================================
+9. WEBSITE STRUCTURE
+====================
+
+Create a complete website architecture.
+
+At minimum include:
+
+HOME
+TECHNOLOGY
+ABOUT / COMPANY
+RESEARCH OR INNOVATION
+CONTACT
+
+Add additional pages only when justified by the company's actual content.
+
+The homepage should be the immersive flagship experience.
+
+Secondary pages may use a simpler version of the SAN-D visual language.
+
+==================================================
+10. RESPONSIVENESS
+==================
+
+The website must work across:
+
+* desktop
+* laptop
+* tablet
+* mobile
+
+The desktop experience may be highly immersive.
+
+The mobile experience must be intentionally redesigned rather than being a broken desktop version.
+
+For mobile:
+
+* simplify heavy effects where necessary
+* maintain the visual story
+* preserve readable typography
+* maintain video narrative
+* reduce GPU-heavy effects
+* prioritize performance
+
+==================================================
+11. PERFORMANCE
+===============
+
+This is a production website.
+
+Do not sacrifice usability for visual effects.
+
+Optimize:
+
+* video loading
+* asset compression
+* lazy loading
+* GPU usage
+* JavaScript execution
+* animation loops
+* memory usage
+* mobile performance
+* font loading
+* image loading
+* route transitions
+
+Use poster frames and loading states where appropriate.
+
+Provide intelligent fallbacks for devices that cannot sustain the full experience.
+
+Respect:
+
+prefers-reduced-motion
+
+Do not continuously run expensive rendering loops when nothing is changing.
+
+==================================================
+12. UI LAYER
+============
+
+Keep the UI visually connected to the semiconductor animation.
+
+Do not put ordinary opaque website sections on top of the video.
+
+Use:
+
+* translucent technical panels
+* edge-aligned typography
+* subtle separators
+* precision lines
+* coordinate markers
+* section identifiers
+* progress indicators
+* technical annotations
+
+Create a visual system for showing the current scale.
+
+Example:
+
+SCALE
+10^-9 m
+
+TRANSISTOR
+CELL
+ARRAY
+DIE
+
+But make the final implementation visually elegant rather than literal scientific software.
+
+==================================================
+13. NAVIGATION
+==============
+
+Create a minimal navigation system.
+
+The navigation should remain accessible without dominating the screen.
+
+Possible behavior:
+
+* transparent navigation over the hero
+* transforms during scrolling
+* compact sticky navigation
+* smooth transitions
+* intelligent section highlighting
+
+Navigation should feel like part of the SAN-D technology interface.
+
+==================================================
+14. LOADING EXPERIENCE
+======================
+
+Create a premium loading sequence.
+
+Instead of showing:
+
+"Loading..."
+
+show something conceptually appropriate to semiconductor technology.
+
+For example:
+
+INITIALIZING
+SYSTEM
+LOADING VISUALIZATION
+CALIBRATING ENVIRONMENT
+READY
+
+Do not overdo the fake technical language.
+
+The loading experience should be short and functional.
+
+==================================================
+15. CONTENT
+===========
+
+Do not invent technical claims about SAN-D.
+
+Use actual company information from the repository, supplied documentation, or content I provide.
+
+When information is missing:
+
+create clearly marked placeholder content rather than fabricating semiconductor specifications, manufacturing nodes, performance numbers, customers, patents, or capabilities.
+
+Never make up technical achievements.
+
+==================================================
+16. CODE QUALITY
+================
+
+Use:
+
+Next.js
+React
+TypeScript
+
+Use a modular architecture.
+
+Create reusable components for:
+
+* VideoSequence
+* ScrollController
+* SectionTransition
+* TechnicalOverlay
+* Navigation
+* Hero
+* SemiconductorVisualization
+* LoadingScreen
+* ResponsiveLayout
+* PerformanceManager
+
+Organize the repository cleanly.
+
+Keep components maintainable.
+
+Do not put the entire site into one enormous React component.
+
+==================================================
+17. FIRST DEVELOPMENT PHASE
+===========================
+
+Before implementing everything:
+
+1. Inspect the provided video assets.
+2. Inspect the existing repository.
+3. Identify the available company content.
+4. Determine video dimensions, frame rate, duration, codecs, and file sizes.
+5. Determine whether the clips can be seamlessly chained.
+6. Design the scroll-to-video mapping.
+7. Establish the visual design system.
+8. Build the homepage experience first.
+
+Do not immediately generate every page.
+
+Build the core immersive experience first.
+
+==================================================
+18. ITERATIVE DEVELOPMENT
+=========================
+
+Work iteratively.
+
+First create:
+
+PHASE 1
+visual shell + hero + video engine
+
+Then:
+
+PHASE 2
+scroll synchronization + section storytelling
+
+Then:
+
+PHASE 3
+scientific overlays + interactions
+
+Then:
+
+PHASE 4
+secondary pages
+
+Then:
+
+PHASE 5
+performance optimization
+
+Then:
+
+PHASE 6
+polish and testing
+
+After every major phase, inspect the implementation and identify:
+
+* visual problems
+* layout problems
+* animation problems
+* performance problems
+* accessibility problems
+* responsive problems
+* code quality problems
+
+Fix them rather than simply documenting them.
+
+==================================================
+19. IMPORTANT DESIGN PRINCIPLE
+==============================
+
+The website should communicate one central idea:
+
+**The extraordinary complexity of a modern chip emerges from structures that begin at an almost incomprehensibly small physical scale.**
+
+The visual experience should make the visitor FEEL that scale transition.
+
+The site should move from:
+
+SMALL
+↓
+SMALLER
+↓
+ENGINEERED
+↓
+COMPLEX
+↓
+MASSIVELY PARALLEL
+↓
+COMPLETE SYSTEM
+
+That transition is the defining creative concept of SAN-D's website.
+
+==================================================
+20. FINAL QUALITY BAR
+=====================
+
+The finished website must look like it could represent a serious advanced semiconductor company.
+
+It should feel closer to:
+
+advanced semiconductor research visualization
++
+premium product launch experience
++
+scientific computing interface
+
+than:
+
+template-based corporate website
++
+generic SaaS landing page.
+
+Every animation, transition, and UI element must support the central semiconductor-scale narrative.
+
+Use the supplied video assets as the foundation of the experience.
+
+Make the website feel like the visitor is **traveling through the construction of a chip**.
+
+Do not stop at generating code that technically works.
+
+Iterate on the visual implementation until the experience is coherent, polished, immersive, performant, and production-ready.

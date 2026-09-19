@@ -1,0 +1,41 @@
+SAN-D -- Company Description
+Page 1 -- Technical
+Who we are
+SAN-D is a fabless semiconductor company: we design memory chips; foundries manufacture them. Architecture, cell design, controller, and firmware are ours; wafer fabrication is outsourced -- the NVIDIA model.
+The product: UM002B universal memory
+The UM002B cell is a 2T1C1M structure -- two transistors, one capacitor, one hafnium-oxide (HfOx) memristor per cell:
+· Volatile path -- thin-oxide transistor (T_DRAM) + capacitor: the working memory. DRAM-class speed (nanosecond access); stored as charge, so it leaks, needs refresh, and dies with power.
+· Nonvolatile path -- thick-oxide transistor (T_NVM) + HfOx memristor: the shadow. Stores data as resistance (a filament formed or broken in the oxide); needs no power, but is slower to write -- so it stays off the daily critical path.
+The capacitor does all normal operation; the memristor wakes only on power events.
+Operating modes
+· NORMAL -- DRAM-speed access on the capacitor path; memristor idle. · SAVE -- on power-fail detection: charge  resistance, copied row by row (NVDIMM-N-like backup). · OFF -- zero standby power; state held as resistance. · RESTORE -- on power return: resistance  charge copied back; the machine resumes where it left off.
+Controller and scope
+An on-die controller handles power-fail detection, SAVE/RESTORE sequencing, and ECC; its firmware lives in on-chip ROM/OTP programmed at manufacture. SAN-D's scope: chip, firmware, host interface, BIOS/UEFI enablement, and OS drivers -- "it just works in a PC." Deeper OS-level memory/storage unification is ecosystem work over time (the Intel Optane precedent).
+Device strategy
+The custom HfOx stack is tuned through a JDA (joint development agreement) with the foundry -- device targets set on real wafers. The PDK path hardens the design side: real models, rules, and parasitics. The industrial temperature range (-40 to 85 °C) is a design target; all device figures are targets until measured on silicon.
+Business model and status
+Dual model: sell UM002B chips and license the cell IP. First market: consumer PCs, where one unified pool replaces the DRAM + SSD hierarchy. Pre-silicon work is complete (simulation, device-physics analysis, GDSII layout, manufacturing-readiness review); gated next steps are PDK access, a signed JDA, foundry engagement, and first silicon -- stated as plan, not status.
+
+SAN-D · Company Description
+
+Page 1
+
+Page 2 -- Plain English
+What SAN-D is building, in everyday words
+Every computer has two memories: the desk (RAM) -- fast, where you work, wiped out by a power cut; and the filing cabinet (storage/SSD) -- permanent but slow, and you must remember to save into it. For fifty years we have shuttled work between the two and pressed Save to survive power cuts.
+SAN-D merges them into one desk that never gets cleared -- a single pool of memory that is both fast and permanent.
+How it survives a power cut
+Think of a camera. Beside the fast working part of each memory cell sits a tiny camera (a memristor) that remembers things as electrical resistance -- which needs no power to persist. When power fails, the chip photographs the whole desk (SAVE); while power is off, the photographs sit safe using zero electricity; when power returns, it develops them back onto the desk (RESTORE). On ordinary days the cameras sleep -- that is why the computer stays fast.
+What this means for a normal PC
+· No boot wait -- the PC wakes instantly, exactly as you left it. · Never lose unsaved work -- an unsaved document, an un-checkpointed game, fifty browser tabs: a
+power cut becomes a pause, not a loss. · One memory number -- not "8 GB RAM + 512 GB storage," just one pool of universal memory. Power loss becomes a pause button, not a catastrophe.
+The business, plainly
+SAN-D designs the chip; specialist factories (foundries) build it -- like NVIDIA. It earns two ways: selling its own memory chips, and licensing the technology to others. First stop: everyday PCs.
+Where things stand, honestly
+The chip is fully designed on computers -- circuits simulated, physics analyzed, layout drawn, manufacturing-readiness reviewed -- but not yet manufactured. Next: partnerships with a chip factory (their design toolbox, a joint program to perfect the memory material on real wafers), then first real chips. This page describes the destination, not a done deal.
+
+SAN-D · Company Description
+
+Page 2
+
+

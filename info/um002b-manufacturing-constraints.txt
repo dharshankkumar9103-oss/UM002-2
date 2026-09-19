@@ -1,0 +1,227 @@
+UM002B Manufacturing Constraints & Dependencies
+An honest accounting of everything between today's design and manufactured silicon
+A gated plan, not an apology -- every constraint below is paired with the path that unlocks it.
+UM002B · Manufacturing Constraints & Dependencies
+
+1 · Introduction
+This document is a complete inventory of everything that must still become true before the UM002B universal-memory chip can be manufactured. It is written for investors and future partners who want the unvarnished picture: not what has been achieved -- that lives in our simulation reports and design reviews -- but what remains, why each item blocks manufacturing, and exactly what unlocks it.
+How to read it: every constraint is described in five fixed fields:
+· The constraint -- what is missing or unfinished, stated plainly. · Why it blocks manufacturing -- the causal link: why silicon cannot happen until this is
+resolved. · Current status -- where things stand today, with honest evidence labels (defined in Section
+6). · What unlocks it -- the concrete step and owner that resolves it. · Where it sits in sequence -- its position in the unlock order (Section 7 maps the full chain). A note on who we are: UM002B is being built as a fabless semiconductor company -- the NVIDIA model. We design the chip: the architecture, the circuits, the layout, the verification. A foundry -- a company whose entire business is manufacturing chips -- fabricates the silicon from our design files. We own no factory, because a single modern fab costs tens of billions of dollars; fabless is the only capital-efficient way to build a chip company. Everything in this document is therefore about two things: making our design manufacturable at a real foundry, and proving it on real silicon.
+Current state, honestly stated: behind us lies extensive pre-silicon work -- circuit simulation, device-physics analysis, GDSII layout, and a completed manufacturing-readiness program. Ahead of us lies everything in this document. Both statements are true at once; this document exists so no one has to guess which is which.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 2
+
+2 · Foundry-access constraints
+The foundry is the factory. Until we have formal, working access to one, manufacturing is a plan, not an activity. Three constraints live here, and they gate nearly everything else in this document.
+2.1 · No PDK access
+The constraint -- We hold no Process Design Kit from any foundry. The PDK is the factory's design toolbox: transistor models measured from real silicon, the geometric rules every layout must obey, and the real electrical data of every metal layer. Why it blocks manufacturing -- No foundry will manufacture a chip drawn to guessed rules. Without the PDK, our layout cannot be made DRC-clean, our simulations cannot use silicon-calibrated transistor models, and our metal-stack assumptions -- which drive the IR-drop and timing numbers -- cannot be verified. The PDK is the mandatory first technical artifact of any tapeout; everything downstream is provisional until it arrives. Current status -- All simulation uses physics-based models with analytical parameters; all layout uses assumed design rules. Nothing has been checked against a real process. (Evidence labels: Modeled, Assumed -- see Section 6.) What unlocks it -- A signed NDA with a chosen foundry, followed by PDK licensing, which is typically granted under NDA with modest or no license fee. Owner: founders plus foundry business development. Where it sits in sequence -- Step 2 of the unlock order -- immediately after funding and the NDA. Nearly every design-readiness item depends on it.
+2.2 · No signed JDA
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 3
+
+The constraint -- There is no Joint Development Agreement covering our custom hafnium-oxide memristor device. The PDK covers only standard, already-qualified devices; our advantage is a custom device whose behavior is set by materials and factory recipes -- oxide thickness, electrode metals, anneal steps -- which can only be tuned on real wafers, inside a real fab.
+Why it blocks manufacturing -- A custom device that has never been built on wafers cannot be taped out. Its switching speed in the cold, its immunity to disturb at high temperature, and its retention are today analytical predictions. Until test wafers are run, measured, and iterated, the heart of the cell is unproven -- and no amount of clever circuit design can substitute for device data. The PDK lets us push harder; only the JDA makes the device easier to push.
+Current status -- The device exists as a physics-based Verilog-A model exercised in circuit simulation. No wafer splits, no measured parameters. (Labels: Modeled, Assumed.)
+What unlocks it -- A negotiated JDA with the foundry: agreed device targets in hard numbers, followed by test-chip wafer spins with stack variants, measurement, model extraction, and iteration until targets are met. Owner: founders plus the foundry's R&D; partnership team. Note: a JDA is R&D;, not a purchase -- multiple wafer spins are normal, and success is earned across iterations, not bought in one.
+Where it sits in sequence -- Negotiated in parallel with PDK acquisition (Steps 2­3); wafer spins run as their own track alongside PDK hardening. The JDA is the long pole of the program.
+2.3 · No foundry engagement at all
+The constraint -- Beyond the PDK and JDA specifically, there is no commercial engagement with any foundry: no NDA signed, no MPW shuttle slot reserved, no costed manufacturing quote, no assigned foundry contact.
+Why it blocks manufacturing -- Manufacturing is a scheduled industrial activity -- shuttle calendars, mask shops, wafer starts. None of it can be booked, quoted, or planned without an engaged foundry partner. A design without a fab is a blueprint without a builder.
+Current status -- No contact initiated. This is a plain fact about business development, not a technical limitation.
+What unlocks it -- Funded outreach in the natural order: NDA, then technical talks, then PDK license, then JDA negotiation, then MPW booking. Owner: founders.
+Where it sits in sequence -- Steps 1­2. It is the front door; everything else walks through it.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 4
+
+3 · Design-readiness constraints
+Even with foundry access secured, the design itself must be brought from "proven in our models" to "acceptable to a real factory." Four constraints live here.
+3.1 · Layout is not DRC/LVS-clean against any real process
+The constraint -- The existing GDSII layout was drawn to assumed design rules. DRC (design-rule check: does the layout obey the factory's geometric rules?) and LVS (layout-vs-schematic: does the layout match the intended circuit?) have not been -- and cannot be -- run against any real process. Why it blocks manufacturing -- A foundry's mask shop will not accept a design that fails DRC; it is literally unmanufacturable as drawn. LVS failures would mean the chip built is not the chip designed. Clean DRC/LVS is the ticket of admission to tapeout. Current status -- Layout complete to assumed rules; DRC/LVS against a real PDK not yet possible. (Labels: Modeled, Requires-fab.) What unlocks it -- PDK in hand, then re-draw the cell and array to the real rules and the real metal stack, run the foundry's own DRC/LVS decks, and iterate to clean. Pure design work -- no wafers needed. Owner: layout and physical-design team. Where it sits in sequence -- Step 4, in the PDK-hardening track.
+3.2 · Three open device issues
+Our simulation and analysis program surfaced three device-level issues. Each is described below in plain English with an honest account of how we know it -- because "how do you know?" is the first question a technical investor will ask, and we answer it before it is asked.
+3.2.1 · Cold RESET fails at -40°C
+What it is. RESET means breaking the conductive filament inside the memristor -- snapping the atomic bridge that makes it conductive. At -40°C atoms barely move, so the filament breaks slowly. Our requirement is RESET within 30 ns with margin; the design misses it in the cold.
+How we know. This was a real circuit simulation (ngspice) using a physics-based Verilog-A memristor model with temperature-dependent switching kinetics -- colder means exponentially slower atomic motion, standard Arrhenius behavior. The simulator swept temperature down to -40°C and timed the RESET: it missed 30 ns even at the maximum 3.3 V drive strength. The simulation genuinely ran and genuinely failed. Honest label: real simulation, assumed device parameters -- the temperature sensitivity inside the model is an analytical assumption, not a measured wafer curve.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 5
+
+What unlocks it -- Two knobs. (1) Higher program voltage (at or above 4 V), which needs an on-chip charge pump -- a real area and power cost, outside today's 3.3 V domain. (2) A JDA-tuned device with higher temperature sensitivity (alpha ~0.40 eV/V, a Target), which our analysis shows closes the gap -- but alpha is a property of the stack recipe, tunable only on JDA wafers.
+Where it sits in sequence -- Knob 1 is PDK design work (Step 4); knob 2 is the JDA device track (Steps 3­5). The JDA path is the preferred one.
+3.2.2 · Shared-bitline disturb fails at 85°C
+What it is. Cells share wires (bitlines). Writing one cell shouts electrically down the shared wire, and neighbors hear a muffled version of that shout. Heat makes filaments easier to nudge, so at 85°C the muffled shout is enough to accidentally disturb a neighbor's stored state.
+How we know. An analytical stress analysis: the disturb threshold -- the voltage at which a filament starts to drift -- is assumed to slide with temperature (about 4.45 V at room temperature to about 4.07 V at 85°C); the voltage a half-selected neighbor actually feels is computed from the array biasing; at 85°C the felt voltage crosses the lowered threshold. Result: passes cold, marginal at room temperature, fails hot. Honest label: modeled finding, assumption-driven -- the threshold-vs-temperature slide is the key analytical assumption.
+What unlocks it -- Two halves. The array half is design work the PDK genuinely serves: disturb-aware biasing schemes and bitline segmentation, verified against real 85°C leakage data. The device half needs a more temperature-stable stack -- JDA wafers again.
+Where it sits in sequence -- Design half in PDK hardening (Step 4); device half in the JDA track (Steps 3­5).
+3.2.3 · Far-row IR drop eats the margin
+What it is. Wires resist current slightly, so voltage is lost along the wire (voltage lost = current × resistance). Cells far from the drivers receive a slightly weaker signal -- like water pressure fading at the far end of a long hose. Our budget allows 75 mV of loss; far rows compute at 80­98 mV. The chip still functions -- margin is eaten, not function -- but the safety cushion is gone exactly where heat and cold already stress the design.
+How we know. Straight V=IR arithmetic: current from simulation, wire resistance from wire dimensions at 132 nm pitch with an assumed metal sheet resistance. Honest label: exact math, assumed material inputs -- the metal's true resistance arrives only with a PDK.
+What unlocks it -- Pure PDK design work -- wider power straps and finalized pitch against real metal data and real design rules. No device change needed. Owner: array and physical-design team.
+Where it sits in sequence -- Step 4, PDK hardening.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 6
+
+3.3 · The knob map: what we tune, and what each tune costs
+Fixing the three issues means turning parameter knobs -- oxide thickness, program voltage, temperature sensitivity, wire widths, biasing schemes. Two things are true at once, and both matter. First: the exact dial positions will be re-tuned when real PDK and JDA data arrive -- precision tuning today would be thrown away, so we do not do it. Second: the knob-to-problem mapping -- which knob fixes which issue, in which direction, and what each turn costs -- is durable knowledge. It transfers fully into the JDA negotiation, where it turns "please make us a good memristor" into "our analysis shows we need alpha ~0.40 eV/V, and here is the trade-off we have mapped." Our posture is therefore: today's design point is frozen as the modeled baseline; the knob map below is the working document.
+
+Knob
+Program voltage up
+Alpha (stack temperature sensitivity) up
+Oxide thickness / stack recipe
+Array biasing scheme
+Bitline segmentation
+Driver transistor sizing up
+Strap width / pitch
+Stack stability (JDA)
+
+Fixes Cold RESET speed
+Cold RESET
+
+Cost / trade-off
+Needs a charge pump: area + power cost; higher fields stress devices
+Can worsen hot disturb -- the core JDA trade-off (see below)
+
+Switching kinetics, retention Hot disturb (design half) Hot disturb
+
+JDA-tuned; moves several parameters at once, must be balanced
+Design complexity; verifiable with PDK leakage data
+Area overhead on the array
+
+Cold-corner drive strength
+
+Area + power
+
+IR drop
+
+Area (F²) cost; pitch must stay DRC-clean
+
+Hot disturb (device half), retention May trade against cold speed -- same tension as alpha
+
+The central tension. The alpha that fixes cold RESET (a more temperature-sensitive stack) can worsen hot disturb (easier to nudge when hot). This single trade-off is the core of the JDA negotiation: the stack recipe must thread the needle between fast-in-the-cold and stable-in-the-heat. Naming this tension now -- before wafers -- is what makes the JDA a targeted engineering program instead of a fishing expedition.
+
+3.4 · Controller placement not frozen
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 7
+
+The constraint -- The backup/restore controller's architectural home is undecided: on-die array periphery (each die self-contained) vs. a module-level coordinator managing multiple dice. Prototype thinking favors on-die; the multi-die architecture is open.
+Why it blocks manufacturing -- Tapeout needs a frozen partition -- what logic goes on this die and what interfaces it exposes. An undecided boundary means the chip's block diagram is not final, and you cannot manufacture a block diagram that is still moving.
+Current status -- Prototype direction (on-die periphery controller) discussed; multi-die architecture open. (Label: Target -- an architectural direction, not a proven partition.)
+What unlocks it -- A product-architecture decision: NVDIMM-N-style backup device vs. true OS-visible unified memory. That product decision freezes the controller boundary. Owner: founders plus system architecture.
+Where it sits in sequence -- Must be frozen before full-chip build (Step 6). It does not block PDK hardening or JDA wafer work.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 8
+
+4 · Silicon-proof constraints
+Everything so far is pre-silicon. This section lists what can only be proven on manufactured silicon -- and therefore what no honest claim can precede.
+4.1 · No test chip / test structures defined
+The constraint -- The small test arrays (1T1R cells), Kelvin measurement structures, and process-control monitors needed to characterize the JDA device do not exist yet -- not as designs, not as silicon. Why it blocks manufacturing (of the device) -- JDA wafer spins need test structures to measure. Without them, a wafer run produces no usable device data -- the most expensive step in the program would teach us nothing. Current status -- Not designed. Test-chip planning begins with the JDA. (Label: Requires-fab.) What unlocks it -- JDA test-chip design: array variants across stack splits (oxide thickness, electrode, anneal), wired for full electrical characterization. Owner: device and design team together with the foundry. Where it sits in sequence -- Steps 3­4, ahead of the first JDA spin.
+4.2 · Zero silicon validation data
+The constraint -- No chip has been built, so nothing has been measured: no bring-up, no measured SAVE/RESTORE behavior, no cold-RESET timing on silicon, no 85°C disturb characterization, no retention bake. Why it blocks manufacturing (of claims) -- Simulation predicts; silicon decides. Every performance, reliability, and retention statement remains a model output until measured on parts. Investors, partners, and customers all price the difference. Current status -- Complete simulation and analysis dataset; zero silicon data. (Labels: Modeled throughout; nothing is Measured.) What unlocks it -- MPW tapeout, then packaged parts, then lab bring-up and characterization mapped explicitly to the three open issues. Owner: validation and test team plus lab. Where it sits in sequence -- Steps 7­8, after tapeout.
+4.3 · No reliability qualification
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 9
+
+The constraint -- No JEDEC-style reliability qualification has been performed -- no high-temperature operating-life tests, no bake-based retention extrapolation, no ESD or latch-up qualification.
+Why it blocks manufacturing (of a product) -- Customers, partners, and investors treat qualification as the line between a prototype and a product. Durability claims -- retention, operating lifetime, temperature ratings -- cannot honestly be made before it.
+Current status -- Not started; cannot start without silicon. (Label: Requires-fab.)
+What unlocks it -- Qualified silicon from the bring-up phase, then qualification lots through the standard reliability test legs. Owner: quality and reliability engineering.
+Where it sits in sequence -- Step 9 -- the last gate before product claims.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 10
+
+5 · Execution constraints
+Beyond technology, manufacturing needs an organization that can receive silicon and turn it into product.
+5.1 · Supply chain: no OSAT partner, no characterization lab
+The constraint -- No outsourced assembly-and-test (OSAT) partner is engaged for packaging and production test; no characterization lab setup exists for bring-up and measurement. Why it blocks manufacturing -- Wafers from the foundry are not products -- they must be diced, packaged, and tested. Without an OSAT, finished wafers have nowhere to go; without a lab, measured data cannot be produced. Current status -- No partners engaged; lab needs identified in generic terms but nothing procured. What unlocks it -- OSAT selection and contracting during the chip-build phase; lab build-out ahead of first silicon return. Owner: operations. Where it sits in sequence -- Steps 6­7, timed to be ready when wafers return.
+5.2 · EDA flow must satisfy foundry sign-off
+The constraint -- Today's flow is built on open-source and no-cost tooling -- the right choice for this stage -- but the foundry's sign-off decks (timing, power, and reliability verification) define the final acceptance criteria, and the flow must produce everything those decks require. Why it blocks manufacturing -- Tapeout acceptance is pass/fail against the foundry's checks. A flow that cannot run them -- or cannot produce their required inputs -- cannot tape out, however good the design. Current status -- Pre-silicon flow adequate for modeling; sign-off readiness not yet demonstrated. (Label: Requires-fab -- the decks arrive with the PDK.) What unlocks it -- PDK acquisition, then flow qualification against the foundry decks during hardening; tooling decisions (open-source vs. commercial point tools) made on evidence, not ideology. Owner: CAD / design methodology. Where it sits in sequence -- Step 4, alongside PDK hardening.
+5.3 · Funding: the venture is pre-funding
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 11
+
+The constraint -- The company is pre-funding. JDA development fees, test-chip wafer spins, MPW shuttle slots, engineering headcount, lab build-out, and qualification all require capital that is not yet secured.
+Why it blocks manufacturing -- This is the master gate -- every constraint above has an unlock step, and nearly every unlock step costs money or headcount. The chain does not move without it.
+Current status -- Pre-funding; this document and its companion roadmap are the diligence material for the raise.
+What unlocks it -- Capital -- the fundraise this plan supports, staged honestly: each phase's funding buys the next phase's de-risked milestone.
+Where it sits in sequence -- Step 0. It precedes everything.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 12
+
+6 · Evidence-label legend
+Honesty needs a vocabulary. Every technical statement in this document -- and in our program generally -- carries one of five labels:
+· Measured -- taken from real silicon or real hardware in our lab. (Nothing in this program carries this label yet.)
+· Modeled -- produced by real simulation or analysis that genuinely ran, using physics-based models.
+· Assumed -- an analytical parameter or input chosen by engineering judgment, not measured. Models are only as true as their assumptions.
+· Target -- a requirement or goal the design must hit (e.g., RESET within 30 ns; alpha ~0.40 eV/V). A target is a promise about the future, not a fact about the present.
+· Requires-fab -- can only be resolved with foundry access, wafers, or silicon.
+"These are modeled findings -- real simulations and analyses run on physics-based models -- but the underlying device parameters are analytical assumptions, not measured silicon. The PDK re-simulation and JDA wafer measurements will confirm or correct each of them."
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 13
+
+7 · Sequence & dependencies
+The unlock order, in words. Steps 1­3 are the front door; Steps 4­5 are the two parallel work tracks; Steps 6­9 build the chip and prove it.
+1. Funding -- capital secured; the master gate opens. (Constraint 5.3) 2. Foundry NDA + engagement -- a foundry partner, formalized. (Constraint 2.3) 3. PDK license + JDA negotiation -- the toolbox arrives; the device partnership is agreed with
+numeric targets. (Constraints 2.1, 2.2) 4. PDK hardening (design track) -- re-layout to real rules, corner re-simulation with calibrated
+models, IR-drop closure, disturb-aware biasing, sign-off flow qualification. (Constraints 3.1, 3.2­3.3 in part, 5.2) 5. JDA test chips (device track) -- test structures designed; wafer spins with stack variants; measurement; model extraction; iteration; stack freeze. Runs in parallel with Step 4; it is the long pole of the program. (Constraints 2.2, 3.2­3.3 in part, 4.1) 6. Controller freeze + full-chip build -- architecture frozen, full chip integrated, foundry sign-off checks pass. (Constraints 3.4, plus build) 7. MPW tapeout -- first silicon manufactured on a shared shuttle. 8. Bring-up + characterization -- OSAT packages parts; the lab measures everything, mapped explicitly to the three open issues; re-spin if silicon demands it. (Constraints 4.2, 5.1) 9. Qualification -- reliability legs complete; durability claims become honestly makeable. (Constraint 4.3) Two tracks run in parallel throughout. The software track -- OS persistent-memory support and the smart shutdown/resume layer -- needs no silicon and is built on emulators from day one. Supply-chain readiness -- OSAT contracting and lab build-out -- is timed to meet returning wafers (Constraint 5.1).
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 14
+
+8 · What this document is not
+
+This is not a failure report. Every constraint above was either known from the start -- no startup is born holding a PDK -- or discovered by our own analysis program doing exactly what it was supposed to do: the three device issues were found by simulation, not by silicon, which is the cheapest possible place to find them. A program that finds its problems before wafers is a program working correctly.
+And it is not a reason to stop. Read as a sequence, this document is a shopping list that turns into a project plan the moment capital and foundry access arrive: each item has an owner, an unlock step, and a place in the order. That is what diligence-grade planning looks like -- not the absence of obstacles, but the complete absence of surprises.
+Glossary
+
+· Fabless -- a chip company that designs chips and outsources manufacturing (the NVIDIA model).
+· Foundry -- a company whose business is manufacturing other companies' chip designs.
+· PDK (Process Design Kit) -- the foundry's design toolbox: measured device models, layout rules, metal-layer data.
+· JDA (Joint Development Agreement) -- a partnership with the foundry to co-develop a custom device on real wafers.
+· MPW (Multi-Project Wafer) -- a wafer shared across many chip projects, splitting mask costs; the affordable path to first silicon.
+· Tapeout -- sending the finished design files to the foundry for manufacturing.
+· DRC / LVS -- design-rule check (layout obeys factory geometry rules) / layout-vs-schematic (layout matches the intended circuit).
+· Corner -- an extreme operating condition (e.g., -40°C, or slow/fast silicon) the design must survive.
+· Re-spin -- a revised manufacturing run to fix issues found on silicon; normal industry practice.
+· OSAT -- outsourced assembly & test: companies that package and test finished chips.
+· 1T1R -- one-transistor-one-resistor: the standard test structure for characterizing a memristor device.
+· Kelvin structure -- a measurement structure that separates force and sense paths for accurate resistance measurement.
+· Arrhenius behavior -- the physical rule that atomic processes slow exponentially as temperature falls.
+· Charge pump -- an on-chip circuit that generates a voltage higher than the supply; costs area and power.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 15
+
+· IR drop -- voltage lost along a wire: current × resistance.
+
+UM002B · Manufacturing Constraints & Dependencies
+
+Page 16
+
+

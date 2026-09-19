@@ -1,0 +1,115 @@
+From PDK & JDA to Silicon
+The UM002B Roadmap -- Investor Perspective
+How a fabless memory startup turns a proven-in-simulation design into a proven-in-silicon product.
+UM002B · Forward-looking plan -- not a status report
+
+1 · The company we're building
+UM002B is being built as a fabless semiconductor company -- the NVIDIA model. We design the chip: the architecture, the circuits, the layout, the verification. A foundry -- a company whose entire business is manufacturing chips, such as TSMC or UMC -- fabricates the silicon from our design files. We own no factory, because a single modern fab costs tens of billions of dollars. Nearly every successful chip startup in history has been fabless; it is the only capital-efficient way to build a chip company.
+The product is a universal-memory chip. Today every computer has two memories: fast-but-forgetful RAM and slow-but-remembering storage, and the machine wastes time and energy shuffling data between them. The UM002B cell -- two transistors, one capacitor, one hafnium-oxide memristor -- is both at once: the capacitor does all daily work at high speed, and the memristor acts as a power-loss shadow that remembers without power. One pool replaces the RAM-versus-storage split.
+Before any silicon, we need the foundry's PDK -- the Process Design Kit. Think of it as the factory's design toolbox: transistor models measured from real silicon, the geometric rules every layout must obey, and the real electrical data of every metal layer. The PDK is what turns our design from "proven in our simulations" into "manufacturable at a real factory." It is obtained under NDA, and it is the mandatory first step -- no foundry builds a chip drawn to guessed rules.
+The PDK covers only standard, already-qualified devices -- and our advantage is a custom device: the hafnium-oxide memristor stack at the heart of the cell. Its behavior can only be tuned on real wafers, inside a real fab. That requires a JDA -- a Joint Development Agreement: a partnership in which we and the foundry co-develop the device, running test wafers with stack variants, measuring them, and iterating until the device hits our targets. The PDK lets us design brilliantly with existing devices; the JDA lets us create the device itself.
+
+UM002B · Forward-looking plan -- not a status report
+
+Page 2
+
+2 · Phase 1 -- The design becomes fab-real
+Everything we hold today is proven in simulation against assumed parameters. Phase 1 replaces every assumption the PDK can replace.
+What happens
+· Install the PDK and set up the design flow around the foundry's real rules and models. · Re-draw the cell and the full array to the real design rules, using the real metal stack -- the
+layout comes out DRC-clean, meaning a layout the fab would accept. · Re-simulate the entire design with silicon-calibrated transistor models at all corners: freezing
+cold, room temperature, high heat; slow, typical, and fast silicon. · Fix everything good design can fix: stronger driver transistors for the cold corner, smarter array
+wiring and voltage schemes against high-temperature interference, wider power wires and final pitch for the far rows of the array.
+What it de-risks
+The foundational investor question -- does this design hold up on a real factory's process, or only in your own models? After Phase 1, every circuit number is anchored to measured foundry data. What remains open is explicitly the custom device -- and that is Phase 2's job, not a surprise.
+Timeline & money
+Timeline: typically 6­12 months for a small, focused team. (Industry range, not a commitment.) Where the money goes: engineering salaries and compute. PDK access is typically granted under NDA with modest or no license fee. This is the most capital-efficient phase of the program.
+
+UM002B · Forward-looking plan -- not a status report
+
+Page 3
+
+3 · Phase 2 -- The device becomes real
+Some things cannot be designed -- they must be manufactured and measured. The memristor's behavior is set by materials and factory recipes, not by drawings. Phase 2 builds the device on real wafers.
+What happens
+· Agree device targets with the foundry in hard numbers: switching speed in the cold, immunity to interference at high temperature, data retention.
+· First JDA test chip -- not the product, but small test arrays carrying variants of the hafnium-oxide stack: different oxide thicknesses, electrode materials, heat treatments.
+· Measure the real devices and extract the real device model. From this point, all simulation runs on measured parameters.
+· Iterate -- a second, sometimes third wafer spin -- adjusting the recipe until the stack hits every target.
+· Freeze the stack. The custom device is now characterized: effectively part of our own private design kit.
+What it de-risks
+The device physics itself -- the one thing no amount of clever circuit design can change. This is where "our memory cell behaves the way we claim" gets proven in silicon, one test structure at a time. It is also the phase that creates defensible IP: a characterized, foundry-proven custom device.
+Timeline & money
+Timeline: typically 12­24 months including multiple wafer spins. (Industry range, not a commitment -- patience is part of the design here.) Where the money goes: negotiated JDA development fees and test-chip wafer spins. Each spin is a real manufacturing run, and spins are the cost driver of this phase.
+
+UM002B · Forward-looking plan -- not a status report
+
+Page 4
+
+4 · Phase 3 -- Build the chip
+With a fab-real design flow and a frozen, characterized device, we now build the actual product chip.
+What happens
+· Full chip design with real models: the memory array, the on-chip controller (power-fail detection, save/restore sequencing, error correction), the IO ring (the pads around the chip's edge carrying every signal in and out), and the power grid (the on-chip mesh delivering power to every circuit).
+· Sign-off verification using the foundry's own check decks: timing, power, and reliability across all corners.
+· Tapeout: the finished design files go to the foundry. First silicon comes through an MPW shuttle -- a Multi-Project Wafer shared across many projects so mask costs are split many ways. It is the standard, affordable path to first silicon.
+What it de-risks
+Integration -- do all the pieces work together as one chip? Tapeout is the point of no return where the design becomes a physical object.
+Timeline & money
+Timeline: typically 9­18 months for a first chip of this complexity, plus foundry queue time. (Industry range, not a commitment.) Where the money goes: the engineering team at full size, and the MPW slot. Sharing the wafer keeps first silicon affordable; a full dedicated mask set -- the single biggest ticket in chipmaking -- waits for the volume ramp, not the first prototype.
+
+UM002B · Forward-looking plan -- not a status report
+
+Page 5
+
+5 · Phase 4 -- Prove it
+Simulation ends here. From this point, every claim is earned on packaged silicon -- or not made at all.
+What happens
+· Lab bring-up: packaged chips return from the fab; we verify save/restore behavior on real silicon and measure switching speed in the cold, interference at high temperature, and retention via accelerated high-temperature baking.
+· Fix what the silicon teaches us -- nearly every first chip in the industry needs a re-spin; it is budgeted and expected, not a failure.
+· Formal reliability qualification to industry standards. Only after this step can claims about long-term retention or operating temperature be made honestly.
+What it de-risks
+Everything. This is where "it works" stops being a simulation result and becomes a measured fact on real parts -- the basis for customer sampling and every future claim.
+Timeline & money
+Timeline: typically 6­18 months including a possible re-spin and the qualification legs. (Industry range, not a commitment.) Where the money goes: lab and test time, qualification lab fees, and -- if the re-spin is needed -- its mask and wafer costs.
+
+UM002B · Forward-looking plan -- not a status report
+
+Page 6
+
+6 · The parallel track -- software (runs throughout)
+The hardware proves the bits survive; the software proves the experience: OS support for persistent memory and the smart shutdown/resume layer that turns "the data is intact" into "the machine picks up exactly where it left off."
+· Needs no silicon: built on emulators and FPGA prototypes in parallel with the hardware phases, so it is ready when the first chips arrive.
+· Funded steadily across the program rather than as a single phase; it de-risks the product story from day one.
+
+UM002B · Forward-looking plan -- not a status report
+
+Page 7
+
+7 · What we want you to know
+1. A JDA is R&D, not a purchase order. Multiple wafer spins are normal; success is not bought in a single spin -- it is earned across iterations.
+2. First silicon almost always needs a re-spin. We budget for it; the industry expects it.
+3. No foundry partnership exists yet. This document is the plan, not a status report -- PDK access and the JDA are milestones this funding enables.
+4. All timelines are typical industry ranges, not commitments. They move with team size, foundry queues, and what the silicon tells us.
+5. No performance, retention, or temperature claims are made here as achieved facts. This roadmap exists precisely so that every future claim is earned -- on measured silicon, or not at all.
+
+UM002B · Forward-looking plan -- not a status report
+
+Page 8
+
+8 · What the funding builds
+The arc in one line: the PDK makes the design fab-real, the JDA makes the device fab-real, the MPW makes it silicon, and testing makes the claims proof. Phase by phase, capital converts directly into de-risked milestones: Phase 1 buys a manufacturable design; Phase 2 buys a characterized custom device and defensible IP; Phase 3 buys first silicon; Phase 4 buys proof. The software track buys the product experience in parallel. We are a fabless company: our capital goes into design, device development, and proof -- never into concrete and cleanrooms.
+Glossary
+· Fabless -- a chip company that designs chips and outsources manufacturing (e.g., NVIDIA). · Foundry -- a company whose business is manufacturing other companies' chip designs (e.g.,
+TSMC, UMC). · PDK (Process Design Kit) -- the foundry's design toolbox: measured device models, layout
+rules, metal-layer data. · JDA (Joint Development Agreement) -- a partnership with the foundry to co-develop a
+custom device on real wafers. · MPW (Multi-Project Wafer) -- a wafer shared across many chip projects, splitting mask
+costs; the affordable path to first silicon. · Tapeout -- sending the finished design files to the foundry for manufacturing. · DRC -- design-rule check: automated verification that a layout obeys the foundry's
+manufacturing rules. · Corner -- an extreme operating condition (e.g., -40 °C, or slow/fast silicon) that the design
+must survive. · Re-spin -- a revised manufacturing run to fix issues found on first silicon; normal industry
+practice. · OSAT -- outsourced assembly & test: companies that package and test finished chips.
+
+UM002B · Forward-looking plan -- not a status report
+
+Page 9
+
+
