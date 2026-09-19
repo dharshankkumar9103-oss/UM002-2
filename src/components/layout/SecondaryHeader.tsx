@@ -12,7 +12,7 @@ export function SecondaryHeader() {
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-mono text-xs tracking-widest uppercase">
           <Link
-            href="#"
+            href="/"
             className="hover:text-foreground transition-colors"
           >
             HOME
@@ -30,10 +30,10 @@ export function SecondaryHeader() {
             ABOUT
           </Link>
           <Link
-            href="/research"
+            href="/roadmap"
             className="hover:text-foreground transition-colors"
           >
-            RESEARCH
+            ROADMAP
           </Link>
           <Link
             href="/contact"

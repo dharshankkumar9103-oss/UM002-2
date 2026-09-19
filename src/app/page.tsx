@@ -14,7 +14,7 @@ import { Hero } from "@/components/sections/Hero";
 import { ScrollSection } from "@/components/sections/ScrollSection";
 import { CompanySection } from "@/components/sections/CompanySection";
 import { TechnologySection } from "@/components/sections/TechnologySection";
-import { ResearchSection } from "@/components/sections/ResearchSection";
+import { RoadmapSection } from "@/components/sections/RoadmapSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 
 export default function HomePage() {
@@ -174,9 +174,9 @@ export default function HomePage() {
           );
         })}
 
-        <CompanySection />
         <TechnologySection />
-        <ResearchSection />
+        <CompanySection />
+        <RoadmapSection />
         <ContactSection />
       </main>
 

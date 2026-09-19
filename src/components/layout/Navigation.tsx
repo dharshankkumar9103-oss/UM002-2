@@ -6,8 +6,8 @@ import Link from "next/link";
 const NAV_ITEMS = [
   { href: "#home", label: "HOME" },
   { href: "#technology", label: "TECHNOLOGY" },
-  { href: "#about", label: "COMPANY" },
-  { href: "#research", label: "RESEARCH" },
+  { href: "#company", label: "COMPANY" },
+  { href: "#roadmap", label: "ROADMAP" },
   { href: "#contact", label: "CONTACT" },
 ];
 

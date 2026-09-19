@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { VIDEO_SEGMENTS, VideoSegment, getSegmentAtProgress, getScrollProgress, TOTAL_DURATION } from "@/lib/video-sequence";
+import { VIDEO_SEGMENTS, VideoSegment, getChapterTime } from "@/lib/video-sequence";
 
 interface VideoBackgroundProps {
   scrollHeight: number;
@@ -39,7 +39,9 @@ export function VideoBackground({
   const [readySegments, setReadySegments] = useState<Set<string>>(new Set());
 
   const getVideoElement = useCallback((segment: VideoSegment): HTMLVideoElement => {
-    let video = videoRefs.current.get(segment.id);
+    // All segments share one source file, so a single element is reused
+    // and seeking stays seamless across segment boundaries.
+    let video = videoRefs.current.get(segment.src);
     if (!video) {
       video = document.createElement("video");
       video.src = segment.src;
@@ -50,11 +52,11 @@ export function VideoBackground({
       video.crossOrigin = "anonymous";
       video.style.display = "none";
       video.playsInline = true;
-      videoRefs.current.set(segment.id, video);
+      videoRefs.current.set(segment.src, video);
 
       video.onloadeddata = () => {
-        setReadySegments((prev) => new Set(prev).add(segment.id));
-        if (!isLoaded && segment.id === VIDEO_SEGMENTS[0].id) {
+        setReadySegments((prev) => new Set(prev).add(segment.src));
+        if (!isLoaded && segment.src === VIDEO_SEGMENTS[0].src) {
           setIsLoaded(true);
         }
       };
@@ -90,7 +92,7 @@ export function VideoBackground({
     video.style.display = "block";
 
     if (immediate || video.readyState >= 3) {
-      video.currentTime = segment.duration * localProgress;
+      video.currentTime = getChapterTime(segment, localProgress);
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
@@ -99,7 +101,7 @@ export function VideoBackground({
       }
     } else {
       video.oncanplay = () => {
-        video.currentTime = segment.duration * localProgress;
+        video.currentTime = getChapterTime(segment, localProgress);
         video.play().catch(() => {});
         video.oncanplay = null;
       };
@@ -109,10 +111,10 @@ export function VideoBackground({
   }, [ensureVideoReady, localProgress]);
 
   const updateVideoTime = useCallback((segment: VideoSegment, progress: number, isSeeking = false) => {
-    const video = videoRefs.current.get(segment.id);
+    const video = videoRefs.current.get(segment.src);
     if (!video || video !== activeVideoRef.current) return;
 
-    const targetTime = segment.duration * progress;
+    const targetTime = getChapterTime(segment, progress);
     const diff = Math.abs(video.currentTime - targetTime);
 
     if (isSeeking || diff > 0.1 || (velocity > 50 && diff > 0.05)) {
@@ -199,7 +201,7 @@ export function VideoBackground({
 
     if (currentIndex !== lastSegmentIndexRef.current) {
       switchVideo(currentSegment, false);
-    } else if (activeVideoRef.current === videoRefs.current.get(currentSegment.id)) {
+    } else if (activeVideoRef.current === videoRefs.current.get(currentSegment.src)) {
       const progressDiff = Math.abs(globalProgress - lastGlobalProgressRef.current);
       const isSeeking = progressDiff > 0.02 || velocity > 100;
       updateVideoTime(currentSegment, localProgress, isSeeking);

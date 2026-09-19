@@ -1,0 +1,2560 @@
+diff --git a/src/app/about/page.tsx b/src/app/about/page.tsx
+index 90f831e..5a5cd94 100644
+--- a/src/app/about/page.tsx
++++ b/src/app/about/page.tsx
+@@ -7,316 +7,196 @@ export default function AboutPage() {
+       <div className="space-y-20">
+         {/* Hero */}
+         <section className="text-center py-16">
++          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8">
++            <span className="w-2 h-2 rounded-full bg-primary" />
++            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
++              SAN-D · FABLESS SEMICONDUCTOR
++            </span>
++          </div>
+           <h1 className="font-display font-bold text-5xl md:text-6xl tracking-tight mb-6">
+             ABOUT
+           </h1>
+           <p className="font-sans text-lg max-w-2xl mx-auto text-muted-foreground leading-relaxed">
+             SAN-D is a fabless semiconductor company: we design memory chips;
+-            foundries manufacture them. We merge RAM and storage into one pool
+-            that is both fast and permanent.
++            foundries manufacture them. We are merging RAM and storage into one
++            pool that is both fast and permanent.
+           </p>
+         </section>
+ 
+-        {/* Mission & Values */}
++        {/* The fabless model */}
+         <section className="grid gap-16">
+-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+-            {/* Mission */}
+-            <article className="p-8 bg-background/50 border border-border/50 rounded-xl">
++          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
++            <article className="tech-panel-elevated p-8 rounded-xl">
+               <h2 className="font-display font-bold text-foreground mb-6">
+-                OUR MISSION
++                THE FABLESS MODEL
+               </h2>
+               <p className="text-muted-foreground leading-relaxed mb-6">
+-                To merge the fast working memory (RAM) and permanent storage (SSD)
+-                into a single, persistent pool of memory that functions with DRAM
+-                speeds but retains data without power.
++                We design the chip: the architecture, the cell, the controller, the
++                firmware. A foundry — a company whose entire business is manufacturing
++                chips — fabricates the silicon from our design files. We own no
++                factory, because a single modern fab costs tens of billions of dollars.
+               </p>
+-              <p className="text-muted-foreground leading-relaxed mb-6">
+-                We believe that the future of computing lies not in incremental scaling,
+-                but in reimagining the fundamental architecture of memory devices
+-                to eliminate the performance bottlenecks of today&apos;s architectures.
++              <p className="text-muted-foreground leading-relaxed">
++                Nearly every successful chip startup in history has been fabless. It is
++                the NVIDIA model, and it is the only capital-efficient way to build a
++                chip company.
+               </p>
+-              <div className="mt-6 p-4 bg-background border border-border/50 rounded-lg">
+-                <h3 className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-3">
+-                  CORE PRINCIPLES
+-                </h3>
+-                <div className="space-y-3">
+-                  <div className="flex items-start gap-3">
+-                    <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
+-                    <div>
+-                      <p className="font-mono text-xs text-primary/80">▸</p>
+-                      <p className="font-sans text-sm text-foreground/90">First-principles design</p>
+-                    </div>
+-                  </div>
+-                  <div className="flex items-start gap-3">
+-                    <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
+-                    <div>
+-                      <p className="font-mono text-xs text-primary/80">▸</p>
+-                      <p className="font-sans text-sm text-foreground/90">Precision manufacturing</p>
+-                    </div>
+-                  </div>
+-                  <div className="flex items-start gap-3">
+-                    <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
+-                    <div>
+-                      <p className="font-mono text-xs text-primary/80">▸</p>
+-                      <p className="font-sans text-sm text-foreground/90">Measurable results</p>
+-                    </div>
+-                  </div>
+-                  <div className="flex items-start gap-3">
+-                    <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
+-                    <div>
+-                      <p className="font-mono text-xs text-primary/80">▸</p>
+-                      <p className="font-sans text-sm text-foreground/90">Open collaboration</p>
+-                    </div>
+-                  </div>
+-                </div>
+-              </div>
+             </article>
+ 
+-            {/* Values */}
+-            <article className="p-8 bg-background/50 border border-border/50 rounded-xl">
++            <article className="tech-panel-elevated p-8 rounded-xl">
+               <h2 className="font-display font-bold text-foreground mb-6">
+-                OUR VALUES
++                THE BUSINESS
+               </h2>
+-              <div className="space-y-6">
+-                <div className="flex items-start gap-4">
+-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
+-                    <span className="font-mono text-xs text-primary">1</span>
+-                  </div>
+-                  <div className="space-y-1">
+-                    <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-1">
+-                      SCIENTIFIC RIGOR
+-                    </h3>
+-                    <p className="text-sm text-muted-foreground/80">
+-                      Every decision grounded in verifiable physics and experimental data
+-                    </p>
+-                  </div>
+-                </div>
+-                <div className="flex items-start gap-4">
+-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
+-                    <span className="font-mono text-xs text-primary">2</span>
+-                  </div>
+-                  <div className="space-y-1">
+-                    <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-1">
+-                      ENGINEERING EXCELLENCE
+-                    </h3>
+-                    <p className="text-sm text-muted-foreground/80">
+-                      Bridging theoretical advances with manufacturable solutions
+-                    </p>
+-                  </div>
+-                </div>
+-                <div className="flex items-start gap-4">
+-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
+-                    <span className="font-mono text-xs text-primary">3</span>
+-                  </div>
+-                  <div className="space-y-1">
+-                    <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-1">
+-                      LONG-TERM IMPACT
+-                    </h3>
+-                    <p className="text-sm text-muted-foreground/80">
+-                      Focusing on innovations that shape decades, not quarters
+-                    </p>
+-                  </div>
+-                </div>
+-                <div className="flex items-start gap-4">
+-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
+-                    <span className="font-mono text-xs text-primary">4</span>
+-                  </div>
+-                  <div className="space-y-1">
+-                    <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-1">
+-                      RESPONSIBLE INNOVATION
+-                    </h3>
+-                    <p className="text-sm text-muted-foreground/80">
+-                      Advancing technology while considering societal and environmental impact
+-                    </p>
+-                  </div>
+-                </div>
+-              </div>
+-            </article>
+-          </div>
+-        </section>
+-
+-        {/* History & Milestones */}
+-        <section className="border-t border-border/50 pt-16">
+-          <h2 className="font-display font-bold text-foreground mb-8">
+-            HISTORY & MILESTONES
+-          </h2>
+-          <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed mb-12">
+-            Founded on the belief that the next leap in computing requires returning to
+-            first principles, SAN-D has grown from a small research team into a global
+-            technology leader.
+-          </p>
+-
+-          <div className="space-y-8">
+-            {/* Timeline Items */}
+-            <div className="space-y-6">
+-              <div className="flex items-start gap-6">
+-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
+-                  2020
+-                </div>
+-                <div className="space-y-2">
+-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
+-                    FOUNDING
+-                  </h3>
+-                  <p className="text-sm text-muted-foreground/80">
+-                    Established by leading physicists and engineers from Stanford, MIT, and
+-                    imec with a mission to reboot semiconductor innovation from first principles
++              <p className="text-muted-foreground leading-relaxed mb-6">
++                Dual model: we sell UM002B chips, and we license the cell IP to others.
++              </p>
++              <div className="space-y-4">
++                <div className="p-4 rounded-lg bg-background/50 border border-border/50">
++                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">
++                    FIRST MARKET
+                   </p>
+-                </div>
+-              </div>
+-              <div className="flex items-start gap-6">
+-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
+-                  2021
+-                </div>
+-                <div className="space-y-2">
+-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
+-                    FIRST BREAKTHROUGH
+-                  </h3>
+-                  <p className="text-sm text-muted-foreground/80">
+-                    Demonstrated negative capacitance FET concept with 60mV/dec subthreshold swing
+-                    at room temperature
++                  <p className="text-foreground/90 leading-relaxed">
++                    Consumer PCs — where one unified pool of universal memory replaces
++                    the DRAM + SSD hierarchy. Not “8 GB RAM + 512 GB storage,” just one
++                    memory number.
+                   </p>
+                 </div>
+-              </div>
+-              <div className="flex items-start gap-6">
+-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
+-                  2022
+-                </div>
+-                <div className="space-y-2">
+-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
+-                    SERIES A FUNDING
+-                  </h3>
+-                  <p className="text-sm text-muted-foreground/80">
+-                    Secured $200M Series A led by premier technology investors to scale
+-                    R&D operations and begin pilot production
++                <div className="p-4 rounded-lg bg-background/50 border border-border/50">
++                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">
++                    OUR SCOPE
+                   </p>
+-                </div>
+-              </div>
+-              <div className="flex items-start gap-6">
+-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
+-                  2023
+-                </div>
+-                <div className="space-y-2">
+-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
+-                    PILOT PRODUCTION
+-                  </h3>
+-                  <p className="text-sm text-muted-foreground/80">
+-                    Began high-volume pilot production of GAA nanosheet transistors
+-                    on 300mm wafers at 3nm equivalent node
++                  <p className="text-foreground/90 leading-relaxed">
++                    Chip, firmware, host interface, BIOS/UEFI enablement, and OS drivers —
++                    “it just works in a PC.”
+                   </p>
+                 </div>
+               </div>
+-              <div className="flex items-start gap-6">
+-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
+-                  2024
+-                </div>
+-                <div className="space-y-2">
+-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
+-                    CFET STACK DEMO
+-                  </h3>
+-                  <p className="text-sm text-muted-foreground/80">
+-                    World&apos;s first complementary FET stack demonstrating &gt;50% logic density improvement
+-                  </p>
+-                </div>
+-              </div>
+-              <div className="flex items-start gap-6">
+-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
+-                  2025
+-                </div>
+-                <div className="space-y-2">
+-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
+-                    HETEROGENEOUS INTEGRATION
+-                  </h3>
+-                  <p className="text-sm text-muted-foreground/80">
+-                    First 2.5D chiplet platform with UCIe interconnect and thermal-optimized packaging
+-                  </p>
+-                </div>
+-              </div>
+-            </div>
++            </article>
+           </div>
+         </section>
+ 
+-        {/* Leadership */}
++        {/* Status, honestly */}
+         <section className="border-t border-border/50 pt-16">
+           <h2 className="font-display font-bold text-foreground mb-8">
+-            LEADERSHIP TEAM
++            WHERE THINGS STAND, HONESTLY
+           </h2>
+-          <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed mb-12">
+-            World-class experts in device physics, semiconductor manufacturing,
+-            and advanced packaging.
+-          </p>
+-
+-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+-            {/* CEO */}
+-            <div className="p-6 bg-background/50 border border-border/50 rounded-lg text-center">
+-              <div className="w-16 h-16 rounded-full bg-primary/20 mx-auto mb-4">
+-                <span className="font-mono text-xs text-primary">DR</span>
+-              </div>
+-              <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-2">
+-                DR. ELENA VASQUEZ
+-              </h3>
+-              <p className="font-sans text-sm text-muted-foreground/80">Chief Executive Officer</p>
+-              <p className="text-[12px] text-muted-foreground/60">
+-                Formerly: IBM Fellow, Semiconductor Physics
++          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
++            <div className="p-8 rounded-xl bg-background/50 border border-border/50">
++              <p className="font-mono text-xs tracking-wider uppercase text-primary mb-4">
++                COMPLETE — PRE-SILICON
+               </p>
++              <ul className="space-y-3">
++                {[
++                  "Full circuit simulation of the 2T1C1M cell and array",
++                  "Device-physics analysis of the hafnium-oxide memristor",
++                  "GDSII layout of the cell",
++                  "Manufacturing-readiness review (coherence audit, gap analysis, validation matrix)",
++                ].map((item, i) => (
++                  <li key={i} className="flex items-start gap-3 text-foreground/85 leading-relaxed">
++                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0 mt-2" />
++                    <span>{item}</span>
++                  </li>
++                ))}
++              </ul>
+             </div>
+-
+-            {/* CTO */}
+-            <div className="p-6 bg-background/50 border border-border/50 rounded-lg text-center">
+-              <div className="w-16 h-16 rounded-full bg-primary/20 mx-auto mb-4">
+-                <span className="font-mono text-xs text-primary">DR</span>
+-              </div>
+-              <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-2">
+-                DR. ARJUN PATEL
+-              </h3>
+-              <p className="font-sans text-sm text-muted-foreground/80">Chief Technology Officer</p>
+-              <p className="text-[12px] text-muted-foreground/60">
+-                Formerly: TSMC VP, Process Integration
++            <div className="p-8 rounded-xl bg-background/50 border border-border/50">
++              <p className="font-mono text-xs tracking-wider uppercase text-primary mb-4">
++                NEXT — GATED BY FUNDING &amp; PARTNERSHIP
+               </p>
+-            </div>
+-
+-            {/* Head of Research */}
+-            <div className="p-6 bg-background/50 border border-border/50 rounded-lg text-center">
+-              <div className="w-16 h-16 rounded-full bg-primary/20 mx-auto mb-4">
+-                <span className="font-mono text-xs text-primary">DR</span>
+-              </div>
+-              <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-2">
+-                DR. SOPHIE DUBOIS
+-              </h3>
+-              <p className="font-sans text-sm text-muted-foreground/80">Head of Research</p>
+-              <p className="text-[12px] text-muted-foreground/60">
+-                Formerly: MIT Professor, Quantum Devices
++              <ul className="space-y-3">
++                {[
++                  "Foundry engagement under NDA",
++                  "PDK access — the foundry's design toolbox",
++                  "Signed JDA to co-develop the custom HfOx device on real wafers",
++                  "First silicon on an MPW shuttle",
++                ].map((item, i) => (
++                  <li key={i} className="flex items-start gap-3 text-foreground/85 leading-relaxed">
++                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0 mt-2" />
++                    <span>{item}</span>
++                  </li>
++                ))}
++              </ul>
++              <p className="text-sm text-muted-foreground/80 mt-6 leading-relaxed">
++                Stated as plan, not status. The chip is fully designed on computers —
++                but not yet manufactured.
+               </p>
+             </div>
++          </div>
++        </section>
++
++        {/* Aim */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-8">
++            THE AIM
++          </h2>
++          <div className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10">
++            <p className="text-foreground/90 text-lg leading-relaxed max-w-3xl mb-6">
++              Every computer has two memories: the desk (RAM) — fast, where you work,
++              wiped out by a power cut; and the filing cabinet (storage) — permanent
++              but slow. For fifty years we have shuttled work between the two and
++              pressed Save to survive power cuts.
++            </p>
++            <p className="text-foreground/90 text-lg leading-relaxed max-w-3xl mb-6">
++              SAN-D merges them into one desk that never gets cleared — a single pool
++              of memory that is both fast and permanent.
++            </p>
++            <p className="font-mono text-sm tracking-widest uppercase text-primary">
++              Power loss becomes a pause button, not a catastrophe.
++            </p>
++          </div>
++        </section>
+ 
+-            {/* Head of Manufacturing */}
+-            <div className="p-6 bg-background/50 border border-border/50 rounded-lg text-center">
+-              <div className="w-16 h-16 rounded-full bg-primary/20 mx-auto mb-4">
+-                <span className="font-mono text-xs text-primary">DR</span>
++        {/* Values */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-8">
++            HOW WE WORK
++          </h2>
++          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
++            {[
++              {
++                title: "EVIDENCE LABELS",
++                desc: "Every claim carries its provenance: measured, modeled, assumed, target, or requires-fab. Nothing is labeled “measured” until it is.",
++              },
++              {
++                title: "FIND IT BEFORE SILICON",
++                desc: "Our analysis program surfaced its own device issues in simulation — the cheapest possible place to find them. A program that finds its problems before wafers is a program working correctly.",
++              },
++              {
++                title: "PLAN, NOT STATUS",
++                desc: "The roadmap is a gated sequence with owners and unlock steps — not a victory lap. No partnership, no silicon, no measured data is claimed before it exists.",
++              },
++            ].map((v, i) => (
++              <div key={i} className="tech-panel-elevated p-8 rounded-xl">
++                <h3 className="font-mono text-sm tracking-widest uppercase text-primary mb-3">
++                  {v.title}
++                </h3>
++                <p className="text-foreground/80 leading-relaxed">{v.desc}</p>
+               </div>
+-              <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-2">
+-                DR. MARCUS CHEN
+-              </h3>
+-              <p className="font-sans text-sm text-muted-foreground/80">Head of Manufacturing</p>
+-              <p className="text-[12px] text-muted-foreground/60">
+-                Formerly: Samsung Senior Fellow, Manufacturing
+-              </p>
+-            </div>
++            ))}
+           </div>
+         </section>
+ 
+         {/* Call to Action */}
+         <section className="text-center py-16">
+-          <Link
+-            href="/"
+-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+-          >
+-            RETURN TO HOME
+-            <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+-                <path d="M5 12h14M12 5l7 7-7 7" />
+-              </svg>
+-            </span>
+-          </Link>
++          <div className="flex items-center justify-center gap-6 flex-wrap">
++            <Link
++              href="/technology"
++              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
++            >
++              THE TECHNOLOGY
++              <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
++                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
++                  <path d="M5 12h14M12 5l7 7-7 7" />
++                </svg>
++              </span>
++            </Link>
++            <Link
++              href="/roadmap"
++              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:border-primary/50 hover:bg-accent"
++            >
++              THE ROADMAP
++            </Link>
++          </div>
+         </section>
+       </div>
+     </SecondaryLayout>
+diff --git a/src/app/contact/page.tsx b/src/app/contact/page.tsx
+index 8e00766..f0dda72 100644
+--- a/src/app/contact/page.tsx
++++ b/src/app/contact/page.tsx
+@@ -11,8 +11,8 @@ export default function ContactPage() {
+             CONTACT
+           </h1>
+           <p className="font-sans text-lg max-w-2xl mx-auto text-muted-foreground leading-relaxed">
+-            We&apos;re always interested in collaborating with researchers, engineers,
+-            and organizations pushing the boundaries of semiconductor technology.
++            We&apos;re interested in hearing from investors, foundry partners,
++            engineers, and anyone working on the future of memory.
+           </p>
+         </section>
+ 
+@@ -26,150 +26,62 @@ export default function ContactPage() {
+               </h2>
+               <div className="space-y-6">
+                 {[
+-                  { label: "GENERAL INQUIRIES", value: "hello@san-d.tech", type: "email" },
+-                  { label: "TECHNICAL PARTNERSHIPS", value: "partnerships@san-d.tech", type: "email" },
+-                  { label: "RESEARCH COLLABORATIONS", value: "research@san-d.tech", type: "email" },
+-                  { label: "CAREERS", value: "careers@san-d.tech", type: "email" },
+-                  { label: "MEDIA / PRESS", value: "press@san-d.tech", type: "email" },
++                  { label: "GENERAL INQUIRIES", value: "To be announced" },
++                  { label: "INVESTORS", value: "To be announced" },
++                  { label: "FOUNDRY PARTNERSHIPS", value: "To be announced" },
++                  { label: "MEDIA / PRESS", value: "To be announced" },
+                 ].map((contact, i) => (
+                   <div key={i} className="p-4 bg-background border border-border/50 rounded-lg">
+-                    <div className="flex items-start gap-4">
+-                      <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0 mt-1" />
++                    <div className="flex items-start justify-between gap-4">
+                       <div>
+                         <p className="font-mono text-xs tracking-widest uppercase text-primary mb-1">
+                           {contact.label}
+                         </p>
+-                        <a
+-                          href={`mailto:${contact.value}`}
+-                          className="font-sans text-base text-foreground/90 hover:text-primary transition-colors"
+-                        >
++                        <p className="font-sans text-base text-muted-foreground/70">
+                           {contact.value}
+-                        </a>
++                        </p>
+                       </div>
++                      <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/50 rounded-full px-2 py-1 shrink-0">
++                        PLACEHOLDER
++                      </span>
+                     </div>
+                   </div>
+                 ))}
+               </div>
++              <p className="text-sm text-muted-foreground/70 mt-6 leading-relaxed">
++                Contact details will be published here once they are finalized.
++              </p>
+             </article>
+ 
+-            {/* Locations */}
++            {/* Location */}
+             <article className="p-8 bg-background/50 border border-border/50 rounded-xl">
+               <h2 className="font-display font-bold text-foreground mb-6">
+-                GLOBAL LOCATIONS
++                LOCATION
+               </h2>
+-              <div className="space-y-6">
+-                {[
+-                  {
+-                    name: "HEADQUARTERS",
+-                    address: "San Jose, California, USA",
+-                    detail: "Advanced R&D Center & Operations",
+-                  },
+-                  {
+-                    name: "EUROPE",
+-                    address: "Munich, Germany",
+-                    detail: "Design Center & University Partnerships",
+-                  },
+-                  {
+-                    name: "ASIA-PACIFIC",
+-                    address: "Hsinchu, Taiwan",
+-                    detail: "Process Integration & Manufacturing",
+-                  },
+-                ].map((loc, i) => (
+-                  <div key={i} className="p-6 bg-background border border-border/50 rounded-lg">
+-                    <div className="flex items-start gap-4">
+-                      <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
+-                      <div>
+-                        <p className="font-mono text-xs tracking-widest uppercase text-primary mb-2">
+-                          {loc.name}
+-                        </p>
+-                        <p className="font-sans text-lg text-foreground mb-1">
+-                          {loc.address}
+-                        </p>
+-                        <p className="text-muted-foreground text-sm">{loc.detail}</p>
+-                      </div>
+-                    </div>
++              <div className="p-6 bg-background border border-border/50 rounded-lg">
++                <div className="flex items-start justify-between gap-4">
++                  <div>
++                    <p className="font-mono text-xs tracking-widest uppercase text-primary mb-2">
++                      HEADQUARTERS
++                    </p>
++                    <p className="font-sans text-lg text-muted-foreground/70 mb-1">
++                      To be announced
++                    </p>
+                   </div>
+-                ))}
++                  <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/50 rounded-full px-2 py-1 shrink-0">
++                    PLACEHOLDER
++                  </span>
++                </div>
+               </div>
++              <p className="text-sm text-muted-foreground/70 mt-6 leading-relaxed">
++                SAN-D is a fabless company: we design the chip, foundries manufacture
++                it. Design work is distributed; manufacturing happens at our future
++                foundry partner&apos;s fabs.
++              </p>
+             </article>
+           </div>
+         </section>
+ 
+-        {/* Contact Form */}
+-        <section className="border-t border-border/50 pt-16">
+-          <h2 className="font-display font-bold text-foreground mb-8">
+-            GET IN TOUCH
+-          </h2>
+-          <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed mb-12">
+-            Have a question, partnership idea, or just want to say hello?
+-            Please fill out the form below and we&apos;ll get back to you shortly.
+-          </p>
+-
+-          <form className="space-y-6">
+-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+-              <div>
+-                <label className="block mb-2 font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-                  FULL NAME
+-                </label>
+-                <input
+-                  type="text"
+-                  required
+-                  className="w-full px-4 py-3 bg-background/50 border border-border/50 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+-                  placeholder="Enter your full name"
+-                />
+-              </div>
+-              <div>
+-                <label className="block mb-2 font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-                  EMAIL ADDRESS
+-                </label>
+-                <input
+-                  type="email"
+-                  required
+-                  className="w-full px-4 py-3 bg-background/50 border border-border/50 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+-                  placeholder="Enter your email address"
+-                />
+-              </div>
+-            </div>
+-
+-            <div>
+-              <label className="block mb-2 font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-                ORGANIZATION / AFFILIATION
+-              </label>
+-              <input
+-                type="text"
+-                className="w-full px-4 py-3 bg-background/50 border border-border/50 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+-                placeholder="Company, university, or lab (optional)"
+-              />
+-            </div>
+-
+-            <div>
+-              <label className="block mb-2 font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-                MESSAGE
+-              </label>
+-              <textarea
+-                required
+-                rows={5}
+-                className="w-full px-4 py-3 bg-background/50 border border-border/50 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+-                placeholder="How can we help you?"
+-              />
+-            </div>
+-
+-            <div className="flex items-center justify-start">
+-              <button
+-                type="submit"
+-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+-              >
+-                SEND MESSAGE
+-                <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+-                    <path d="M22 2L11 13M22 2l-5 5M22 2 5 11" />
+-                  </svg>
+-                </span>
+-              </button>
+-            </div>
+-          </form>
+-        </section>
+-
+         {/* Call to Action */}
+         <section className="text-center py-16">
+           <Link
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index d4c4c2f..29aadec 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode })
+       <head>
+         <link rel="preconnect" href="https://fonts.googleapis.com" />
+         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+-        <link rel="preload" as="video" href="/atomic-scale.mp4" type="video/mp4" />
++        <link rel="preload" as="video" href="/scale-journey.mp4" type="video/mp4" />
+       </head>
+       <body className="min-h-full flex flex-col relative overflow-x-hidden">
+         {children}
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index c245f63..2fa19ea 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -14,7 +14,7 @@ import { Hero } from "@/components/sections/Hero";
+ import { ScrollSection } from "@/components/sections/ScrollSection";
+ import { CompanySection } from "@/components/sections/CompanySection";
+ import { TechnologySection } from "@/components/sections/TechnologySection";
+-import { ResearchSection } from "@/components/sections/ResearchSection";
++import { RoadmapSection } from "@/components/sections/RoadmapSection";
+ import { ContactSection } from "@/components/sections/ContactSection";
+ 
+ export default function HomePage() {
+@@ -174,9 +174,9 @@ export default function HomePage() {
+           );
+         })}
+ 
+-        <CompanySection />
+         <TechnologySection />
+-        <ResearchSection />
++        <CompanySection />
++        <RoadmapSection />
+         <ContactSection />
+       </main>
+ 
+diff --git a/src/app/research/page.tsx b/src/app/research/page.tsx
+deleted file mode 100644
+index d23d3ba..0000000
+--- a/src/app/research/page.tsx
++++ /dev/null
+@@ -1,215 +0,0 @@
+-import { SecondaryLayout } from "@/components/layout/SecondaryLayout";
+-import Link from "next/link";
+-
+-export default function ResearchPage() {
+-  return (
+-    <SecondaryLayout>
+-      <div className="space-y-20">
+-        {/* Hero */}
+-        <section className="text-center py-16">
+-          <h1 className="font-display font-bold text-5xl md:text-6xl tracking-tight mb-6">
+-            RESEARCH
+-          </h1>
+-          <p className="font-sans text-lg max-w-2xl mx-auto text-muted-foreground leading-relaxed">
+-            Everything we study points at one goal: a manufacturable, reliable UM002B chip.
+-            Four research tracks cover the cell, the controller, durability, and the software
+-            stack that exposes one unified memory pool to the operating system.
+-          </p>
+-        </section>
+-
+-        {/* Research Tracks */}
+-        <section className="grid gap-8">
+-          {/* Track 1 – HfOx Memristor */}
+-          <article className="tech-panel-elevated p-8 rounded-xl border border-border/50">
+-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+-              <div>
+-                <h2 className="font-display font-bold text-foreground mb-2">
+-                  HFOX MEMRISTOR STACK
+-                </h2>
+-                <span className="font-mono text-xs tracking-wider uppercase text-primary/70 bg-primary/10 px-3 py-1 rounded-full">
+-                  Non-Volatile Cell Layer
+-                </span>
+-              </div>
+-            </div>
+-
+-            <p className="text-muted-foreground leading-relaxed mb-6">
+-              The memristor half of each 2T1C1M cell stores a bit as a physical resistance
+-              state inside a hafnium-oxide layer. Unlike the charge on a capacitor, that
+-              resistance state stays put after power is removed — the same way a light switch
+-              stays up or down without any electricity. Our research tunes the oxide to switch
+-              reliably between high and low resistance, hold its state for years without
+-              drifting, and survive many thousands of write cycles.
+-            </p>
+-
+-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+-              <div className="p-4 bg-background/50 border border-border/50 rounded-lg">
+-                <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-2">
+-                  SWITCHING PRECISION
+-                </p>
+-                <p className="font-sans text-sm text-foreground/90">
+-                  Clean, repeatable transitions between high- and low-resistance states
+-                </p>
+-              </div>
+-              <div className="p-4 bg-background/50 border border-border/50 rounded-lg">
+-                <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-2">
+-                  RETENTION
+-                </p>
+-                <p className="font-sans text-sm text-foreground/90">
+-                  Measured resistance states that remain readable after years without power
+-                </p>
+-              </div>
+-              <div className="p-4 bg-background/50 border border-border/50 rounded-lg">
+-                <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-2">
+-                  ENDURANCE
+-                </p>
+-                <p className="font-sans text-sm text-foreground/90">
+-                  Resistance cycling durability across temperature and voltage corners
+-                </p>
+-              </div>
+-            </div>
+-          </article>
+-
+-          {/* Track 2 – On-Die Controller */}
+-          <article className="tech-panel-elevated p-8 rounded-xl border border-border/50">
+-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+-              <div>
+-                <h2 className="font-display font-bold text-foreground mb-2">
+-                  ON-DIE CONTROLLER & RESCUE LOGIC
+-                </h2>
+-                <span className="font-mono text-xs tracking-wider uppercase text-primary/70 bg-primary/10 px-3 py-1 rounded-full">
+-                  Power-Loss Sequencing
+-                </span>
+-              </div>
+-            </div>
+-
+-            <p className="text-muted-foreground leading-relaxed mb-6">
+-              The controller is the night watchman built into the chip. The instant it
+-              detects falling supply voltage, it draws on a small on-chip energy reserve
+-              and runs the rescue cycle — photographing every capacitor&apos;s volatile charge
+-              pattern into its paired memristor before power disappears. On return, it
+-              develops those photographs back. The controller lives on the same die as the
+-              memory array so it can react locally, without waiting for any external signal.
+-            </p>
+-
+-            <div className="p-4 bg-background/50 border border-border/50 rounded-lg mb-4">
+-              <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-3">
+-                RESCUE CYCLE PHASES
+-              </p>
+-              <div className="flex flex-wrap gap-2">
+-                {["Freeze", "Translate", "Verify", "Commit", "Power down"].map((phase, i) => (
+-                  <div key={phase} className="flex items-center gap-2">
+-                    <span className="font-mono text-xs text-primary/70">{i + 1}</span>
+-                    <span className="font-sans text-sm text-foreground/90">{phase}</span>
+-                    {i < 4 && <span className="text-muted-foreground/40">→</span>}
+-                  </div>
+-                ))}
+-              </div>
+-            </div>
+-
+-            <p className="text-sm text-muted-foreground/80 leading-relaxed">
+-              Research focus: measuring exactly how much reserve energy and time a full-capacity
+-              backup requires at the worst-case temperature and voltage, and designing the commit
+-              marker that tells the next boot which snapshot is safe to restore.
+-            </p>
+-          </article>
+-
+-          {/* Track 3 – Error Correction & Yield */}
+-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+-            <article className="tech-panel-elevated p-8 rounded-xl border border-border/50">
+-              <div className="mb-6">
+-                <h2 className="font-display font-bold text-foreground mb-2">
+-                  ERROR CORRECTION
+-                </h2>
+-                <span className="font-mono text-xs tracking-wider uppercase text-primary/70 bg-primary/10 px-3 py-1 rounded-full">
+-                  Data Integrity
+-                </span>
+-              </div>
+-
+-              <p className="text-muted-foreground leading-relaxed mb-6">
+-                The verify phase of the rescue cycle checks rows and error-correction
+-                information before declaring a snapshot complete. If power disappears
+-                mid-backup, the design recovers the previous completed snapshot rather
+-                than presenting a torn, partially written image as valid.
+-              </p>
+-
+-              <div className="p-4 bg-background/50 border border-border/50 rounded-lg">
+-                <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-2">
+-                  OPEN RESEARCH QUESTIONS
+-                </p>
+-                <ul className="space-y-2 text-sm text-foreground/80">
+-                  <li>How does the design recover when backup stops halfway?</li>
+-                  <li>What is the exact durability rule for an application Save?</li>
+-                </ul>
+-              </div>
+-            </article>
+-
+-            <article className="tech-panel-elevated p-8 rounded-xl border border-border/50">
+-              <div className="mb-6">
+-                <h2 className="font-display font-bold text-foreground mb-2">
+-                  SOFTWARE & OS INTEGRATION
+-                </h2>
+-                <span className="font-mono text-xs tracking-wider uppercase text-primary/70 bg-primary/10 px-3 py-1 rounded-full">
+-                  Unified Memory Pool
+-                </span>
+-              </div>
+-
+-              <p className="text-muted-foreground leading-relaxed mb-6">
+-                A unified memory-and-storage pool is not created by the cell alone.
+-                The operating system, file system, permissions, crash-recovery rules,
+-                and durability semantics must all understand the architecture. We are
+-                studying what software changes expose one safe pool for both files
+-                and working memory.
+-              </p>
+-
+-              <div className="p-4 bg-background/50 border border-border/50 rounded-lg">
+-                <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-2">
+-                  SCOPE
+-                </p>
+-                <p className="font-sans text-sm text-foreground/90">
+-                  OS interface design, durability command semantics, secure-erase policy
+-                  for deleted bytes, and integrated GPU pool sharing.
+-                </p>
+-              </div>
+-            </article>
+-          </div>
+-        </section>
+-
+-        {/* Status Note */}
+-        <section className="border-t border-border/50 pt-12">
+-          <div className="max-w-3xl mx-auto p-8 bg-background/50 border border-border/50 rounded-xl">
+-            <h2 className="font-display font-bold text-foreground mb-4">
+-              WHERE WE STAND
+-            </h2>
+-            <p className="text-muted-foreground leading-relaxed mb-4">
+-              The UM002B is a pre-silicon architecture. The operating concept — separate
+-              DRAM and non-volatile access paths, an on-die backup/restore controller,
+-              protected snapshot metadata, and power-fail sequencing — is designed and
+-              modeled. Device and circuit models explore programming, leakage, thermal
+-              effects, and controller operation.
+-            </p>
+-            <p className="text-muted-foreground leading-relaxed">
+-              Product-level promises — measured retention, endurance, full-capacity backup
+-              energy and time, restore time, yield, and real software performance — remain
+-              to be proven on silicon. That is exactly what this research program exists to do.
+-            </p>
+-          </div>
+-        </section>
+-
+-        {/* Call to Action */}
+-        <section className="text-center py-16">
+-          <Link
+-            href="/technology"
+-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+-          >
+-            VIEW THE TECHNOLOGY
+-            <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+-                <path d="M5 12h14M12 5l7 7-7 7" />
+-              </svg>
+-            </span>
+-          </Link>
+-        </section>
+-      </div>
+-    </SecondaryLayout>
+-  );
+-}
+diff --git a/src/app/roadmap/page.tsx b/src/app/roadmap/page.tsx
+new file mode 100644
+index 0000000..483545d
+--- /dev/null
++++ b/src/app/roadmap/page.tsx
+@@ -0,0 +1,301 @@
++import { SecondaryLayout } from "@/components/layout/SecondaryLayout";
++import Link from "next/link";
++
++const PHASES = [
++  {
++    n: "01",
++    title: "PDK HARDENING",
++    subtitle: "The design becomes fab-real",
++    timeline: "Typically 6–12 months · industry range, not a commitment",
++    points: [
++      "Install the foundry's Process Design Kit under NDA: silicon-calibrated transistor models, real design rules, real metal-stack data.",
++      "Re-draw the 2T1C1M cell and array to the real rules — DRC/LVS-clean, a layout the fab would accept.",
++      "Re-simulate everything at all corners (−40 / 25 / 85 °C × slow / typical / fast silicon) with calibrated models.",
++      "Close what good design can close: stronger cold-corner drivers, disturb-aware biasing, wider power straps, finalized pitch.",
++    ],
++    derisks: "Does this design hold up on a real factory's process, or only in our own models? After this phase, every circuit number is anchored to measured foundry data.",
++    money: "Engineering salaries and compute. PDK access is typically granted under NDA with modest or no license fee — the most capital-efficient phase.",
++  },
++  {
++    n: "02",
++    title: "JDA DEVICE DEVELOPMENT",
++    subtitle: "The memristor becomes real",
++    timeline: "Typically 12–24 months incl. multiple wafer spins · industry range, not a commitment",
++    points: [
++      "Negotiate a Joint Development Agreement with the foundry: device targets agreed in hard numbers (switching speed in the cold, disturb immunity at heat, retention).",
++      "First JDA test chip — small test arrays carrying hafnium-oxide stack variants: oxide thickness, electrode materials, anneals.",
++      "Measure real devices, extract the real Verilog-A device model. From here, simulation runs on measured parameters.",
++      "Iterate — a second, sometimes third wafer spin — until the stack hits every target, then freeze it as a characterized device.",
++    ],
++    derisks: "The device physics itself — the one thing no amount of clever circuit design can change. This is also where defensible IP is created: a characterized, foundry-proven custom device.",
++    money: "Negotiated JDA development fees and test-chip wafer spins. Each spin is a real manufacturing run — spins are the cost driver of this phase.",
++  },
++  {
++    n: "03",
++    title: "FULL-CHIP BUILD",
++    subtitle: "Everything becomes one chip",
++    timeline: "Typically 9–18 months plus foundry queue time · industry range, not a commitment",
++    points: [
++      "Full chip design with real models: memory array, on-die controller (power-fail detection, SAVE/RESTORE sequencing, ECC), IO ring, power grid.",
++      "Sign-off verification with the foundry's own check decks: timing, power, reliability across all corners.",
++      "Tapeout — first silicon on an MPW (multi-project wafer) shuttle, splitting mask costs across many projects.",
++    ],
++    derisks: "Integration — do all the pieces work together as one chip? Tapeout is the point of no return where the design becomes a physical object.",
++    money: "The engineering team at full size, plus the MPW slot. Sharing the wafer keeps first silicon affordable; a full dedicated mask set waits for the volume ramp.",
++  },
++  {
++    n: "04",
++    title: "SILICON VALIDATION",
++    subtitle: "Claims become measurements",
++    timeline: "Typically 6–18 months incl. possible re-spin · industry range, not a commitment",
++    points: [
++      "Lab bring-up: packaged chips return; SAVE/RESTORE verified on real silicon; cold RESET timing, 85 °C disturb, and retention measured — mapped explicitly to the three open issues.",
++      "Fix what the silicon teaches us. Nearly every first chip needs a re-spin; it is budgeted and expected, not a failure.",
++      "Formal reliability qualification to industry standards. Only after this step can retention or temperature claims be made honestly.",
++    ],
++    derisks: "Everything. This is where “it works” stops being a simulation result and becomes a measured fact on real parts — the basis for customer sampling and every future claim.",
++    money: "Lab and test time, qualification lab fees, and — if the re-spin is needed — its mask and wafer costs.",
++  },
++];
++
++const OPEN_ISSUES = [
++  {
++    title: "COLD-CORNER RESET MISSES ITS TARGET",
++    what: "RESET means breaking the conductive filament inside the memristor. At −40 °C atoms barely move, so the filament breaks slowly. Our requirement is RESET within 30 ns with margin; the modeled design misses it in the cold.",
++    how: "Real ngspice simulation with a physics-based Verilog-A model — it genuinely ran and genuinely failed, even at maximum 3.3 V drive. Honest label: real simulation, assumed device parameters.",
++    unlocks: "Two knobs: higher program voltage (needs an on-chip charge pump — a real area and power cost), or a JDA-tuned device with higher temperature sensitivity (α ≈ 0.40 eV/V, a target).",
++  },
++  {
++    title: "SHARED-BITLINE DISTURB FAILS AT 85 °C",
++    what: "Cells share wires. Writing one cell shouts electrically down the shared wire; heat makes filaments easier to nudge, so at 85 °C a neighbor can hear the muffled shout enough to disturb its stored state.",
++    how: "Analytical stress analysis: passes cold, marginal at room temperature, fails hot. Honest label: modeled finding, assumption-driven — the threshold-vs-temperature slide is the key analytical assumption.",
++    unlocks: "Design half: disturb-aware biasing schemes and bitline segmentation (PDK work). Device half: a more temperature-stable stack — JDA wafers again.",
++  },
++  {
++    title: "FAR-ROW IR DROP EATS THE MARGIN",
++    what: "Wires resist current, so voltage fades along the wire — like water pressure at the far end of a long hose. Our budget allows 75 mV of loss; far rows compute at 80–98 mV. The chip still functions, but the safety cushion is gone.",
++    how: "Straight V=IR arithmetic: current from simulation, wire resistance from assumed metal data. Honest label: exact math, assumed material inputs — the metal's true resistance arrives only with a PDK.",
++    unlocks: "Pure PDK design work: wider power straps and finalized pitch against real metal data. No device change needed.",
++  },
++];
++
++const QUESTIONS = [
++  "How much reserve energy is needed for the intended capacity at the worst temperature and voltage?",
++  "What is the exact durability rule for an application Save, not just for power failure?",
++  "How does the design recover when backup stops halfway through?",
++  "How long do measured resistance states remain readable after years without power?",
++  "What software changes are required to expose one safe pool for both files and working memory?",
++];
++
++const EVIDENCE_LABELS = [
++  { label: "MEASURED", desc: "Taken from real silicon or real hardware in our lab. Nothing in this program carries this label yet." },
++  { label: "MODELED", desc: "Produced by real simulation or analysis that genuinely ran, using physics-based models." },
++  { label: "ASSUMED", desc: "An analytical parameter chosen by engineering judgment, not measured. Models are only as true as their assumptions." },
++  { label: "TARGET", desc: "A requirement the design must hit (e.g. RESET within 30 ns). A promise about the future, not a fact about the present." },
++  { label: "REQUIRES-FAB", desc: "Can only be resolved with foundry access, wafers, or silicon." },
++];
++
++export default function RoadmapPage() {
++  return (
++    <SecondaryLayout>
++      <div className="space-y-20">
++        {/* Hero */}
++        <section className="text-center py-16">
++          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8">
++            <span className="w-2 h-2 rounded-full bg-primary" />
++            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
++              FORWARD-LOOKING PLAN — NOT A STATUS REPORT
++            </span>
++          </div>
++          <h1 className="font-display font-bold text-5xl md:text-6xl tracking-tight mb-6">
++            FROM PDK &amp; JDA<br />TO SILICON
++          </h1>
++          <p className="font-sans text-lg max-w-2xl mx-auto text-muted-foreground leading-relaxed">
++            How a fabless memory startup turns a proven-in-simulation design into a
++            proven-in-silicon product — and what the funding builds, phase by phase.
++          </p>
++        </section>
++
++        {/* What the funding builds */}
++        <section className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10">
++          <p className="font-mono text-xs tracking-widest uppercase text-primary mb-3">
++            WHAT THE FUNDING BUILDS
++          </p>
++          <p className="text-foreground/90 text-lg leading-relaxed max-w-3xl">
++            The PDK makes the design fab-real, the JDA makes the device fab-real, the
++            MPW makes it silicon, and testing makes the claims proof. Phase by phase,
++            capital converts directly into de-risked milestones: Phase 1 buys a
++            manufacturable design; Phase 2 buys a characterized custom device and
++            defensible IP; Phase 3 buys first silicon; Phase 4 buys proof. The software
++            track buys the product experience in parallel. We are a fabless company:
++            our capital goes into design, device development, and proof — never into
++            concrete and cleanrooms.
++          </p>
++        </section>
++
++        {/* Phases */}
++        <section className="space-y-8">
++          <h2 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            THE FOUR PHASES
++          </h2>
++          {PHASES.map((phase) => (
++            <article key={phase.n} className="tech-panel-elevated p-8 rounded-xl">
++              <div className="flex items-start gap-6 mb-6">
++                <div className="font-display font-bold text-primary shrink-0" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
++                  {phase.n}
++                </div>
++                <div>
++                  <h3 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
++                    {phase.title}
++                  </h3>
++                  <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground mt-1">
++                    {phase.subtitle}
++                  </p>
++                  <p className="font-mono text-xs text-muted-foreground/70 mt-2">
++                    {phase.timeline}
++                  </p>
++                </div>
++              </div>
++              <ul className="space-y-3 mb-6">
++                {phase.points.map((pt, i) => (
++                  <li key={i} className="flex items-start gap-3 text-foreground/85 leading-relaxed">
++                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0 mt-2" />
++                    <span>{pt}</span>
++                  </li>
++                ))}
++              </ul>
++              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
++                <div className="p-4 rounded-lg bg-background/50 border border-border/50">
++                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">WHAT IT DE-RISKS</p>
++                  <p className="text-sm text-foreground/80 leading-relaxed">{phase.derisks}</p>
++                </div>
++                <div className="p-4 rounded-lg bg-background/50 border border-border/50">
++                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">WHERE THE MONEY GOES</p>
++                  <p className="text-sm text-foreground/80 leading-relaxed">{phase.money}</p>
++                </div>
++              </div>
++            </article>
++          ))}
++
++          {/* Software track */}
++          <article className="p-8 rounded-xl border border-primary/20 bg-primary/5">
++            <h3 className="font-display font-bold text-foreground mb-2" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
++              THE PARALLEL TRACK — SOFTWARE
++            </h3>
++            <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-4">
++              RUNS THROUGHOUT · NEEDS NO SILICON
++            </p>
++            <p className="text-foreground/85 leading-relaxed max-w-3xl">
++              The hardware proves the bits survive; the software proves the experience:
++              OS support for persistent memory and the smart shutdown/resume layer that
++              turns “the data is intact” into “the machine picks up exactly where it
++              left off.” Built on emulators and FPGA prototypes in parallel with the
++              hardware phases — ready to exercise real silicon the week it arrives,
++              not starting when it arrives.
++            </p>
++          </article>
++        </section>
++
++        {/* What we want you to know */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-8" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            WHAT WE WANT YOU TO KNOW
++          </h2>
++          <div className="space-y-4">
++            {[
++              "A JDA is R&D, not a purchase order. Multiple wafer spins are normal; success is earned across iterations, not bought in one.",
++              "First silicon almost always needs a re-spin. We budget for it; the industry expects it.",
++              "No foundry partnership exists yet. This page is the plan, not a status report — PDK access and the JDA are milestones this funding enables.",
++              "All timelines are typical industry ranges, not commitments. They move with team size, foundry queues, and what the silicon tells us.",
++              "No performance, retention, or temperature claims are made here as achieved facts. This roadmap exists precisely so that every future claim is earned — on measured silicon, or not at all.",
++            ].map((item, i) => (
++              <div key={i} className="flex items-start gap-4 p-5 rounded-lg bg-background/50 border border-border/50">
++                <span className="font-mono text-sm text-primary shrink-0 mt-0.5">{String(i + 1).padStart(2, "0")}</span>
++                <p className="text-foreground/85 leading-relaxed">{item}</p>
++              </div>
++            ))}
++          </div>
++        </section>
++
++        {/* Open device issues */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-4" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            OPEN DEVICE ISSUES
++          </h2>
++          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-10">
++            Our own simulation and analysis program surfaced three device-level issues —
++            found by simulation, not by silicon, which is the cheapest possible place to
++            find them. Each is stated with an honest account of how we know it.
++          </p>
++          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
++            {OPEN_ISSUES.map((issue, i) => (
++              <article key={i} className="tech-panel-elevated p-8 rounded-xl">
++                <h3 className="font-display font-bold text-foreground mb-4" style={{ fontSize: "clamp(1.1rem, 2vw, 1.35rem)" }}>
++                  {issue.title}
++                </h3>
++                <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">WHAT IT IS</p>
++                <p className="text-sm text-foreground/80 leading-relaxed mb-5">{issue.what}</p>
++                <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">HOW WE KNOW</p>
++                <p className="text-sm text-foreground/80 leading-relaxed mb-5">{issue.how}</p>
++                <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">WHAT UNLOCKS IT</p>
++                <p className="text-sm text-foreground/80 leading-relaxed">{issue.unlocks}</p>
++              </article>
++            ))}
++          </div>
++        </section>
++
++        {/* Five questions */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-4" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            FIVE QUESTIONS A CAREFUL READER SHOULD ASK
++          </h2>
++          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-10">
++            We answer the diligence questions before they are asked.
++          </p>
++          <div className="space-y-3">
++            {QUESTIONS.map((q, i) => (
++              <div key={i} className="flex items-start gap-4 p-5 rounded-lg bg-background/50 border border-border/50">
++                <span className="font-mono text-sm text-primary shrink-0 mt-0.5">Q{i + 1}</span>
++                <p className="text-foreground/85 leading-relaxed">{q}</p>
++              </div>
++            ))}
++          </div>
++        </section>
++
++        {/* Evidence labels */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-4" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            HOW WE LABEL EVERY CLAIM
++          </h2>
++          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-10">
++            Honesty needs a vocabulary. Every technical statement we make carries one
++            of five labels.
++          </p>
++          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
++            {EVIDENCE_LABELS.map((e, i) => (
++              <div key={i} className="p-6 rounded-xl bg-background/50 border border-border/50">
++                <p className="font-mono text-sm tracking-widest uppercase text-primary mb-2">{e.label}</p>
++                <p className="text-sm text-foreground/80 leading-relaxed">{e.desc}</p>
++              </div>
++            ))}
++          </div>
++        </section>
++
++        {/* CTA */}
++        <section className="text-center py-16">
++          <Link
++            href="/contact"
++            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
++          >
++            TALK TO US
++            <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
++              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
++                <path d="M5 12h14M12 5l7 7-7 7" />
++              </svg>
++            </span>
++          </Link>
++        </section>
++      </div>
++    </SecondaryLayout>
++  );
++}
+diff --git a/src/app/technology/page.tsx b/src/app/technology/page.tsx
+index 0b7e824..fedb252 100644
+--- a/src/app/technology/page.tsx
++++ b/src/app/technology/page.tsx
+@@ -1,103 +1,250 @@
+ import { SecondaryLayout } from "@/components/layout/SecondaryLayout";
+ import Link from "next/link";
+ 
++const MODES = [
++  {
++    name: "NORMAL",
++    tag: "EVERYDAY OPERATION",
++    desc: "The chip is simply a DRAM. Host reads and writes flow through T_DRAM to the capacitor at DRAM speed (~2.8 ns access, modeled). Refresh runs in the background exactly as in conventional DRAM. The memristor in each cell sits idle — programmed once during the last RESTORE, untouched since.",
++  },
++  {
++    name: "SAVE",
++    tag: "POWER-FAIL BACKUP",
++    desc: "When the controller detects main power failing, it switches the array into SAVE. Row by row, each cell's capacitor charge is sensed and translated into the matching resistance state in its memristor. Powered not by the dying main supply but by on-board reserve capacitors — no host involvement, no software, no bus traffic.",
++  },
++  {
++    name: "OFF",
++    tag: "ZERO-STANDBY RETENTION",
++    desc: "With SAVE complete and main power gone, the chip is OFF. No refresh, no clocks — the capacitors' charge decays irrelevantly. The array's state persists purely as the physical resistance of millions of HfO filaments. Standby energy consumption is zero.",
++  },
++  {
++    name: "RESTORE",
++    tag: "POWER-UP RECOVERY",
++    desc: "When main power returns, the controller enters RESTORE before the host may touch the array. Each memristor's resistance is sensed with a small, non-disturbing voltage and the corresponding charge is written back into its capacitor. ECC verifies the recovered data. The array returns to full-speed DRAM operation.",
++  },
++];
++
++const GLOSSARY = [
++  { term: "2T1C1M", def: "The UM002B cell structure: two transistors, one capacitor, one memristor per bit." },
++  { term: "T_DRAM", def: "Thin-oxide access transistor serving the capacitor on the volatile (DRAM) path. Small, fast, core-voltage operation." },
++  { term: "T_NVM", def: "Thick-oxide access transistor (~7 nm modeled oxide) serving the memristor. Tolerates the higher voltages of memristor programming." },
++  { term: "HFO MEMRISTOR", def: "A metal–insulator–metal device whose hafnium-oxide film holds data as the resistance of a conductive filament of oxygen vacancies." },
++  { term: "SET / RESET", def: "The two memristor programming operations: driving the filament into the low-resistance and high-resistance states." },
++  { term: "RESERVE CAPACITORS", def: "On-board energy storage that powers the SAVE sequence after main power fails." },
++  { term: "NVDIMM-N", def: "An industry module category combining DRAM with a nonvolatile shadow and power-fail backup — the closest established reference for the UM002B's system behavior." },
++];
++
+ export default function TechnologyPage() {
+   return (
+     <SecondaryLayout>
+       <div className="space-y-20">
+         {/* Hero */}
+         <section className="text-center py-16">
++          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8">
++            <span className="w-2 h-2 rounded-full bg-primary" />
++            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
++              PRE-SILICON ARCHITECTURE · SEPTEMBER 2026
++            </span>
++          </div>
+           <h1 className="font-display font-bold text-5xl md:text-6xl tracking-tight mb-6">
+             TECHNOLOGY
+           </h1>
+           <p className="font-sans text-lg max-w-2xl mx-auto text-muted-foreground leading-relaxed">
+-            The UM002B universal-memory chip, a single memory pool that acts as
+-            both the computer's fast working space and its permanent keeper of files.
++            The UM002B universal-memory chip: a single pool of memory that acts as
++            both the computer&apos;s fast working space and its permanent keeper of files.
++          </p>
++        </section>
++
++        {/* The cell */}
++        <section>
++          <h2 className="font-display font-bold text-foreground mb-8" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            THE 2T1C1M CELL
++          </h2>
++          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-10">
++            Every bit in the array lives in one cell: two transistors, one capacitor,
++            one hafnium-oxide memristor. The cell carries both sides of the
++            universal-memory duality — the two paths are electrically isolated, and
++            only one is active at a time.
+           </p>
++          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
++            {[
++              {
++                tag: "2T · T_DRAM",
++                title: "THIN-OXIDE TRANSISTOR",
++                desc: "Gatekeeper of the volatile path. Thin gate oxide means a smaller, faster device at the low core voltage — everything about it is optimized for speed.",
++              },
++              {
++                tag: "1C",
++                title: "CAPACITOR",
++                desc: "The working storage element. Holds data as electrical charge — the “working copy” of the bit. Fast (~2.8 ns access, modeled), but charge leaks: it needs refresh and dies with power.",
++              },
++              {
++                tag: "2T · T_NVM",
++                title: "THICK-OXIDE TRANSISTOR",
++                desc: "Gatekeeper of the nonvolatile path. Thick oxide (~7 nm modeled) tolerates the substantially higher voltages needed to program the memristor, repeatedly.",
++              },
++              {
++                tag: "1M",
++                title: "HFO MEMRISTOR",
++                desc: "The shadow storage element. Holds data as resistance — a filament of oxygen vacancies formed or ruptured in the oxide. Needs no power, but is slower to write, so it stays off the daily critical path.",
++              },
++            ].map((el, i) => (
++              <article key={i} className="tech-panel-elevated p-8 rounded-xl">
++                <p className="font-mono text-xs tracking-widest uppercase text-primary mb-3">{el.tag}</p>
++                <h3 className="font-display font-bold text-foreground mb-3">{el.title}</h3>
++                <p className="text-sm text-foreground/80 leading-relaxed">{el.desc}</p>
++              </article>
++            ))}
++          </div>
++          <div className="mt-8 p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10">
++            <p className="font-mono text-xs tracking-widest uppercase text-primary mb-2">
++              THE DIVISION OF LABOR
++            </p>
++            <p className="text-foreground/85 text-lg leading-relaxed max-w-3xl">
++              The capacitor does all normal operation; the memristor wakes only on power
++              events. Charge is the sprinter — blazingly fast, with no endurance.
++              Resistance is the marathoner — slower to change, but it holds its state
++              indefinitely with zero energy. The UM002B never asks either to do the
++              other&apos;s job.
++            </p>
++          </div>
+         </section>
+ 
+-        {/* Technology Areas Grid */}
+-        <section className="grid gap-12">
+-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+-            {/* 2T1C1M Cell */}
+-            <article className="tech-panel-elevated p-8 rounded-xl border border-border/50">
+-              <div className="flex items-start justify-between gap-4 mb-6">
+-                <div>
+-                  <h2 className="font-display font-bold text-foreground mb-2">
+-                    THE UM002B CELL
+-                  </h2>
+-                  <span className="font-mono text-xs tracking-wider uppercase text-primary/70 bg-primary/10 px-3 py-1 rounded-full">
+-                    2T1C1M Architecture
++        {/* Four modes */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-4" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            FOUR MODES
++          </h2>
++          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-10">
++            Transitions are driven by the power state and managed entirely by the
++            on-die controller — invisible to the host.
++          </p>
++          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
++            {MODES.map((mode, i) => (
++              <article key={i} className="tech-panel-elevated p-8 rounded-xl">
++                <div className="flex items-baseline justify-between gap-4 mb-4">
++                  <h3 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
++                    {mode.name}
++                  </h3>
++                  <span className="font-mono text-xs tracking-wider uppercase text-primary/70 bg-primary/10 px-3 py-1 rounded-full shrink-0">
++                    {mode.tag}
+                   </span>
+                 </div>
+-              </div>
+-
+-              <p className="text-muted-foreground leading-relaxed mb-6">
+-                Every memory cell pairs a tiny capacitor — fast and volatile — with a tiny
+-                hafnium-oxide memristor that remembers without power.
+-              </p>
++                <p className="text-foreground/80 leading-relaxed">{mode.desc}</p>
++              </article>
++            ))}
++          </div>
++          <div className="mt-8 p-6 rounded-xl bg-background/50 border border-border/50">
++            <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">THE SAVE SEQUENCE</p>
++            <p className="text-foreground/85 leading-relaxed">
++              Freeze → Translate → Verify → Commit → Power down. The controller stops
++              normal traffic, reads each capacitor&apos;s 0 or 1, programs the matching
++              memristor, checks rows and error-correction information, commits protected
++              metadata — and only then lets the machine go dark.
++            </p>
++          </div>
++        </section>
+ 
+-              <div className="space-y-4">
+-                <div className="grid grid-cols-2 gap-4">
+-                  <div className="p-4 bg-background/50 border border-border/50 rounded-lg">
+-                    <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-2">
+-                      CAPACITOR (RAM)
+-                    </p>
+-                    <p className="font-sans text-sm text-foreground/90">Fast, volatile charge</p>
+-                  </div>
+-                  <div className="p-4 bg-background/50 border border-border/50 rounded-lg">
+-                    <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-2">
+-                      MEMRISTOR (NVM)
+-                    </p>
+-                    <p className="font-sans text-sm text-foreground/90">Permanent resistance</p>
+-                  </div>
+-                </div>
++        {/* Controller */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-4" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            THE ON-DIE CONTROLLER
++          </h2>
++          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-10">
++            SAVE and RESTORE are orchestrated by a dedicated controller in the on-die
++            array periphery — the logic surrounding the memory array on the same
++            silicon die. Each die is self-sufficient: its own power-fail detection,
++            its own sequencing, its own reserve-energy budget. Its firmware lives in
++            on-chip ROM/OTP programmed at manufacture.
++          </p>
++          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
++            {[
++              { t: "POWER-FAIL DETECTION", d: "Continuously monitors the supply rails, distinguishes genuine power-fail events from voltage noise, quiesces host traffic, and launches SAVE." },
++              { t: "SAVE / RESTORE SEQUENCING", d: "Row-by-row timing: which wordlines fire, in what order, at what voltages — protecting the DRAM side while programming voltages reach the memristors." },
++              { t: "ERROR CORRECTION", d: "Encodes data with redundancy on SAVE and verifies/corrects it on RESTORE, so the recovered array matches the pre-power-fail state." },
++              { t: "RETAINED METADATA", d: "Array status, SAVE/RESTORE progress markers, and configuration in an on-die NVM register file — the controller resumes coherently across the power event it manages." },
++              { t: "TEST ACCESS", d: "Independent manufacturing and bring-up access to the DRAM and NVM paths, so each can be exercised, characterized, and validated on its own." },
++              { t: "HOST INTERFACE", d: "A standard DDR-style, NVDIMM-N-like interface. No CPU or GPU changes required — the processor issues ordinary memory reads and writes." },
++            ].map((c, i) => (
++              <div key={i} className="p-6 rounded-xl bg-background/50 border border-border/50">
++                <p className="font-mono text-xs tracking-widest uppercase text-primary mb-2">{c.t}</p>
++                <p className="text-sm text-foreground/80 leading-relaxed">{c.d}</p>
+               </div>
+-            </article>
++            ))}
++          </div>
++        </section>
+ 
+-            {/* Rescue Cycle */}
+-            <article className="tech-panel-elevated p-8 rounded-xl border border-border/50">
+-              <div className="flex items-start justify-between gap-4 mb-6">
+-                <div>
+-                  <h2 className="font-display font-bold text-foreground mb-2">
+-                    THE RESCUE CYCLE
+-                  </h2>
+-                  <span className="font-mono text-xs tracking-wider uppercase text-primary/70 bg-primary/10 px-3 py-1 rounded-full">
+-                    Power-Loss Sequence
+-                  </span>
+-                </div>
++        {/* What it feels like */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-8" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            WHAT IT FEELS LIKE
++          </h2>
++          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
++            {[
++              { t: "POWER ON", d: "Nothing to copy from slow storage — the working set is already in the array. Startup converges toward simply re-establishing processor and device state." },
++              { t: "POWER LOSS", d: "The machine does not crash in the conventional sense. From the user's perspective, power loss behaves like a pause: SAVE captures the complete working state, and everything stops." },
++              { t: "POWER RETURNS", d: "RESTORE reconstitutes the working state and the system continues. Open documents, running processes, in-memory data — everything that was in the pool is in the pool again. The machine resumes rather than reboots." },
++            ].map((f, i) => (
++              <div key={i} className="tech-panel-elevated p-8 rounded-xl">
++                <h3 className="font-mono text-sm tracking-widest uppercase text-primary mb-3">{f.t}</h3>
++                <p className="text-foreground/80 leading-relaxed">{f.d}</p>
+               </div>
++            ))}
++          </div>
++        </section>
+ 
+-              <p className="text-muted-foreground leading-relaxed mb-6">
+-                An on-die controller uses a small energy reserve to photograph the
+-                volatile DRAM state into the non-volatile memristor during power loss.
+-              </p>
++        {/* Evidence note */}
++        <section className="border-t border-border/50 pt-16">
++          <div className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10">
++            <p className="font-mono text-xs tracking-widest uppercase text-primary mb-3">
++              EVIDENCE STATUS
++            </p>
++            <p className="text-foreground/85 leading-relaxed max-w-3xl">
++              The UM002B is a pre-silicon architecture supported by analytical models,
++              simulation work, controller design, and prototype-scale planning. Performance
++              figures cited here (e.g. ~2.8 ns DRAM-path access) describe the modeled
++              design point. Statements about retention and operating conditions describe
++              architectural intent — not measured or qualified specifications.
++            </p>
++          </div>
++        </section>
+ 
+-              <div className="space-y-4">
+-                <div className="p-4 bg-background/50 border border-border/50 rounded-lg">
+-                  <p className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-2">
+-                    RESCUE PHASES
+-                  </p>
+-                  <p className="font-sans text-sm text-foreground/90">Freeze → Translate → Verify → Commit → Power down</p>
+-                </div>
++        {/* Glossary */}
++        <section className="border-t border-border/50 pt-16">
++          <h2 className="font-display font-bold text-foreground mb-8" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}>
++            GLOSSARY
++          </h2>
++          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
++            {GLOSSARY.map((g, i) => (
++              <div key={i} className="p-5 rounded-lg bg-background/50 border border-border/50">
++                <p className="font-mono text-xs tracking-widest uppercase text-primary mb-1">{g.term}</p>
++                <p className="text-sm text-foreground/80 leading-relaxed">{g.def}</p>
+               </div>
+-            </article>
++            ))}
+           </div>
+         </section>
+ 
+-        {/* Call to Action */}
++        {/* CTA */}
+         <section className="text-center py-16">
+-          <Link
+-            href="/"
+-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+-          >
+-            RETURN TO HOME
+-            <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+-                <path d="M5 12h14M12 5l7 7-7 7" />
+-              </svg>
+-            </span>
+-          </Link>
++          <div className="flex items-center justify-center gap-6 flex-wrap">
++            <Link
++              href="/roadmap"
++              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
++            >
++              HOW WE GET TO SILICON
++              <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
++                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
++                  <path d="M5 12h14M12 5l7 7-7 7" />
++                </svg>
++              </span>
++            </Link>
++            <Link
++              href="/about"
++              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:border-primary/50 hover:bg-accent"
++            >
++              ABOUT SAN-D
++            </Link>
++          </div>
+         </section>
+       </div>
+     </SecondaryLayout>
+diff --git a/src/components/layout/Navigation.tsx b/src/components/layout/Navigation.tsx
+index e88e70f..2d08660 100644
+--- a/src/components/layout/Navigation.tsx
++++ b/src/components/layout/Navigation.tsx
+@@ -6,8 +6,8 @@ import Link from "next/link";
+ const NAV_ITEMS = [
+   { href: "#home", label: "HOME" },
+   { href: "#technology", label: "TECHNOLOGY" },
+-  { href: "#about", label: "COMPANY" },
+-  { href: "#research", label: "RESEARCH" },
++  { href: "#company", label: "COMPANY" },
++  { href: "#roadmap", label: "ROADMAP" },
+   { href: "#contact", label: "CONTACT" },
+ ];
+ 
+diff --git a/src/components/layout/SecondaryHeader.tsx b/src/components/layout/SecondaryHeader.tsx
+index 0affe95..bba7924 100644
+--- a/src/components/layout/SecondaryHeader.tsx
++++ b/src/components/layout/SecondaryHeader.tsx
+@@ -12,7 +12,7 @@ export function SecondaryHeader() {
+         </Link>
+         <nav className="hidden md:flex items-center gap-6 text-mono text-xs tracking-widest uppercase">
+           <Link
+-            href="#"
++            href="/"
+             className="hover:text-foreground transition-colors"
+           >
+             HOME
+@@ -30,10 +30,10 @@ export function SecondaryHeader() {
+             ABOUT
+           </Link>
+           <Link
+-            href="/research"
++            href="/roadmap"
+             className="hover:text-foreground transition-colors"
+           >
+-            RESEARCH
++            ROADMAP
+           </Link>
+           <Link
+             href="/contact"
+diff --git a/src/components/sections/CompanySection.tsx b/src/components/sections/CompanySection.tsx
+index 4e953d0..a0319dd 100644
+--- a/src/components/sections/CompanySection.tsx
++++ b/src/components/sections/CompanySection.tsx
+@@ -36,7 +36,7 @@ export function CompanySection() {
+           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
+             <span className="w-2 h-2 rounded-full bg-primary" />
+             <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              SAN-D TECHNOLOGIES
++              SAN-D · FABLESS SEMICONDUCTOR
+             </span>
+           </div>
+ 
+@@ -45,92 +45,57 @@ export function CompanySection() {
+             className="font-display font-bold tracking-tight text-foreground mb-8"
+             style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
+           >
+-            WHERE PHYSICS MEETS
++            ONE MEMORY POOL.
+             <br />
+-            <span className="text-primary">COMPUTATION</span>
++            <span className="text-primary">FAST AND PERMANENT.</span>
+           </h2>
+ 
++          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-16">
++            Every computer has two memories: the desk (RAM) — fast, where you work,
++            wiped out by a power cut; and the filing cabinet (storage) — permanent but
++            slow. SAN-D merges them into one desk that never gets cleared: a single
++            pool of universal memory that is both fast and permanent.
++          </p>
++
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+             {[
+               {
+-                label: "MISSION",
+-                value: "Advance semiconductor technology through fundamental physics innovation",
+-                icon: "▸",
++                label: "MODEL",
++                value: "Fabless — we design the chip; foundries manufacture it. The NVIDIA model: architecture, cell, controller, and firmware are ours; wafer fabrication is outsourced.",
+               },
+               {
+-                label: "FOCUS",
+-                value: "Atomic-scale engineering for next-generation computing",
+-                icon: "▸",
++                label: "BUSINESS",
++                value: "Dual model: sell UM002B chips and license the cell IP. First market: consumer PCs, where one unified pool replaces the DRAM + SSD hierarchy.",
+               },
+               {
+-                label: "APPROACH",
+-                value: "First-principles design. Precision manufacturing. Measurable results.",
+-                icon: "▸",
++                label: "STATUS",
++                value: "Pre-silicon work is complete — simulation, device-physics analysis, GDSII layout, manufacturing-readiness review. Next: PDK access, a signed JDA, foundry engagement, first silicon.",
+               },
+             ].map((item, i) => (
+               <div key={i} className="tech-panel-elevated p-8 rounded-xl animate-fade-in animate-slide-up" style={{ animationDelay: `${i * 0.1}s` }}>
+-                <div className="flex items-start gap-4">
+-                  <span className="font-mono text-lg text-primary shrink-0 mt-1">{item.icon}</span>
+-                  <div>
+-                    <div className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-2">{item.label}</div>
+-                    <p className="text-foreground/90 leading-relaxed">{item.value}</p>
+-                  </div>
+-                </div>
++                <div className="font-mono text-xs tracking-widest uppercase text-primary mb-3">{item.label}</div>
++                <p className="text-foreground/90 leading-relaxed">{item.value}</p>
+               </div>
+             ))}
+           </div>
+ 
+-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+-            <div className="tech-panel-elevated p-8 rounded-xl">
+-              <h3 className="font-display font-bold text-foreground mb-6" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>
+-                TECHNOLOGY AREAS
+-              </h3>
+-              <div className="space-y-4">
+-                {[
+-                  "Advanced Logic & Compute Architectures",
+-                  "High-Density Memory Systems (SRAM, DRAM, MRAM)",
+-                  "Heterogeneous Integration & Chiplet Technology",
+-                  "Low-Power / Energy-Efficient Design",
+-                  "Interconnect & Signaling Innovation",
+-                  "Process Technology Co-Optimization (DTCO)",
+-                ].map((area, i) => (
+-                  <div key={i} className="flex items-center gap-4 p-4 rounded-lg bg-background/50 border border-border/50 transition-colors hover:border-primary/30">
+-                    <div className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
+-                    <span className="font-sans text-base text-foreground/90">{area}</span>
+-                  </div>
+-                ))}
+-              </div>
+-            </div>
+-
+-            <div className="tech-panel-elevated p-8 rounded-xl">
+-              <h3 className="font-display font-bold text-foreground mb-6" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>
+-                KEY METRICS
+-              </h3>
+-              <div className="grid grid-cols-2 gap-6">
+-                {[
+-                  { label: "PROCESS NODES", value: "3nm → 1.4nm", unit: "R&D" },
+-                  { label: "TRANSISTOR DENSITY", value: "> 200M", unit: "Tr/mm²" },
+-                  { label: "POWER EFFICIENCY", value: "40%+", unit: "Improvement" },
+-                  { label: "INTERCONNECT LAYERS", value: "15+", unit: "Metal Layers" },
+-                ].map((metric, i) => (
+-                  <div key={i} className="p-6 rounded-lg bg-background/50 border border-border/50">
+-                    <div className="font-display font-bold text-primary mb-1" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}>
+-                      {metric.value}
+-                    </div>
+-                    <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-1">{metric.label}</div>
+-                    <div className="font-sans text-sm text-muted-foreground/70">{metric.unit}</div>
+-                  </div>
+-                ))}
+-              </div>
+-            </div>
++          <div className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10 mb-16">
++            <p className="font-mono text-xs tracking-widest uppercase text-primary mb-2">
++              THE AIM
++            </p>
++            <p className="text-foreground/85 text-lg leading-relaxed max-w-3xl">
++              No boot wait — the PC wakes instantly, exactly as you left it. Never lose
++              unsaved work — a power cut becomes a pause, not a loss. One memory number —
++              not “8 GB RAM + 512 GB storage,” just one pool of universal memory.
++            </p>
+           </div>
+ 
+-          <div className="mt-16 flex items-center gap-6">
++          <div className="flex items-center gap-6 flex-wrap">
+             <Link
+-              href="#technology"
++              href="/about"
+               className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+             >
+-              EXPLORE TECHNOLOGY
++              ABOUT SAN-D
+               <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                   <path d="M5 12h14M12 5l7 7-7 7" />
+@@ -138,14 +103,14 @@ export function CompanySection() {
+               </span>
+             </Link>
+             <Link
+-              href="#contact"
++              href="/roadmap"
+               className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:border-primary/50 hover:bg-accent"
+             >
+-              CONTACT US
++              THE ROADMAP
+             </Link>
+           </div>
+         </div>
+       </div>
+     </section>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/sections/ContactSection.tsx b/src/components/sections/ContactSection.tsx
+index cac5ed5..e3d514a 100644
+--- a/src/components/sections/ContactSection.tsx
++++ b/src/components/sections/ContactSection.tsx
+@@ -50,8 +50,8 @@ export function ContactSection() {
+           </h2>
+ 
+           <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-16">
+-            We're always interested in collaborating with researchers, engineers,
+-            and organizations pushing the boundaries of semiconductor technology.
++            We&apos;re interested in hearing from investors, foundry partners,
++            engineers, and anyone working on the future of memory.
+           </p>
+ 
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl">
+@@ -62,60 +62,53 @@ export function ContactSection() {
+ 
+               <div className="space-y-4">
+                 {[
+-                  { label: "GENERAL INQUIRIES", value: "hello@san-d.tech", type: "email" },
+-                  { label: "TECHNICAL PARTNERSHIPS", value: "partnerships@san-d.tech", type: "email" },
+-                  { label: "RESEARCH COLLABORATIONS", value: "research@san-d.tech", type: "email" },
+-                  { label: "CAREERS", value: "careers@san-d.tech", type: "email" },
+-                  { label: "MEDIA / PRESS", value: "press@san-d.tech", type: "email" },
++                  { label: "GENERAL INQUIRIES", value: "To be announced" },
++                  { label: "INVESTORS", value: "To be announced" },
++                  { label: "FOUNDRY PARTNERSHIPS", value: "To be announced" },
++                  { label: "MEDIA / PRESS", value: "To be announced" },
+                 ].map((contact, i) => (
+-                  <a
++                  <div
+                     key={i}
+-                    href={`mailto:${contact.value}`}
+-                    className="flex items-center justify-between p-4 rounded-lg bg-background/50 border border-border/50 transition-all hover:border-primary/30 hover:bg-accent group"
++                    className="flex items-center justify-between gap-4 p-4 rounded-lg bg-background/50 border border-border/50"
+                   >
+                     <span className="font-mono text-xs tracking-wider uppercase text-muted-foreground">{contact.label}</span>
+-                    <span className="font-sans text-base text-foreground/90 group-hover:text-primary transition-colors">{contact.value}</span>
+-                  </a>
++                    <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/50 rounded-full px-2 py-1 shrink-0">
++                      PLACEHOLDER
++                    </span>
++                  </div>
+                 ))}
+               </div>
+             </div>
+ 
+             <div className="tech-panel-elevated p-8 rounded-xl space-y-6">
+               <h3 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
+-                LOCATIONS
++                LOCATION
+               </h3>
+ 
+               <div className="space-y-6">
+-                {[
+-                  {
+-                    name: "HEADQUARTERS",
+-                    address: "San Jose, California, USA",
+-                    detail: "Advanced R&D Center & Operations",
+-                  },
+-                  {
+-                    name: "EUROPE",
+-                    address: "Munich, Germany",
+-                    detail: "Design Center & University Partnerships",
+-                  },
+-                  {
+-                    name: "ASIA-PACIFIC",
+-                    address: "Hsinchu, Taiwan",
+-                    detail: "Process Integration & Manufacturing",
+-                  },
+-                ].map((loc, i) => (
+-                  <div key={i} className="p-6 rounded-lg bg-background/50 border border-border/50">
+-                    <div className="font-mono text-xs tracking-widest uppercase text-primary mb-2">{loc.name}</div>
+-                    <div className="font-sans text-lg text-foreground mb-1">{loc.address}</div>
+-                    <div className="text-muted-foreground text-sm">{loc.detail}</div>
++                <div className="p-6 rounded-lg bg-background/50 border border-border/50">
++                  <div className="flex items-start justify-between gap-4">
++                    <div>
++                      <div className="font-mono text-xs tracking-widest uppercase text-primary mb-2">HEADQUARTERS</div>
++                      <div className="font-sans text-lg text-muted-foreground/70 mb-1">To be announced</div>
++                    </div>
++                    <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/50 rounded-full px-2 py-1 shrink-0">
++                      PLACEHOLDER
++                    </span>
+                   </div>
+-                ))}
++                </div>
+               </div>
++              <p className="text-sm text-muted-foreground/70 leading-relaxed">
++                SAN-D is a fabless company: we design the chip, foundries manufacture
++                it. Design work is distributed; manufacturing happens at our future
++                foundry partner&apos;s fabs.
++              </p>
+             </div>
+           </div>
+ 
+           <div className="mt-16 pt-16 border-t border-border/50">
+             <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground text-center">
+-              © 2025 SAN-D Technologies. All rights reserved.
++              © 2026 SAN-D. All rights reserved.
+             </p>
+             <div className="mt-4 flex items-center justify-center gap-8 text-sm text-muted-foreground/70">
+               <a href="#privacy" className="hover:text-foreground transition-colors">Privacy Policy</a>
+@@ -127,4 +120,4 @@ export function ContactSection() {
+       </div>
+     </section>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/sections/ResearchSection.tsx b/src/components/sections/ResearchSection.tsx
+deleted file mode 100644
+index 55a3bee..0000000
+--- a/src/components/sections/ResearchSection.tsx
++++ /dev/null
+@@ -1,146 +0,0 @@
+-"use client";
+-
+-import { useEffect, useState } from "react";
+-
+-export function ResearchSection() {
+-  const [isVisible, setIsVisible] = useState(false);
+-
+-  useEffect(() => {
+-    const observer = new IntersectionObserver(
+-      ([entry]) => {
+-        if (entry.isIntersecting) {
+-          setIsVisible(true);
+-          observer.disconnect();
+-        }
+-      },
+-      { threshold: 0.1 }
+-    );
+-    const el = document.getElementById("research");
+-    if (el) observer.observe(el);
+-    return () => observer.disconnect();
+-  }, []);
+-
+-  const researchAreas = [
+-    {
+-      title: "QUANTUM-EFFECT DEVICES",
+-      description: "Exploring tunneling, quantization, and spin phenomena for beyond-CMOS switching mechanisms.",
+-      projects: [
+-        "Negative capacitance FETs (NCFET)",
+-        "Tunnel FETs (TFET) for sub-60mV/dec",
+-        "Spin-orbit torque (SOT) logic",
+-        "Topological insulator channels",
+-      ],
+-    },
+-    {
+-      title: "2D MATERIALS & CHANNEL ENGINEERING",
+-      description: "Atomically thin semiconductors enabling ultimate scaling and novel heterostructure devices.",
+-      projects: [
+-        "Monolayer TMDs (MoS₂, WS₂, WSe₂)",
+-        "hBN dielectrics for interface quality",
+-        "Vertical heterostructure transistors",
+-        "Strain-engineered band structures",
+-      ],
+-    },
+-    {
+-      title: "NEUROMORPHIC & IN-MEMORY COMPUTING",
+-      description: "Brain-inspired architectures and compute-in-memory for AI workloads at the edge and datacenter.",
+-      projects: [
+-        "Analog compute-in-SRAM/MRAM",
+-        "Spiking neural network accelerators",
+-        "Resistive RAM crossbar arrays",
+-        "Event-driven sensing interfaces",
+-      ],
+-    },
+-    {
+-      title: "CRYOGENIC & QUANTUM INTERFACE",
+-      description: "Control and readout electronics for quantum processors operating at millikelvin temperatures.",
+-      projects: [
+-        "Cryo-CMOS at 4K / 20mK",
+-        "Low-dissipation multiplexing",
+-        "Spin qubit control ASICs",
+-        "Superconducting-semiconductor interfaces",
+-      ],
+-    },
+-  ];
+-
+-  return (
+-    <section
+-      id="research"
+-      className="relative min-h-screen bg-background"
+-      aria-labelledby="research-title"
+-    >
+-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none" aria-hidden="true" />
+-
+-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+-        <div
+-          className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}
+-        >
+-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
+-            <span className="w-2 h-2 rounded-full bg-primary" />
+-            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              RESEARCH & INNOVATION
+-            </span>
+-          </div>
+-
+-          <h2
+-            id="research-title"
+-            className="font-display font-bold tracking-tight text-foreground mb-6"
+-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
+-          >
+-            RESEARCH
+-            <br />
+-            <span className="text-primary">FRONTIERS</span>
+-          </h2>
+-
+-          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-16">
+-            Fundamental research programs targeting the physical limits of computation.
+-            Collaborative partnerships with leading universities, national labs, and
+-            industry consortia.
+-          </p>
+-
+-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+-            {researchAreas.map((area, i) => (
+-              <article
+-                key={i}
+-                className="tech-panel-elevated p-8 rounded-xl animate-fade-in animate-slide-up"
+-                style={{ animationDelay: `${i * 0.1}s` }}
+-              >
+-                <h3 className="font-display font-bold text-foreground mb-4" style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}>
+-                  {area.title}
+-                </h3>
+-                <p className="text-muted-foreground leading-relaxed mb-6">{area.description}</p>
+-                <div className="space-y-2">
+-                  {area.projects.map((project, j) => (
+-                    <div key={j} className="flex items-center gap-3 text-sm text-foreground/70 p-3 rounded-lg bg-background/50 border border-border/50 transition-colors hover:border-primary/20">
+-                      <div className="w-1.5 h-1.5 rounded-full bg-primary/50 flex-shrink-0" />
+-                      <span className="font-mono text-xs">{project}</span>
+-                    </div>
+-                  ))}
+-                </div>
+-              </article>
+-            ))}
+-          </div>
+-
+-          <div className="mt-16">
+-            <h3 className="font-display font-bold text-foreground mb-8" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>
+-              PUBLICATIONS & COLLABORATIONS
+-            </h3>
+-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+-              {[
+-                { venue: "IEDM 2024", count: "12 papers", focus: "GAA, CFET, 2D materials" },
+-                { venue: "ISSCC 2024", count: "8 papers", focus: "Cryo-CMOS, Neuromorphic" },
+-                { venue: "VLSI 2024", count: "15 papers", focus: "Memory, Interconnect, DTCO" },
+-              ].map((pub, i) => (
+-                <div key={i} className="tech-panel-elevated p-6 rounded-xl animate-fade-in animate-slide-up" style={{ animationDelay: `${i * 0.1}s` }}>
+-                  <div className="font-mono text-xs tracking-widest uppercase text-primary mb-2">{pub.venue}</div>
+-                  <div className="font-display font-bold text-foreground mb-1" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}>{pub.count}</div>
+-                  <div className="text-muted-foreground text-sm">{pub.focus}</div>
+-                </div>
+-              ))}
+-            </div>
+-          </div>
+-        </div>
+-      </div>
+-    </section>
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/components/sections/RoadmapSection.tsx b/src/components/sections/RoadmapSection.tsx
+new file mode 100644
+index 0000000..0cc7357
+--- /dev/null
++++ b/src/components/sections/RoadmapSection.tsx
+@@ -0,0 +1,135 @@
++"use client";
++
++import { useEffect, useState } from "react";
++import Link from "next/link";
++
++const PHASES = [
++  {
++    n: "01",
++    title: "PDK HARDENING",
++    desc: "Re-baseline the design against the foundry's real models, rules, and metal stack. Every circuit number anchored to measured data.",
++  },
++  {
++    n: "02",
++    title: "JDA DEVICE DEVELOPMENT",
++    desc: "Co-develop the custom hafnium-oxide memristor on real wafers: test chips, measurement, iteration, stack freeze.",
++  },
++  {
++    n: "03",
++    title: "FULL-CHIP BUILD",
++    desc: "Integrate array, on-die controller, and frozen device model into a signed-off chip. Tapeout on an MPW shuttle.",
++  },
++  {
++    n: "04",
++    title: "SILICON VALIDATION",
++    desc: "Lab bring-up and characterization mapped to the open issues, then qualification. Claims become measurements.",
++  },
++];
++
++export function RoadmapSection() {
++  const [isVisible, setIsVisible] = useState(false);
++
++  useEffect(() => {
++    const observer = new IntersectionObserver(
++      ([entry]) => {
++        if (entry.isIntersecting) {
++          setIsVisible(true);
++          observer.disconnect();
++        }
++      },
++      { threshold: 0.1 }
++    );
++    const el = document.getElementById("roadmap");
++    if (el) observer.observe(el);
++    return () => observer.disconnect();
++  }, []);
++
++  return (
++    <section
++      id="roadmap"
++      className="relative min-h-screen bg-background"
++      aria-labelledby="roadmap-title"
++    >
++      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none" aria-hidden="true" />
++
++      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
++        <div
++          className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}
++        >
++          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
++            <span className="w-2 h-2 rounded-full bg-primary" />
++            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
++              FROM PDK &amp; JDA TO SILICON
++            </span>
++          </div>
++
++          <h2
++            id="roadmap-title"
++            className="font-display font-bold tracking-tight text-foreground mb-6"
++            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
++          >
++            WHAT THE FUNDING
++            <br />
++            <span className="text-primary">BUILDS</span>
++          </h2>
++
++          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-16">
++            A forward-looking plan, not a status report. The PDK makes the design
++            fab-real, the JDA makes the device fab-real, the MPW makes it silicon,
++            and testing makes the claims proof. Phase by phase, capital converts
++            directly into de-risked milestones.
++          </p>
++
++          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
++            {PHASES.map((phase, i) => (
++              <article
++                key={i}
++                className="tech-panel-elevated p-8 rounded-xl animate-fade-in animate-slide-up"
++                style={{ animationDelay: `${i * 0.1}s` }}
++              >
++                <div className="font-display font-bold text-primary mb-4" style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}>
++                  {phase.n}
++                </div>
++                <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-3">
++                  {phase.title}
++                </h3>
++                <p className="text-muted-foreground text-sm leading-relaxed">{phase.desc}</p>
++              </article>
++            ))}
++          </div>
++
++          <div className="mt-8 p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10">
++            <div className="flex items-center gap-4">
++              <div className="w-px h-12 bg-primary/30" aria-hidden="true" />
++              <div>
++                <p className="font-mono text-xs tracking-widest uppercase text-primary mb-1">
++                  HONEST BY DESIGN
++                </p>
++                <p className="text-foreground/80 max-w-3xl">
++                  No foundry partnership exists yet — PDK access and the JDA are milestones
++                  this funding enables. Every claim we make carries an evidence label:
++                  measured, modeled, assumed, target, or requires-fab. Nothing is labeled
++                  “measured” until it is.
++                </p>
++              </div>
++            </div>
++          </div>
++
++          <div className="mt-12">
++            <Link
++              href="/roadmap"
++              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
++            >
++              READ THE FULL ROADMAP
++              <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
++                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
++                  <path d="M5 12h14M12 5l7 7-7 7" />
++                </svg>
++              </span>
++            </Link>
++          </div>
++        </div>
++      </div>
++    </section>
++  );
++}
+diff --git a/src/components/sections/TechnologySection.tsx b/src/components/sections/TechnologySection.tsx
+index f95669d..8c059f5 100644
+--- a/src/components/sections/TechnologySection.tsx
++++ b/src/components/sections/TechnologySection.tsx
+@@ -1,6 +1,7 @@
+ "use client";
+ 
+ import { useEffect, useState } from "react";
++import Link from "next/link";
+ 
+ export function TechnologySection() {
+   const [isVisible, setIsVisible] = useState(false);
+@@ -20,30 +21,26 @@ export function TechnologySection() {
+     return () => observer.disconnect();
+   }, []);
+ 
+-  const techAreas = [
++  const elements = [
+     {
+-      title: "ADVANCED LOGIC",
+-      description: "Next-generation compute architectures pushing performance-per-watt boundaries through novel device structures and circuit topologies.",
+-      specs: ["Gate-all-around (GAA) FETs", "CFET stacking", "Sub-10nm gate lengths", "Backside power delivery"],
+-      status: "R&D / Early Silicon",
++      tag: "T_DRAM + 1C",
++      title: "THE VOLATILE PATH",
++      description: "Thin-oxide transistor + capacitor: the working memory. DRAM-class speed (~2.8 ns access, modeled); stored as charge, so it needs refresh and dies with power.",
+     },
+     {
+-      title: "MEMORY SYSTEMS",
+-      description: "High-density, low-latency memory hierarchies from on-chip SRAM to stacked HBM, enabling data-intensive workloads.",
+-      specs: ["6T/8T/10T SRAM bitcells", "MRAM / ReRAM integration", "HBM3E / HBM4 stacks", "Compute-in-memory arrays"],
+-      status: "Volume Production",
++      tag: "T_NVM + 1M",
++      title: "THE NONVOLATILE SHADOW",
++      description: "Thick-oxide transistor + hafnium-oxide memristor: the shadow. Stores data as resistance — a filament formed or broken in the oxide. Needs no power, but stays off the daily critical path.",
+     },
+     {
+-      title: "HETEROGENEOUS INTEGRATION",
+-      description: "Chiplet-based architectures with advanced packaging enabling disaggregated, scalable system designs.",
+-      specs: ["2.5D / 3D hybrid bonding", "UCIe / BoW interconnects", "Glass / organic substrates", "Known-good-die (KGD) flows"],
+-      status: "Qualification",
++      tag: "ON-DIE",
++      title: "THE CONTROLLER",
++      description: "Power-fail detection, SAVE/RESTORE sequencing, and ECC — in the array periphery of the same die. Each die is self-sufficient; no host involvement, no software, no bus traffic.",
+     },
+     {
+-      title: "INTERCONNECT & SIGNALING",
+-      description: "High-speed, energy-efficient signaling from on-die networks to chip-to-chip and chip-to-optical interfaces.",
+-      specs: ["112G/224G SerDes", "Co-packaged optics (CPO)", "Low-swing on-die signaling", "Photonic interconnects"],
+-      status: "Development",
++      tag: "DDR-STYLE",
++      title: "THE HOST VIEW",
++      description: "A standard NVDIMM-N-like memory interface. No CPU or GPU changes required — the processor issues ordinary memory reads and writes to one unified pool.",
+     },
+   ];
+ 
+@@ -62,7 +59,7 @@ export function TechnologySection() {
+           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
+             <span className="w-2 h-2 rounded-full bg-primary" />
+             <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              CORE TECHNOLOGY
++              THE UM002B CELL · 2T1C1M
+             </span>
+           </div>
+ 
+@@ -71,66 +68,65 @@ export function TechnologySection() {
+             className="font-display font-bold tracking-tight text-foreground mb-6"
+             style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
+           >
+-            TECHNOLOGY
++            TWO TRANSISTORS.
+             <br />
+-            <span className="text-primary">PORTFOLIO</span>
++            <span className="text-primary">ONE UNIVERSAL BIT.</span>
+           </h2>
+ 
+           <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-16">
+-            Four interconnected technology pillars spanning device physics, circuit design,
+-            architecture, and advanced packaging — co-optimized for unprecedented
+-            performance, density, and efficiency.
++            Two transistors, one capacitor, one memristor per cell. The capacitor does
++            all normal operation at DRAM speed; the memristor wakes only on power
++            events. Four modes — NORMAL, SAVE, OFF, RESTORE — managed entirely by the
++            on-die controller.
+           </p>
+ 
+-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+-            {techAreas.map((area, i) => (
++          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
++            {elements.map((el, i) => (
+               <article
+                 key={i}
+                 className="tech-panel-elevated p-8 rounded-xl animate-fade-in animate-slide-up"
+                 style={{ animationDelay: `${i * 0.1}s` }}
+               >
+-                <div className="flex items-start justify-between gap-4 mb-6">
+-                  <div>
+-                    <h3 className="font-display font-bold text-foreground mb-2" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
+-                      {area.title}
+-                    </h3>
+-                    <span className="font-mono text-xs tracking-wider uppercase text-primary/70 bg-primary/10 px-3 py-1 rounded-full">
+-                      {area.status}
+-                    </span>
+-                  </div>
+-                </div>
+-
+-                <p className="text-muted-foreground leading-relaxed mb-6">{area.description}</p>
+-
+-                <div className="space-y-3">
+-                  {area.specs.map((spec, j) => (
+-                    <div key={j} className="flex items-center gap-3 text-sm text-foreground/80">
+-                      <div className="w-1.5 h-1.5 rounded-full bg-primary/50 flex-shrink-0" />
+-                      <span>{spec}</span>
+-                    </div>
+-                  ))}
+-                </div>
++                <p className="font-mono text-xs tracking-widest uppercase text-primary mb-3">
++                  {el.tag}
++                </p>
++                <h3 className="font-display font-bold text-foreground mb-3" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
++                  {el.title}
++                </h3>
++                <p className="text-muted-foreground leading-relaxed">{el.description}</p>
+               </article>
+             ))}
+           </div>
+ 
+-          <div className="mt-16 p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10">
++          <div className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10 mb-12">
+             <div className="flex items-center gap-4">
+               <div className="w-px h-12 bg-primary/30" aria-hidden="true" />
+               <div>
+                 <p className="font-mono text-xs tracking-widest uppercase text-primary mb-1">
+-                  CO-DESIGN METHODOLOGY
++                  EVIDENCE STATUS
+                 </p>
+                 <p className="text-foreground/80 max-w-3xl">
+-                  All technology areas are developed through a unified DTCO (Design-Technology
+-                  Co-Optimization) framework, ensuring device, circuit, architecture, and
+-                  packaging decisions are made holistically rather than in isolation.
++                  Pre-silicon architecture: analytical models, simulation, controller
++                  design, prototype-scale planning. Performance figures are the modeled
++                  design point — not measured or qualified specifications.
+                 </p>
+               </div>
+             </div>
+           </div>
++
++          <Link
++            href="/technology"
++            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
++          >
++            THE FULL ARCHITECTURE
++            <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
++              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
++                <path d="M5 12h14M12 5l7 7-7 7" />
++              </svg>
++            </span>
++          </Link>
+         </div>
+       </div>
+     </section>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/video/VideoBackground.tsx b/src/components/video/VideoBackground.tsx
+index 722b2f3..23dc5b7 100644
+--- a/src/components/video/VideoBackground.tsx
++++ b/src/components/video/VideoBackground.tsx
+@@ -1,7 +1,7 @@
+ "use client";
+ 
+ import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+-import { VIDEO_SEGMENTS, VideoSegment, getSegmentAtProgress, getScrollProgress, TOTAL_DURATION } from "@/lib/video-sequence";
++import { VIDEO_SEGMENTS, VideoSegment, getChapterTime } from "@/lib/video-sequence";
+ 
+ interface VideoBackgroundProps {
+   scrollHeight: number;
+@@ -39,7 +39,9 @@ export function VideoBackground({
+   const [readySegments, setReadySegments] = useState<Set<string>>(new Set());
+ 
+   const getVideoElement = useCallback((segment: VideoSegment): HTMLVideoElement => {
+-    let video = videoRefs.current.get(segment.id);
++    // All segments share one source file, so a single element is reused
++    // and seeking stays seamless across segment boundaries.
++    let video = videoRefs.current.get(segment.src);
+     if (!video) {
+       video = document.createElement("video");
+       video.src = segment.src;
+@@ -50,11 +52,11 @@ export function VideoBackground({
+       video.crossOrigin = "anonymous";
+       video.style.display = "none";
+       video.playsInline = true;
+-      videoRefs.current.set(segment.id, video);
++      videoRefs.current.set(segment.src, video);
+ 
+       video.onloadeddata = () => {
+-        setReadySegments((prev) => new Set(prev).add(segment.id));
+-        if (!isLoaded && segment.id === VIDEO_SEGMENTS[0].id) {
++        setReadySegments((prev) => new Set(prev).add(segment.src));
++        if (!isLoaded && segment.src === VIDEO_SEGMENTS[0].src) {
+           setIsLoaded(true);
+         }
+       };
+@@ -90,7 +92,7 @@ export function VideoBackground({
+     video.style.display = "block";
+ 
+     if (immediate || video.readyState >= 3) {
+-      video.currentTime = segment.duration * localProgress;
++      video.currentTime = getChapterTime(segment, localProgress);
+       const playPromise = video.play();
+       if (playPromise !== undefined) {
+         playPromise.catch(() => {
+@@ -99,7 +101,7 @@ export function VideoBackground({
+       }
+     } else {
+       video.oncanplay = () => {
+-        video.currentTime = segment.duration * localProgress;
++        video.currentTime = getChapterTime(segment, localProgress);
+         video.play().catch(() => {});
+         video.oncanplay = null;
+       };
+@@ -109,10 +111,10 @@ export function VideoBackground({
+   }, [ensureVideoReady, localProgress]);
+ 
+   const updateVideoTime = useCallback((segment: VideoSegment, progress: number, isSeeking = false) => {
+-    const video = videoRefs.current.get(segment.id);
++    const video = videoRefs.current.get(segment.src);
+     if (!video || video !== activeVideoRef.current) return;
+ 
+-    const targetTime = segment.duration * progress;
++    const targetTime = getChapterTime(segment, progress);
+     const diff = Math.abs(video.currentTime - targetTime);
+ 
+     if (isSeeking || diff > 0.1 || (velocity > 50 && diff > 0.05)) {
+@@ -199,7 +201,7 @@ export function VideoBackground({
+ 
+     if (currentIndex !== lastSegmentIndexRef.current) {
+       switchVideo(currentSegment, false);
+-    } else if (activeVideoRef.current === videoRefs.current.get(currentSegment.id)) {
++    } else if (activeVideoRef.current === videoRefs.current.get(currentSegment.src)) {
+       const progressDiff = Math.abs(globalProgress - lastGlobalProgressRef.current);
+       const isSeeking = progressDiff > 0.02 || velocity > 100;
+       updateVideoTime(currentSegment, localProgress, isSeeking);
+diff --git a/src/lib/video-sequence.ts b/src/lib/video-sequence.ts
+index 274c5e0..c008a24 100644
+--- a/src/lib/video-sequence.ts
++++ b/src/lib/video-sequence.ts
+@@ -2,98 +2,64 @@ export interface VideoSegment {
+   id: string;
+   src: string;
+   poster: string;
++  /** Length of this segment's scroll window, in seconds of scroll-mapped time. */
+   duration: number;
++  /** Start/end offsets (seconds) into the shared video file for this segment's chapter. */
++  clipStart: number;
++  clipEnd: number;
+   startScale: number;
+   endScale: number;
+   label: string;
+   scaleLabel: string;
+ }
+ 
+-export const VIDEO_SEGMENTS: VideoSegment[] = [
+-  {
+-    id: "atomic-scale",
+-    src: "/atomic-scale.mp4",
+-    poster: "/posters/atomic-scale.jpg",
+-    duration: 5,
+-    startScale: 1e-9,
+-    endScale: 1e-8,
+-    label: "ATOMIC SCALE",
+-    scaleLabel: "10⁻⁹ m",
+-  },
+-  {
+-    id: "transistor",
+-    src: "/atomic-scale.mp4",
+-    poster: "/posters/transistor.jpg",
+-    duration: 5,
+-    startScale: 1e-8,
+-    endScale: 1e-7,
+-    label: "TRANSISTOR",
+-    scaleLabel: "10⁻⁸ m",
+-  },
+-  {
+-    id: "transistor-group",
+-    src: "/atomic-scale.mp4",
+-    poster: "/posters/transistor-group.jpg",
+-    duration: 5,
+-    startScale: 1e-7,
+-    endScale: 1e-6,
+-    label: "TRANSISTOR GROUP",
+-    scaleLabel: "10⁻⁷ m",
+-  },
+-  {
+-    id: "logic-cell",
+-    src: "/atomic-scale.mp4",
+-    poster: "/posters/logic-cell.jpg",
+-    duration: 5,
+-    startScale: 1e-6,
+-    endScale: 1e-5,
+-    label: "LOGIC CELL",
+-    scaleLabel: "10⁻⁶ m",
+-  },
+-  {
+-    id: "cell-array",
+-    src: "/atomic-scale.mp4",
+-    poster: "/posters/cell-array.jpg",
+-    duration: 5,
+-    startScale: 1e-5,
+-    endScale: 1e-4,
+-    label: "CELL ARRAY",
+-    scaleLabel: "10⁻⁵ m",
+-  },
+-  {
+-    id: "functional-blocks",
+-    src: "/atomic-scale.mp4",
+-    poster: "/posters/functional-blocks.jpg",
+-    duration: 5,
+-    startScale: 1e-4,
+-    endScale: 1e-3,
+-    label: "FUNCTIONAL BLOCKS",
+-    scaleLabel: "10⁻⁴ m",
+-  },
+-  {
+-    id: "complete-die",
+-    src: "/atomic-scale.mp4",
+-    poster: "/posters/complete-die.jpg",
+-    duration: 5,
+-    startScale: 1e-3,
+-    endScale: 1e-2,
+-    label: "COMPLETE DIE",
+-    scaleLabel: "10⁻³ m",
+-  },
+-  {
+-    id: "macro-chip",
+-    src: "/atomic-scale.mp4",
+-    poster: "/posters/macro-chip.jpg",
+-    duration: 5,
+-    startScale: 1e-2,
+-    endScale: 1e-1,
+-    label: "MACRO CHIP",
+-    scaleLabel: "10⁻² m",
+-  },
++/**
++ * The scroll journey is a single continuous video (`/scale-journey.mp4`,
++ * ~10.05s, 1080p30). Each of the 8 scale segments maps to an equal chapter
++ * window inside it. Scrolling seeks the video within the active chapter, so
++ * forward and reverse scrubbing are seamless with no clip boundaries.
++ */
++const CLIP_SRC = "/scale-journey.mp4";
++const CLIP_DURATION = 10.054; // seconds (measured with ffprobe)
++
++interface SegmentDef {
++  id: string;
++  label: string;
++  scaleLabel: string;
++  startScale: number;
++  endScale: number;
++}
++
++const SEGMENT_DEFS: SegmentDef[] = [
++  { id: "atomic-scale",     label: "ATOMIC SCALE",     scaleLabel: "10⁻⁹ m", startScale: 1e-9, endScale: 1e-8 },
++  { id: "transistor",       label: "TRANSISTOR",       scaleLabel: "10⁻⁸ m", startScale: 1e-8, endScale: 1e-7 },
++  { id: "transistor-group", label: "TRANSISTOR GROUP", scaleLabel: "10⁻⁷ m", startScale: 1e-7, endScale: 1e-6 },
++  { id: "logic-cell",       label: "LOGIC CELL",       scaleLabel: "10⁻⁶ m", startScale: 1e-6, endScale: 1e-5 },
++  { id: "cell-array",       label: "CELL ARRAY",       scaleLabel: "10⁻⁵ m", startScale: 1e-5, endScale: 1e-4 },
++  { id: "functional-blocks",label: "FUNCTIONAL BLOCKS",scaleLabel: "10⁻⁴ m", startScale: 1e-4, endScale: 1e-3 },
++  { id: "complete-die",     label: "COMPLETE DIE",     scaleLabel: "10⁻³ m", startScale: 1e-3, endScale: 1e-2 },
++  { id: "macro-chip",       label: "MACRO CHIP",       scaleLabel: "10⁻² m", startScale: 1e-2, endScale: 1e-1 },
+ ];
+ 
++const CHAPTER = CLIP_DURATION / SEGMENT_DEFS.length;
++
++export const VIDEO_SEGMENTS: VideoSegment[] = SEGMENT_DEFS.map((def, i) => ({
++  ...def,
++  src: CLIP_SRC,
++  poster: `/posters/${def.id}.jpg`,
++  duration: CHAPTER,
++  clipStart: CHAPTER * i,
++  clipEnd: CHAPTER * (i + 1),
++}));
++
+ export const TOTAL_DURATION = VIDEO_SEGMENTS.reduce((sum, seg) => sum + seg.duration, 0);
+ 
++/** Map a segment-local progress (0..1) to an absolute time in the video file. */
++export function getChapterTime(segment: VideoSegment, progress: number): number {
++  const p = Math.max(0, Math.min(1, progress));
++  return segment.clipStart + p * (segment.clipEnd - segment.clipStart);
++}
++
+ export function getSegmentAtProgress(progress: number): { segment: VideoSegment; localProgress: number; index: number } {
+   const clampedProgress = Math.max(0, Math.min(1, progress));
+   let accumulated = 0;
+@@ -138,4 +104,4 @@ export function preloadVideo(src: string): Promise<HTMLVideoElement> {
+ 
+ export function preloadAllVideos(): Promise<HTMLVideoElement[]> {
+   return Promise.all(VIDEO_SEGMENTS.map((seg) => preloadVideo(seg.src)));
+-}
+\ No newline at end of file
++}

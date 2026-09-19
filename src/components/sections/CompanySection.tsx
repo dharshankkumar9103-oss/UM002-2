@@ -36,7 +36,7 @@ export function CompanySection() {
           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
             <span className="w-2 h-2 rounded-full bg-primary" />
             <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
-              SAN-D TECHNOLOGIES
+              SAN-D · FABLESS SEMICONDUCTOR
             </span>
           </div>
 
@@ -45,92 +45,57 @@ export function CompanySection() {
             className="font-display font-bold tracking-tight text-foreground mb-8"
             style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
           >
-            WHERE PHYSICS MEETS
+            ONE MEMORY POOL.
             <br />
-            <span className="text-primary">COMPUTATION</span>
+            <span className="text-primary">FAST AND PERMANENT.</span>
           </h2>
+
+          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-16">
+            Every computer has two memories: the desk (RAM) — fast, where you work,
+            wiped out by a power cut; and the filing cabinet (storage) — permanent but
+            slow. SAN-D merges them into one desk that never gets cleared: a single
+            pool of universal memory that is both fast and permanent.
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {[
               {
-                label: "MISSION",
-                value: "Advance semiconductor technology through fundamental physics innovation",
-                icon: "▸",
+                label: "MODEL",
+                value: "Fabless — we design the chip; foundries manufacture it. The NVIDIA model: architecture, cell, controller, and firmware are ours; wafer fabrication is outsourced.",
               },
               {
-                label: "FOCUS",
-                value: "Atomic-scale engineering for next-generation computing",
-                icon: "▸",
+                label: "BUSINESS",
+                value: "Dual model: sell UM002B chips and license the cell IP. First market: consumer PCs, where one unified pool replaces the DRAM + SSD hierarchy.",
               },
               {
-                label: "APPROACH",
-                value: "First-principles design. Precision manufacturing. Measurable results.",
-                icon: "▸",
+                label: "STATUS",
+                value: "Pre-silicon work is complete — simulation, device-physics analysis, GDSII layout, manufacturing-readiness review. Next: PDK access, a signed JDA, foundry engagement, first silicon.",
               },
             ].map((item, i) => (
               <div key={i} className="tech-panel-elevated p-8 rounded-xl animate-fade-in animate-slide-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className="flex items-start gap-4">
-                  <span className="font-mono text-lg text-primary shrink-0 mt-1">{item.icon}</span>
-                  <div>
-                    <div className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-2">{item.label}</div>
-                    <p className="text-foreground/90 leading-relaxed">{item.value}</p>
-                  </div>
-                </div>
+                <div className="font-mono text-xs tracking-widest uppercase text-primary mb-3">{item.label}</div>
+                <p className="text-foreground/90 leading-relaxed">{item.value}</p>
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="tech-panel-elevated p-8 rounded-xl">
-              <h3 className="font-display font-bold text-foreground mb-6" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>
-                TECHNOLOGY AREAS
-              </h3>
-              <div className="space-y-4">
-                {[
-                  "Advanced Logic & Compute Architectures",
-                  "High-Density Memory Systems (SRAM, DRAM, MRAM)",
-                  "Heterogeneous Integration & Chiplet Technology",
-                  "Low-Power / Energy-Efficient Design",
-                  "Interconnect & Signaling Innovation",
-                  "Process Technology Co-Optimization (DTCO)",
-                ].map((area, i) => (
-                  <div key={i} className="flex items-center gap-4 p-4 rounded-lg bg-background/50 border border-border/50 transition-colors hover:border-primary/30">
-                    <div className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
-                    <span className="font-sans text-base text-foreground/90">{area}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="tech-panel-elevated p-8 rounded-xl">
-              <h3 className="font-display font-bold text-foreground mb-6" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>
-                KEY METRICS
-              </h3>
-              <div className="grid grid-cols-2 gap-6">
-                {[
-                  { label: "PROCESS NODES", value: "3nm → 1.4nm", unit: "R&D" },
-                  { label: "TRANSISTOR DENSITY", value: "> 200M", unit: "Tr/mm²" },
-                  { label: "POWER EFFICIENCY", value: "40%+", unit: "Improvement" },
-                  { label: "INTERCONNECT LAYERS", value: "15+", unit: "Metal Layers" },
-                ].map((metric, i) => (
-                  <div key={i} className="p-6 rounded-lg bg-background/50 border border-border/50">
-                    <div className="font-display font-bold text-primary mb-1" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}>
-                      {metric.value}
-                    </div>
-                    <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-1">{metric.label}</div>
-                    <div className="font-sans text-sm text-muted-foreground/70">{metric.unit}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10 mb-16">
+            <p className="font-mono text-xs tracking-widest uppercase text-primary mb-2">
+              THE AIM
+            </p>
+            <p className="text-foreground/85 text-lg leading-relaxed max-w-3xl">
+              No boot wait — the PC wakes instantly, exactly as you left it. Never lose
+              unsaved work — a power cut becomes a pause, not a loss. One memory number —
+              not “8 GB RAM + 512 GB storage,” just one pool of universal memory.
+            </p>
           </div>
 
-          <div className="mt-16 flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-wrap">
             <Link
-              href="#technology"
+              href="/about"
               className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
             >
-              EXPLORE TECHNOLOGY
+              ABOUT SAN-D
               <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M12 5l7 7-7 7" />
@@ -138,10 +103,10 @@ export function CompanySection() {
               </span>
             </Link>
             <Link
-              href="#contact"
+              href="/roadmap"
               className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:border-primary/50 hover:bg-accent"
             >
-              CONTACT US
+              THE ROADMAP
             </Link>
           </div>
         </div>

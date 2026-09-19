@@ -50,8 +50,8 @@ export function ContactSection() {
           </h2>
 
           <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-16">
-            We're always interested in collaborating with researchers, engineers,
-            and organizations pushing the boundaries of semiconductor technology.
+            We&apos;re interested in hearing from investors, foundry partners,
+            engineers, and anyone working on the future of memory.
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl">
@@ -62,60 +62,53 @@ export function ContactSection() {
 
               <div className="space-y-4">
                 {[
-                  { label: "GENERAL INQUIRIES", value: "hello@san-d.tech", type: "email" },
-                  { label: "TECHNICAL PARTNERSHIPS", value: "partnerships@san-d.tech", type: "email" },
-                  { label: "RESEARCH COLLABORATIONS", value: "research@san-d.tech", type: "email" },
-                  { label: "CAREERS", value: "careers@san-d.tech", type: "email" },
-                  { label: "MEDIA / PRESS", value: "press@san-d.tech", type: "email" },
+                  { label: "GENERAL INQUIRIES", value: "To be announced" },
+                  { label: "INVESTORS", value: "To be announced" },
+                  { label: "FOUNDRY PARTNERSHIPS", value: "To be announced" },
+                  { label: "MEDIA / PRESS", value: "To be announced" },
                 ].map((contact, i) => (
-                  <a
+                  <div
                     key={i}
-                    href={`mailto:${contact.value}`}
-                    className="flex items-center justify-between p-4 rounded-lg bg-background/50 border border-border/50 transition-all hover:border-primary/30 hover:bg-accent group"
+                    className="flex items-center justify-between gap-4 p-4 rounded-lg bg-background/50 border border-border/50"
                   >
                     <span className="font-mono text-xs tracking-wider uppercase text-muted-foreground">{contact.label}</span>
-                    <span className="font-sans text-base text-foreground/90 group-hover:text-primary transition-colors">{contact.value}</span>
-                  </a>
+                    <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/50 rounded-full px-2 py-1 shrink-0">
+                      PLACEHOLDER
+                    </span>
+                  </div>
                 ))}
               </div>
             </div>
 
             <div className="tech-panel-elevated p-8 rounded-xl space-y-6">
               <h3 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
-                LOCATIONS
+                LOCATION
               </h3>
 
               <div className="space-y-6">
-                {[
-                  {
-                    name: "HEADQUARTERS",
-                    address: "San Jose, California, USA",
-                    detail: "Advanced R&D Center & Operations",
-                  },
-                  {
-                    name: "EUROPE",
-                    address: "Munich, Germany",
-                    detail: "Design Center & University Partnerships",
-                  },
-                  {
-                    name: "ASIA-PACIFIC",
-                    address: "Hsinchu, Taiwan",
-                    detail: "Process Integration & Manufacturing",
-                  },
-                ].map((loc, i) => (
-                  <div key={i} className="p-6 rounded-lg bg-background/50 border border-border/50">
-                    <div className="font-mono text-xs tracking-widest uppercase text-primary mb-2">{loc.name}</div>
-                    <div className="font-sans text-lg text-foreground mb-1">{loc.address}</div>
-                    <div className="text-muted-foreground text-sm">{loc.detail}</div>
+                <div className="p-6 rounded-lg bg-background/50 border border-border/50">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="font-mono text-xs tracking-widest uppercase text-primary mb-2">HEADQUARTERS</div>
+                      <div className="font-sans text-lg text-muted-foreground/70 mb-1">To be announced</div>
+                    </div>
+                    <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/50 rounded-full px-2 py-1 shrink-0">
+                      PLACEHOLDER
+                    </span>
                   </div>
-                ))}
+                </div>
               </div>
+              <p className="text-sm text-muted-foreground/70 leading-relaxed">
+                SAN-D is a fabless company: we design the chip, foundries manufacture
+                it. Design work is distributed; manufacturing happens at our future
+                foundry partner&apos;s fabs.
+              </p>
             </div>
           </div>
 
           <div className="mt-16 pt-16 border-t border-border/50">
             <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground text-center">
-              © 2025 SAN-D Technologies. All rights reserved.
+              © 2026 SAN-D. All rights reserved.
             </p>
             <div className="mt-4 flex items-center justify-center gap-8 text-sm text-muted-foreground/70">
               <a href="#privacy" className="hover:text-foreground transition-colors">Privacy Policy</a>

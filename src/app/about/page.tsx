@@ -7,316 +7,196 @@ export default function AboutPage() {
       <div className="space-y-20">
         {/* Hero */}
         <section className="text-center py-16">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8">
+            <span className="w-2 h-2 rounded-full bg-primary" />
+            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+              SAN-D · FABLESS SEMICONDUCTOR
+            </span>
+          </div>
           <h1 className="font-display font-bold text-5xl md:text-6xl tracking-tight mb-6">
             ABOUT
           </h1>
           <p className="font-sans text-lg max-w-2xl mx-auto text-muted-foreground leading-relaxed">
             SAN-D is a fabless semiconductor company: we design memory chips;
-            foundries manufacture them. We merge RAM and storage into one pool
-            that is both fast and permanent.
+            foundries manufacture them. We are merging RAM and storage into one
+            pool that is both fast and permanent.
           </p>
         </section>
 
-        {/* Mission & Values */}
+        {/* The fabless model */}
         <section className="grid gap-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Mission */}
-            <article className="p-8 bg-background/50 border border-border/50 rounded-xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <article className="tech-panel-elevated p-8 rounded-xl">
               <h2 className="font-display font-bold text-foreground mb-6">
-                OUR MISSION
+                THE FABLESS MODEL
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                To merge the fast working memory (RAM) and permanent storage (SSD)
-                into a single, persistent pool of memory that functions with DRAM
-                speeds but retains data without power.
+                We design the chip: the architecture, the cell, the controller, the
+                firmware. A foundry — a company whose entire business is manufacturing
+                chips — fabricates the silicon from our design files. We own no
+                factory, because a single modern fab costs tens of billions of dollars.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Nearly every successful chip startup in history has been fabless. It is
+                the NVIDIA model, and it is the only capital-efficient way to build a
+                chip company.
+              </p>
+            </article>
+
+            <article className="tech-panel-elevated p-8 rounded-xl">
+              <h2 className="font-display font-bold text-foreground mb-6">
+                THE BUSINESS
+              </h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                We believe that the future of computing lies not in incremental scaling,
-                but in reimagining the fundamental architecture of memory devices
-                to eliminate the performance bottlenecks of today&apos;s architectures.
+                Dual model: we sell UM002B chips, and we license the cell IP to others.
               </p>
-              <div className="mt-6 p-4 bg-background border border-border/50 rounded-lg">
-                <h3 className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-3">
-                  CORE PRINCIPLES
+              <div className="space-y-4">
+                <div className="p-4 rounded-lg bg-background/50 border border-border/50">
+                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">
+                    FIRST MARKET
+                  </p>
+                  <p className="text-foreground/90 leading-relaxed">
+                    Consumer PCs — where one unified pool of universal memory replaces
+                    the DRAM + SSD hierarchy. Not “8 GB RAM + 512 GB storage,” just one
+                    memory number.
+                  </p>
+                </div>
+                <div className="p-4 rounded-lg bg-background/50 border border-border/50">
+                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">
+                    OUR SCOPE
+                  </p>
+                  <p className="text-foreground/90 leading-relaxed">
+                    Chip, firmware, host interface, BIOS/UEFI enablement, and OS drivers —
+                    “it just works in a PC.”
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        {/* Status, honestly */}
+        <section className="border-t border-border/50 pt-16">
+          <h2 className="font-display font-bold text-foreground mb-8">
+            WHERE THINGS STAND, HONESTLY
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="p-8 rounded-xl bg-background/50 border border-border/50">
+              <p className="font-mono text-xs tracking-wider uppercase text-primary mb-4">
+                COMPLETE — PRE-SILICON
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Full circuit simulation of the 2T1C1M cell and array",
+                  "Device-physics analysis of the hafnium-oxide memristor",
+                  "GDSII layout of the cell",
+                  "Manufacturing-readiness review (coherence audit, gap analysis, validation matrix)",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-foreground/85 leading-relaxed">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0 mt-2" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="p-8 rounded-xl bg-background/50 border border-border/50">
+              <p className="font-mono text-xs tracking-wider uppercase text-primary mb-4">
+                NEXT — GATED BY FUNDING &amp; PARTNERSHIP
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Foundry engagement under NDA",
+                  "PDK access — the foundry's design toolbox",
+                  "Signed JDA to co-develop the custom HfOx device on real wafers",
+                  "First silicon on an MPW shuttle",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-foreground/85 leading-relaxed">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0 mt-2" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-sm text-muted-foreground/80 mt-6 leading-relaxed">
+                Stated as plan, not status. The chip is fully designed on computers —
+                but not yet manufactured.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Aim */}
+        <section className="border-t border-border/50 pt-16">
+          <h2 className="font-display font-bold text-foreground mb-8">
+            THE AIM
+          </h2>
+          <div className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10">
+            <p className="text-foreground/90 text-lg leading-relaxed max-w-3xl mb-6">
+              Every computer has two memories: the desk (RAM) — fast, where you work,
+              wiped out by a power cut; and the filing cabinet (storage) — permanent
+              but slow. For fifty years we have shuttled work between the two and
+              pressed Save to survive power cuts.
+            </p>
+            <p className="text-foreground/90 text-lg leading-relaxed max-w-3xl mb-6">
+              SAN-D merges them into one desk that never gets cleared — a single pool
+              of memory that is both fast and permanent.
+            </p>
+            <p className="font-mono text-sm tracking-widest uppercase text-primary">
+              Power loss becomes a pause button, not a catastrophe.
+            </p>
+          </div>
+        </section>
+
+        {/* Values */}
+        <section className="border-t border-border/50 pt-16">
+          <h2 className="font-display font-bold text-foreground mb-8">
+            HOW WE WORK
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                title: "EVIDENCE LABELS",
+                desc: "Every claim carries its provenance: measured, modeled, assumed, target, or requires-fab. Nothing is labeled “measured” until it is.",
+              },
+              {
+                title: "FIND IT BEFORE SILICON",
+                desc: "Our analysis program surfaced its own device issues in simulation — the cheapest possible place to find them. A program that finds its problems before wafers is a program working correctly.",
+              },
+              {
+                title: "PLAN, NOT STATUS",
+                desc: "The roadmap is a gated sequence with owners and unlock steps — not a victory lap. No partnership, no silicon, no measured data is claimed before it exists.",
+              },
+            ].map((v, i) => (
+              <div key={i} className="tech-panel-elevated p-8 rounded-xl">
+                <h3 className="font-mono text-sm tracking-widest uppercase text-primary mb-3">
+                  {v.title}
                 </h3>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
-                    <div>
-                      <p className="font-mono text-xs text-primary/80">▸</p>
-                      <p className="font-sans text-sm text-foreground/90">First-principles design</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
-                    <div>
-                      <p className="font-mono text-xs text-primary/80">▸</p>
-                      <p className="font-sans text-sm text-foreground/90">Precision manufacturing</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
-                    <div>
-                      <p className="font-mono text-xs text-primary/80">▸</p>
-                      <p className="font-sans text-sm text-foreground/90">Measurable results</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
-                    <div>
-                      <p className="font-mono text-xs text-primary/80">▸</p>
-                      <p className="font-sans text-sm text-foreground/90">Open collaboration</p>
-                    </div>
-                  </div>
-                </div>
+                <p className="text-foreground/80 leading-relaxed">{v.desc}</p>
               </div>
-            </article>
-
-            {/* Values */}
-            <article className="p-8 bg-background/50 border border-border/50 rounded-xl">
-              <h2 className="font-display font-bold text-foreground mb-6">
-                OUR VALUES
-              </h2>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
-                    <span className="font-mono text-xs text-primary">1</span>
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-1">
-                      SCIENTIFIC RIGOR
-                    </h3>
-                    <p className="text-sm text-muted-foreground/80">
-                      Every decision grounded in verifiable physics and experimental data
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
-                    <span className="font-mono text-xs text-primary">2</span>
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-1">
-                      ENGINEERING EXCELLENCE
-                    </h3>
-                    <p className="text-sm text-muted-foreground/80">
-                      Bridging theoretical advances with manufacturable solutions
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
-                    <span className="font-mono text-xs text-primary">3</span>
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-1">
-                      LONG-TERM IMPACT
-                    </h3>
-                    <p className="text-sm text-muted-foreground/80">
-                      Focusing on innovations that shape decades, not quarters
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
-                    <span className="font-mono text-xs text-primary">4</span>
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-1">
-                      RESPONSIBLE INNOVATION
-                    </h3>
-                    <p className="text-sm text-muted-foreground/80">
-                      Advancing technology while considering societal and environmental impact
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        {/* History & Milestones */}
-        <section className="border-t border-border/50 pt-16">
-          <h2 className="font-display font-bold text-foreground mb-8">
-            HISTORY & MILESTONES
-          </h2>
-          <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed mb-12">
-            Founded on the belief that the next leap in computing requires returning to
-            first principles, SAN-D has grown from a small research team into a global
-            technology leader.
-          </p>
-
-          <div className="space-y-8">
-            {/* Timeline Items */}
-            <div className="space-y-6">
-              <div className="flex items-start gap-6">
-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
-                  2020
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
-                    FOUNDING
-                  </h3>
-                  <p className="text-sm text-muted-foreground/80">
-                    Established by leading physicists and engineers from Stanford, MIT, and
-                    imec with a mission to reboot semiconductor innovation from first principles
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-6">
-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
-                  2021
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
-                    FIRST BREAKTHROUGH
-                  </h3>
-                  <p className="text-sm text-muted-foreground/80">
-                    Demonstrated negative capacitance FET concept with 60mV/dec subthreshold swing
-                    at room temperature
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-6">
-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
-                  2022
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
-                    SERIES A FUNDING
-                  </h3>
-                  <p className="text-sm text-muted-foreground/80">
-                    Secured $200M Series A led by premier technology investors to scale
-                    R&D operations and begin pilot production
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-6">
-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
-                  2023
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
-                    PILOT PRODUCTION
-                  </h3>
-                  <p className="text-sm text-muted-foreground/80">
-                    Began high-volume pilot production of GAA nanosheet transistors
-                    on 300mm wafers at 3nm equivalent node
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-6">
-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
-                  2024
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
-                    CFET STACK DEMO
-                  </h3>
-                  <p className="text-sm text-muted-foreground/80">
-                    World&apos;s first complementary FET stack demonstrating &gt;50% logic density improvement
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-6">
-                <div className="w-12 h-12 flex items-center justify-center bg-primary text-primary-foreground font-mono text-xs rounded-full">
-                  2025
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-mono text-sm tracking-widest uppercase text-foreground">
-                    HETEROGENEOUS INTEGRATION
-                  </h3>
-                  <p className="text-sm text-muted-foreground/80">
-                    First 2.5D chiplet platform with UCIe interconnect and thermal-optimized packaging
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Leadership */}
-        <section className="border-t border-border/50 pt-16">
-          <h2 className="font-display font-bold text-foreground mb-8">
-            LEADERSHIP TEAM
-          </h2>
-          <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed mb-12">
-            World-class experts in device physics, semiconductor manufacturing,
-            and advanced packaging.
-          </p>
-
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* CEO */}
-            <div className="p-6 bg-background/50 border border-border/50 rounded-lg text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/20 mx-auto mb-4">
-                <span className="font-mono text-xs text-primary">DR</span>
-              </div>
-              <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-2">
-                DR. ELENA VASQUEZ
-              </h3>
-              <p className="font-sans text-sm text-muted-foreground/80">Chief Executive Officer</p>
-              <p className="text-[12px] text-muted-foreground/60">
-                Formerly: IBM Fellow, Semiconductor Physics
-              </p>
-            </div>
-
-            {/* CTO */}
-            <div className="p-6 bg-background/50 border border-border/50 rounded-lg text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/20 mx-auto mb-4">
-                <span className="font-mono text-xs text-primary">DR</span>
-              </div>
-              <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-2">
-                DR. ARJUN PATEL
-              </h3>
-              <p className="font-sans text-sm text-muted-foreground/80">Chief Technology Officer</p>
-              <p className="text-[12px] text-muted-foreground/60">
-                Formerly: TSMC VP, Process Integration
-              </p>
-            </div>
-
-            {/* Head of Research */}
-            <div className="p-6 bg-background/50 border border-border/50 rounded-lg text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/20 mx-auto mb-4">
-                <span className="font-mono text-xs text-primary">DR</span>
-              </div>
-              <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-2">
-                DR. SOPHIE DUBOIS
-              </h3>
-              <p className="font-sans text-sm text-muted-foreground/80">Head of Research</p>
-              <p className="text-[12px] text-muted-foreground/60">
-                Formerly: MIT Professor, Quantum Devices
-              </p>
-            </div>
-
-            {/* Head of Manufacturing */}
-            <div className="p-6 bg-background/50 border border-border/50 rounded-lg text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/20 mx-auto mb-4">
-                <span className="font-mono text-xs text-primary">DR</span>
-              </div>
-              <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-2">
-                DR. MARCUS CHEN
-              </h3>
-              <p className="font-sans text-sm text-muted-foreground/80">Head of Manufacturing</p>
-              <p className="text-[12px] text-muted-foreground/60">
-                Formerly: Samsung Senior Fellow, Manufacturing
-              </p>
-            </div>
+            ))}
           </div>
         </section>
 
         {/* Call to Action */}
         <section className="text-center py-16">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
-          >
-            RETURN TO HOME
-            <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </span>
-          </Link>
+          <div className="flex items-center justify-center gap-6 flex-wrap">
+            <Link
+              href="/technology"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+            >
+              THE TECHNOLOGY
+              <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
+            <Link
+              href="/roadmap"
+              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:border-primary/50 hover:bg-accent"
+            >
+              THE ROADMAP
+            </Link>
+          </div>
         </section>
       </div>
     </SecondaryLayout>

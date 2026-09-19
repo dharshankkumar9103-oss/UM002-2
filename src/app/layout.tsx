@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preload" as="video" href="/atomic-scale.mp4" type="video/mp4" />
+        <link rel="preload" as="video" href="/scale-journey.mp4" type="video/mp4" />
       </head>
       <body className="min-h-full flex flex-col relative overflow-x-hidden">
         {children}
