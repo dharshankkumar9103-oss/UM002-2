@@ -1,0 +1,3519 @@
+diff --git a/src/app/globals.css b/src/app/globals.css
+index fd2dc02..acdf74b 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -1,17 +1,18 @@
+ @import "tailwindcss";
+ 
+ :root {
+-  --background: #030303;
+-  --foreground: #fafafa;
+-  --muted: #2a2a2a;
+-  --muted-foreground: #a3a3a3;
+-  --border: #1a1a1a;
+-  --primary: #ffffff;
+-  --primary-foreground: #030303;
+-  --accent: #1a1a1a;
+-  --accent-foreground: #fafafa;
+-  --card: #0a0a0a;
+-  --card-foreground: #fafafa;
++  /* Inception palette: deep dream-navy, ice-blue light, brass-totem gold */
++  --background: #060b14;
++  --foreground: #edf1f7;
++  --muted: #16202f;
++  --muted-foreground: #8e9bb0;
++  --border: #1c2942;
++  --primary: #9fd0ff;
++  --primary-foreground: #060b14;
++  --accent: #d2a24c;
++  --accent-foreground: #060b14;
++  --card: #0a1220;
++  --card-foreground: #edf1f7;
+ }
+ 
+ @theme inline {
+@@ -113,72 +114,36 @@
+   outline-offset: 2px;
+ }
+ 
+-.video-container {
+-  position: fixed;
+-  inset: 0;
+-  z-index: -1;
+-  overflow: hidden;
+-}
+-
+-.video-container video {
+-  width: 100%;
+-  height: 100%;
+-  object-fit: cover;
+-}
+-
+-.section-marker {
+-  position: absolute;
+-  left: 2rem;
+-  top: 50%;
+-  transform: translateY(-50%);
+-  writing-mode: vertical-rl;
+-  text-orientation: mixed;
+-  font-family: var(--font-mono);
+-  font-size: 0.625rem;
+-  letter-spacing: 0.1em;
+-  color: var(--muted-foreground);
+-  opacity: 0.6;
+-  transition: opacity 0.3s ease, color 0.3s ease;
+-}
+-
+-.section-marker.active {
+-  color: var(--primary);
+-  opacity: 1;
+-}
+-
+-.tech-panel {
+-  background: rgba(10, 10, 10, 0.85);
++/* Dream-level card: dark navy glass with a faint top light edge */
++.dream-card {
++  background: linear-gradient(180deg, rgba(22, 32, 47, 0.55), rgba(8, 13, 24, 0.92));
+   border: 1px solid var(--border);
+-  backdrop-filter: blur(20px);
+-}
+-
+-.tech-panel-elevated {
+-  background: rgba(10, 10, 10, 0.95);
+-  border: 1px solid var(--border);
+-  backdrop-filter: blur(30px);
++  backdrop-filter: blur(12px);
+   box-shadow:
+-    0 4px 24px rgba(0, 0, 0, 0.4),
+-    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
++    0 1px 0 rgba(159, 208, 255, 0.06) inset,
++    0 12px 40px rgba(0, 0, 0, 0.35);
+ }
+ 
+-.scale-indicator {
+-  font-family: var(--font-mono);
+-  font-size: 0.75rem;
+-  letter-spacing: 0.15em;
+-  text-transform: uppercase;
+-  color: var(--muted-foreground);
++/* Totem divider: hairline with a brass diamond */
++.totem-divider {
++  display: flex;
++  align-items: center;
++  gap: 1rem;
+ }
+-
+-.scale-value {
+-  font-family: var(--font-display);
+-  font-size: clamp(2rem, 5vw, 4rem);
+-  font-weight: 700;
+-  line-height: 1;
+-  color: var(--primary);
++.totem-divider::before,
++.totem-divider::after {
++  content: "";
++  height: 1px;
++  flex: 1;
++  background: linear-gradient(90deg, transparent, var(--border));
++}
++.totem-divider::after {
++  background: linear-gradient(90deg, var(--border), transparent);
++}
++.totem-divider > span {
++  width: 7px;
++  height: 7px;
++  transform: rotate(45deg);
++  background: var(--accent);
++  box-shadow: 0 0 12px rgba(210, 162, 76, 0.5);
+ }
+-
+-@media (max-width: 768px) {
+-  .section-marker {
+-    display: none;
+-  }
+-}
+\ No newline at end of file
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index 29aadec..d58d1bb 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -47,7 +47,7 @@ export const metadata: Metadata = {
+ };
+ 
+ export const viewport: Viewport = {
+-  themeColor: "#030303",
++  themeColor: "#060b14",
+   width: "device-width",
+   initialScale: 1,
+   maximumScale: 5,
+@@ -59,7 +59,6 @@ export default function RootLayout({ children }: { children: React.ReactNode })
+       <head>
+         <link rel="preconnect" href="https://fonts.googleapis.com" />
+         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+-        <link rel="preload" as="video" href="/scale-journey.mp4" type="video/mp4" />
+       </head>
+       <body className="min-h-full flex flex-col relative overflow-x-hidden">
+         {children}
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index f680729..2c5aae0 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -1,249 +1,45 @@
+ "use client";
+ 
+-import { useEffect, useState, useCallback } from "react";
+-import { VIDEO_SEGMENTS } from "@/lib/video-sequence";
+-import { useScrollSync } from "@/hooks/useScrollSync";
+-import { useMousePosition } from "@/hooks/useMousePosition";
+-import { VideoBackground } from "@/components/video/VideoBackground";
+-import { WebGLOverlay } from "@/components/video/WebGLOverlay";
+-import { ScanLinesOverlay } from "@/components/video/ScanLinesOverlay";
+-import { CoordinateGridOverlay } from "@/components/video/CoordinateGridOverlay";
+-import { TechnicalCallouts } from "@/components/video/TechnicalCallouts";
++import { useEffect, useState } from "react";
+ import { Navigation } from "@/components/layout/Navigation";
+ import { Hero } from "@/components/sections/Hero";
+-import { ScrollSection } from "@/components/sections/ScrollSection";
+-import { CompanySection } from "@/components/sections/CompanySection";
+ import { TechnologySection } from "@/components/sections/TechnologySection";
++import { CompanySection } from "@/components/sections/CompanySection";
+ import { RoadmapSection } from "@/components/sections/RoadmapSection";
+ import { ContactSection } from "@/components/sections/ContactSection";
+ 
+-export default function HomePage() {
+-  const [isLoaded, setIsLoaded] = useState(false);
+-  const [reducedMotion, setReducedMotion] = useState(false);
+-  const [showOverlays, setShowOverlays] = useState(true);
+-  const [viewportSize, setViewportSize] = useState({ width: 1920, height: 1080 });
+-
+-  const {
+-    scrollY,
+-    viewportHeight,
+-    scrollHeight,
+-    globalProgress,
+-    currentSegment,
+-    currentIndex,
+-    localProgress,
+-    direction,
+-    velocity,
+-    segments,
+-    scrollToSegment,
+-  } = useScrollSync({ reducedMotion });
+-
+-  const mousePosition = useMousePosition();
++const SECTION_IDS = ["home", "technology", "company", "roadmap", "contact"];
+ 
+-  useEffect(() => {
+-    const handleResize = () => {
+-      setViewportSize({ width: window.innerWidth, height: window.innerHeight });
+-    };
+-    handleResize();
+-    window.addEventListener("resize", handleResize, { passive: true });
+-    return () => window.removeEventListener("resize", handleResize);
+-  }, []);
+-
+-  useEffect(() => {
+-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+-    setReducedMotion(mediaQuery.matches);
+-    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+-    mediaQuery.addEventListener("change", handler);
+-    return () => mediaQuery.removeEventListener("change", handler);
+-  }, []);
++export default function HomePage() {
++  const [activeSection, setActiveSection] = useState("home");
+ 
+   useEffect(() => {
+-    const timer = setTimeout(() => setIsLoaded(true), 500);
+-    return () => clearTimeout(timer);
++    const observer = new IntersectionObserver(
++      (entries) => {
++        for (const entry of entries) {
++          if (entry.isIntersecting) setActiveSection(entry.target.id);
++        }
++      },
++      { rootMargin: "-40% 0px -55% 0px" }
++    );
++    SECTION_IDS.forEach((id) => {
++      const el = document.getElementById(id);
++      if (el) observer.observe(el);
++    });
++    return () => observer.disconnect();
+   }, []);
+ 
+-  const handleSegmentClick = (index: number) => {
+-    scrollToSegment(index);
+-  };
+-
+-  const toggleOverlays = () => setShowOverlays((prev) => !prev);
+-
+   return (
+     <div className="relative min-h-screen text-foreground">
+-      {!isLoaded && (
+-        <div
+-          className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+-          role="status"
+-          aria-label="Loading"
+-        >
+-          <div className="text-center">
+-            <div className="font-display font-bold text-4xl md:text-6xl tracking-tight mb-4">
+-              SAN-D
+-            </div>
+-            <div className="font-mono text-xs tracking-widest uppercase text-muted-foreground animate-pulse">
+-              INITIALIZING VISUALIZATION
+-            </div>
+-            <div className="mt-8 w-48 h-px bg-gradient-to-r from-transparent via-primary to-transparent mx-auto" />
+-          </div>
+-        </div>
+-      )}
+-
+-      <VideoBackground
+-        scrollHeight={scrollHeight}
+-        viewportHeight={viewportHeight}
+-        globalProgress={globalProgress}
+-        currentSegment={currentSegment}
+-        currentIndex={currentIndex}
+-        localProgress={localProgress}
+-        reducedMotion={reducedMotion}
+-        velocity={velocity}
+-      />
+-
+-      {showOverlays && !reducedMotion && (
+-        <>
+-          <WebGLOverlay
+-            currentSegment={currentSegment}
+-            localProgress={localProgress}
+-            globalProgress={globalProgress}
+-            reducedMotion={reducedMotion}
+-            velocity={velocity}
+-            viewportWidth={viewportSize.width}
+-            viewportHeight={viewportSize.height}
+-            mousePosition={mousePosition}
+-          />
+-          <ScanLinesOverlay
+-            currentSegment={currentSegment}
+-            localProgress={localProgress}
+-            globalProgress={globalProgress}
+-            reducedMotion={reducedMotion}
+-            velocity={velocity}
+-          />
+-          <CoordinateGridOverlay
+-            currentSegment={currentSegment}
+-            localProgress={localProgress}
+-            globalProgress={globalProgress}
+-            reducedMotion={reducedMotion}
+-            viewportWidth={viewportSize.width}
+-            viewportHeight={viewportSize.height}
+-          />
+-          <TechnicalCallouts
+-            currentSegment={currentSegment}
+-            localProgress={localProgress}
+-            globalProgress={globalProgress}
+-            reducedMotion={reducedMotion}
+-            viewportWidth={viewportSize.width}
+-            viewportHeight={viewportSize.height}
+-          />
+-        </>
+-      )}
+-
+-      <Navigation activeSection={segments[currentIndex]?.id || "home"} />
+-
+-      <main className="relative" style={{ minHeight: `${scrollHeight}px` }}>
+-        <Hero
+-          scrollY={scrollY}
+-          viewportHeight={viewportHeight}
+-          globalProgress={globalProgress}
+-          reducedMotion={reducedMotion}
+-          velocity={velocity}
+-        />
+-
+-        {segments.map((segment, index) => {
+-          const segmentStart = index / segments.length;
+-          const segmentEnd = (index + 1) / segments.length;
+-          const isActive = globalProgress >= segmentStart && globalProgress <= segmentEnd;
+-          const localProgressValue = isActive
+-            ? (globalProgress - segmentStart) / (segmentEnd - segmentStart)
+-            : globalProgress > segmentEnd
+-            ? 1
+-            : 0;
+-
+-          return (
+-            <ScrollSection
+-              key={segment.id}
+-              segment={segment}
+-              index={index}
+-              isActive={isActive}
+-              localProgress={localProgressValue}
+-              globalProgress={globalProgress}
+-              viewportHeight={viewportHeight}
+-              scrollY={scrollY}
+-              reducedMotion={reducedMotion}
+-              direction={direction}
+-              velocity={velocity}
+-            />
+-          );
+-        })}
++      <Navigation activeSection={activeSection} />
+ 
++      <main className="relative">
++        <Hero />
+         <TechnologySection />
+         <CompanySection />
+         <RoadmapSection />
+         <ContactSection />
+       </main>
+-
+-      <div
+-        className="fixed bottom-6 right-6 z-40 hidden md:block"
+-        aria-hidden="true"
+-      >
+-        <div className="tech-panel-elevated p-4 rounded-xl min-w-[180px]">
+-          <div className="flex items-center justify-between mb-2">
+-            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              PROGRESS
+-            </span>
+-            <button
+-              onClick={toggleOverlays}
+-              className={`px-2 py-1 text-[9px] font-mono tracking-wider uppercase rounded transition-colors ${
+-                showOverlays
+-                  ? "bg-primary/20 text-primary border border-primary/30"
+-                  : "bg-muted text-muted-foreground border border-border"
+-              }`}
+-              aria-label={showOverlays ? "Hide overlays" : "Show overlays"}
+-            >
+-              {showOverlays ? "ON" : "OFF"}
+-            </button>
+-          </div>
+-          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+-            <div
+-              className="h-full bg-primary transition-all duration-300 ease-out"
+-              style={{ width: `${globalProgress * 100}%` }}
+-            />
+-          </div>
+-          <div className="mt-2 flex justify-between font-mono text-xs text-muted-foreground">
+-            <span>ATOMIC</span>
+-            <span>MACRO</span>
+-          </div>
+-          <div className="mt-3 flex items-center justify-between text-xs">
+-            <span className="text-muted-foreground/50">{segments[currentIndex]?.scaleLabel || "10⁻⁹ m"}</span>
+-            <span className="font-mono text-primary">{Math.round(velocity)}px/frame</span>
+-          </div>
+-        </div>
+-      </div>
+-
+-      <div
+-        className="fixed bottom-6 left-6 z-40 hidden lg:flex flex-col gap-2"
+-        aria-label="Section navigation"
+-        role="navigation"
+-      >
+-        {segments.map((segment, index) => (
+-          <button
+-            key={segment.id}
+-            onClick={() => handleSegmentClick(index)}
+-            className={`w-10 h-10 rounded-full border transition-all duration-300 flex items-center justify-center ${
+-              index === currentIndex
+-                ? "bg-primary border-primary text-primary-foreground shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+-                : "bg-background/50 border-border/50 text-muted-foreground/50 hover:border-primary/30 hover:text-foreground"
+-            }`}
+-            aria-label={`Go to ${segment.label}`}
+-            aria-current={index === currentIndex ? "true" : "false"}
+-            style={{
+-              transform: `scale(${index === currentIndex ? 1.1 : 1})`,
+-            }}
+-          >
+-            <span className="font-mono text-[9px] tracking-wider uppercase">
+-              {index + 1}
+-            </span>
+-          </button>
+-        ))}
+-      </div>
+     </div>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/sections/CompanySection.tsx b/src/components/sections/CompanySection.tsx
+index a0319dd..b580546 100644
+--- a/src/components/sections/CompanySection.tsx
++++ b/src/components/sections/CompanySection.tsx
+@@ -1,87 +1,69 @@
+ "use client";
+ 
+-import { useEffect, useState } from "react";
+ import Link from "next/link";
++import { Reveal } from "@/components/ui/Reveal";
++import { LevelEyebrow } from "@/components/ui/LevelEyebrow";
+ 
+-export function CompanySection() {
+-  const [isVisible, setIsVisible] = useState(false);
+-
+-  useEffect(() => {
+-    const observer = new IntersectionObserver(
+-      ([entry]) => {
+-        if (entry.isIntersecting) {
+-          setIsVisible(true);
+-          observer.disconnect();
+-        }
+-      },
+-      { threshold: 0.1 }
+-    );
+-    const el = document.getElementById("company");
+-    if (el) observer.observe(el);
+-    return () => observer.disconnect();
+-  }, []);
++const FACTS = [
++  {
++    label: "Model",
++    value:
++      "Fabless — we design the chip; foundries manufacture it. The NVIDIA model: architecture, cell, controller, and firmware are ours; wafer fabrication is outsourced.",
++  },
++  {
++    label: "Business",
++    value:
++      "Dual model: sell UM002B chips and license the cell IP. First market: consumer PCs, where one unified pool replaces the DRAM + SSD hierarchy.",
++  },
++  {
++    label: "Status",
++    value:
++      "Pre-silicon work is complete — simulation, device-physics analysis, GDSII layout, manufacturing-readiness review. Next: PDK access, a signed JDA, foundry engagement, first silicon.",
++  },
++];
+ 
++export function CompanySection() {
+   return (
+-    <section
+-      id="company"
+-      className="relative min-h-screen flex items-center justify-center bg-background"
+-      aria-labelledby="company-title"
+-    >
+-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" aria-hidden="true" />
+-
+-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+-        <div
+-          className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}
+-        >
+-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
+-            <span className="w-2 h-2 rounded-full bg-primary" />
+-            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              SAN-D · FABLESS SEMICONDUCTOR
+-            </span>
+-          </div>
++    <section id="company" className="relative" aria-labelledby="company-title">
++      <div className="max-w-7xl mx-auto px-6 py-28">
++        <Reveal>
++          <LevelEyebrow level="Level 02" label="The model" />
+ 
+           <h2
+             id="company-title"
+             className="font-display font-bold tracking-tight text-foreground mb-8"
+-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
++            style={{ fontSize: "clamp(2.25rem, 5.5vw, 4.25rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
+           >
+             ONE MEMORY POOL.
+             <br />
+             <span className="text-primary">FAST AND PERMANENT.</span>
+           </h2>
+ 
+-          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-16">
++          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed mb-14">
+             Every computer has two memories: the desk (RAM) — fast, where you work,
+             wiped out by a power cut; and the filing cabinet (storage) — permanent but
+             slow. SAN-D merges them into one desk that never gets cleared: a single
+             pool of universal memory that is both fast and permanent.
+           </p>
++        </Reveal>
+ 
+-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+-            {[
+-              {
+-                label: "MODEL",
+-                value: "Fabless — we design the chip; foundries manufacture it. The NVIDIA model: architecture, cell, controller, and firmware are ours; wafer fabrication is outsourced.",
+-              },
+-              {
+-                label: "BUSINESS",
+-                value: "Dual model: sell UM002B chips and license the cell IP. First market: consumer PCs, where one unified pool replaces the DRAM + SSD hierarchy.",
+-              },
+-              {
+-                label: "STATUS",
+-                value: "Pre-silicon work is complete — simulation, device-physics analysis, GDSII layout, manufacturing-readiness review. Next: PDK access, a signed JDA, foundry engagement, first silicon.",
+-              },
+-            ].map((item, i) => (
+-              <div key={i} className="tech-panel-elevated p-8 rounded-xl animate-fade-in animate-slide-up" style={{ animationDelay: `${i * 0.1}s` }}>
+-                <div className="font-mono text-xs tracking-widest uppercase text-primary mb-3">{item.label}</div>
++        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
++          {FACTS.map((item, i) => (
++            <Reveal key={item.label} delay={i * 80}>
++              <div className="dream-card p-8 rounded-xl h-full">
++                <div className="font-mono text-xs tracking-widest uppercase text-primary mb-3">
++                  {item.label}
++                </div>
+                 <p className="text-foreground/90 leading-relaxed">{item.value}</p>
+               </div>
+-            ))}
+-          </div>
++            </Reveal>
++          ))}
++        </div>
+ 
+-          <div className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10 mb-16">
+-            <p className="font-mono text-xs tracking-widest uppercase text-primary mb-2">
+-              THE AIM
++        <Reveal>
++          <div className="dream-card p-8 rounded-xl mb-14">
++            <p className="font-mono text-xs tracking-widest uppercase text-accent mb-2">
++              The aim
+             </p>
+             <p className="text-foreground/85 text-lg leading-relaxed max-w-3xl">
+               No boot wait — the PC wakes instantly, exactly as you left it. Never lose
+@@ -90,26 +72,24 @@ export function CompanySection() {
+             </p>
+           </div>
+ 
+-          <div className="flex items-center gap-6 flex-wrap">
++          <div className="flex items-center gap-4 flex-wrap">
+             <Link
+               href="/about"
+-              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
++              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-transform hover:scale-[1.03]"
+             >
+-              ABOUT SAN-D
+-              <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+-                  <path d="M5 12h14M12 5l7 7-7 7" />
+-                </svg>
+-              </span>
++              About SAN-D
++              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
++                <path d="M5 12h14M12 5l7 7-7 7" />
++              </svg>
+             </Link>
+             <Link
+               href="/roadmap"
+-              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:border-primary/50 hover:bg-accent"
++              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-colors hover:border-primary/60"
+             >
+-              THE ROADMAP
++              The roadmap
+             </Link>
+           </div>
+-        </div>
++        </Reveal>
+       </div>
+     </section>
+   );
+diff --git a/src/components/sections/ContactSection.tsx b/src/components/sections/ContactSection.tsx
+index e3d514a..63e8633 100644
+--- a/src/components/sections/ContactSection.tsx
++++ b/src/components/sections/ContactSection.tsx
+@@ -1,101 +1,79 @@
+ "use client";
+ 
+-import { useEffect, useState } from "react";
++import { Reveal } from "@/components/ui/Reveal";
++import { LevelEyebrow } from "@/components/ui/LevelEyebrow";
+ 
+-export function ContactSection() {
+-  const [isVisible, setIsVisible] = useState(false);
+-
+-  useEffect(() => {
+-    const observer = new IntersectionObserver(
+-      ([entry]) => {
+-        if (entry.isIntersecting) {
+-          setIsVisible(true);
+-          observer.disconnect();
+-        }
+-      },
+-      { threshold: 0.1 }
+-    );
+-    const el = document.getElementById("contact");
+-    if (el) observer.observe(el);
+-    return () => observer.disconnect();
+-  }, []);
++const CHANNELS = [
++  { label: "General inquiries", value: "To be announced" },
++  { label: "Investors", value: "To be announced" },
++  { label: "Foundry partnerships", value: "To be announced" },
++  { label: "Media / press", value: "To be announced" },
++];
+ 
++export function ContactSection() {
+   return (
+-    <section
+-      id="contact"
+-      className="relative min-h-screen flex items-center justify-center bg-background"
+-      aria-labelledby="contact-title"
+-    >
+-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" aria-hidden="true" />
+-
+-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+-        <div
+-          className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}
+-        >
+-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
+-            <span className="w-2 h-2 rounded-full bg-primary" />
+-            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              GET IN TOUCH
+-            </span>
+-          </div>
++    <section id="contact" className="relative" aria-labelledby="contact-title">
++      <div className="max-w-7xl mx-auto px-6 py-28">
++        <Reveal>
++          <LevelEyebrow level="Level 04" label="Contact" />
+ 
+           <h2
+             id="contact-title"
+             className="font-display font-bold tracking-tight text-foreground mb-6"
+-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
++            style={{ fontSize: "clamp(2.25rem, 5.5vw, 4.25rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
+           >
+-            LET'S BUILD THE
++            LET&apos;S BUILD THE
+             <br />
+             <span className="text-primary">FUTURE TOGETHER</span>
+           </h2>
+ 
+-          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-16">
++          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-14">
+             We&apos;re interested in hearing from investors, foundry partners,
+             engineers, and anyone working on the future of memory.
+           </p>
++        </Reveal>
+ 
+-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl">
+-            <div className="tech-panel-elevated p-8 rounded-xl space-y-6">
+-              <h3 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
++        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mb-14">
++          <Reveal>
++            <div className="dream-card p-8 rounded-xl h-full">
++              <h3
++                className="font-display font-bold text-foreground mb-6"
++                style={{ fontSize: "clamp(1.2rem, 2.4vw, 1.6rem)" }}
++              >
+                 CONTACT INFORMATION
+               </h3>
+-
+-              <div className="space-y-4">
+-                {[
+-                  { label: "GENERAL INQUIRIES", value: "To be announced" },
+-                  { label: "INVESTORS", value: "To be announced" },
+-                  { label: "FOUNDRY PARTNERSHIPS", value: "To be announced" },
+-                  { label: "MEDIA / PRESS", value: "To be announced" },
+-                ].map((contact, i) => (
++              <div className="space-y-3">
++                {CHANNELS.map((contact) => (
+                   <div
+-                    key={i}
+-                    className="flex items-center justify-between gap-4 p-4 rounded-lg bg-background/50 border border-border/50"
++                    key={contact.label}
++                    className="flex items-center justify-between gap-4 p-4 rounded-lg bg-background/60 border border-border/60"
+                   >
+-                    <span className="font-mono text-xs tracking-wider uppercase text-muted-foreground">{contact.label}</span>
+-                    <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/50 rounded-full px-2 py-1 shrink-0">
+-                      PLACEHOLDER
++                    <span className="font-mono text-xs tracking-wider uppercase text-muted-foreground">
++                      {contact.label}
++                    </span>
++                    <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/60 rounded-full px-2 py-1 shrink-0">
++                      Placeholder
+                     </span>
+                   </div>
+                 ))}
+               </div>
+             </div>
++          </Reveal>
+ 
+-            <div className="tech-panel-elevated p-8 rounded-xl space-y-6">
+-              <h3 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
++          <Reveal delay={100}>
++            <div className="dream-card p-8 rounded-xl h-full">
++              <h3
++                className="font-display font-bold text-foreground mb-6"
++                style={{ fontSize: "clamp(1.2rem, 2.4vw, 1.6rem)" }}
++              >
+                 LOCATION
+               </h3>
+-
+-              <div className="space-y-6">
+-                <div className="p-6 rounded-lg bg-background/50 border border-border/50">
+-                  <div className="flex items-start justify-between gap-4">
+-                    <div>
+-                      <div className="font-mono text-xs tracking-widest uppercase text-primary mb-2">HEADQUARTERS</div>
+-                      <div className="font-sans text-lg text-muted-foreground/70 mb-1">To be announced</div>
+-                    </div>
+-                    <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/50 rounded-full px-2 py-1 shrink-0">
+-                      PLACEHOLDER
+-                    </span>
+-                  </div>
++              <div className="p-6 rounded-lg bg-background/60 border border-border/60 mb-6">
++                <div className="font-mono text-xs tracking-widest uppercase text-primary mb-2">
++                  Headquarters
++                </div>
++                <div className="font-sans text-lg text-muted-foreground/70">
++                  To be announced
+                 </div>
+               </div>
+               <p className="text-sm text-muted-foreground/70 leading-relaxed">
+@@ -104,19 +82,22 @@ export function ContactSection() {
+                 foundry partner&apos;s fabs.
+               </p>
+             </div>
+-          </div>
++          </Reveal>
++        </div>
+ 
+-          <div className="mt-16 pt-16 border-t border-border/50">
+-            <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground text-center">
+-              © 2026 SAN-D. All rights reserved.
+-            </p>
+-            <div className="mt-4 flex items-center justify-center gap-8 text-sm text-muted-foreground/70">
+-              <a href="#privacy" className="hover:text-foreground transition-colors">Privacy Policy</a>
+-              <a href="#terms" className="hover:text-foreground transition-colors">Terms of Use</a>
+-              <a href="#cookies" className="hover:text-foreground transition-colors">Cookie Policy</a>
+-            </div>
++        <Reveal>
++          <div className="totem-divider mb-10" aria-hidden="true">
++            <span />
+           </div>
+-        </div>
++          <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground text-center">
++            © 2026 SAN-D. All rights reserved.
++          </p>
++          <div className="mt-4 flex items-center justify-center gap-8 text-sm text-muted-foreground/70">
++            <a href="#privacy" className="hover:text-foreground transition-colors">Privacy Policy</a>
++            <a href="#terms" className="hover:text-foreground transition-colors">Terms of Use</a>
++            <a href="#cookies" className="hover:text-foreground transition-colors">Cookie Policy</a>
++          </div>
++        </Reveal>
+       </div>
+     </section>
+   );
+diff --git a/src/components/sections/Hero.tsx b/src/components/sections/Hero.tsx
+index 85bdb14..4a17cbd 100644
+--- a/src/components/sections/Hero.tsx
++++ b/src/components/sections/Hero.tsx
+@@ -1,149 +1,128 @@
+ "use client";
+ 
+-import { useEffect, useState, useMemo } from "react";
++import { useEffect, useState } from "react";
++import Link from "next/link";
+ 
+-interface HeroProps {
+-  scrollY: number;
+-  viewportHeight: number;
+-  globalProgress: number;
+-  reducedMotion?: boolean;
+-  velocity?: number;
++/** Folding-city line motif: nested rotated squares fading into depth. */
++function FoldLines() {
++  const rings = [560, 460, 368, 284, 208, 142, 88];
++  return (
++    <svg
++      className="absolute inset-0 m-auto h-full w-full opacity-60"
++      viewBox="0 0 800 800"
++      fill="none"
++      aria-hidden="true"
++      preserveAspectRatio="xMidYMid slice"
++    >
++      <defs>
++        <radialGradient id="foldGlow" cx="50%" cy="46%" r="55%">
++          <stop offset="0%" stopColor="#9fd0ff" stopOpacity="0.10" />
++          <stop offset="60%" stopColor="#9fd0ff" stopOpacity="0.03" />
++          <stop offset="100%" stopColor="#9fd0ff" stopOpacity="0" />
++        </radialGradient>
++      </defs>
++      <rect x="0" y="0" width="800" height="800" fill="url(#foldGlow)" />
++      {rings.map((s, i) => (
++        <g key={s} transform={`rotate(${i % 2 === 0 ? 45 : 0} 400 400)`}>
++          <rect
++            x={400 - s / 2}
++            y={400 - s / 2}
++            width={s}
++            height={s}
++            stroke="#9fd0ff"
++            strokeOpacity={0.16 - i * 0.018}
++            strokeWidth="1"
++          />
++        </g>
++      ))}
++      {/* totem point */}
++      <rect
++        x="396"
++        y="396"
++        width="8"
++        height="8"
++        transform="rotate(45 400 400)"
++        fill="#d2a24c"
++        fillOpacity="0.9"
++      />
++    </svg>
++  );
+ }
+ 
+-export function Hero({
+-  scrollY,
+-  viewportHeight,
+-  globalProgress,
+-  reducedMotion = false,
+-  velocity = 0,
+-}: HeroProps) {
++export function Hero() {
+   const [isVisible, setIsVisible] = useState(false);
+ 
+   useEffect(() => {
+-    const timer = setTimeout(() => setIsVisible(true), 100);
++    const timer = setTimeout(() => setIsVisible(true), 80);
+     return () => clearTimeout(timer);
+   }, []);
+ 
+-  const heroProgress = Math.max(0, Math.min(1, scrollY / (viewportHeight * 0.6)));
+-  const titleOpacity = Math.max(0, 1 - heroProgress * 1.8);
+-  const titleTransform = reducedMotion ? 0 : heroProgress * -60 * (velocity > 10 ? 1.5 : 1);
+-  const subtitleOpacity = Math.max(0, 1 - heroProgress * 2.2);
+-  const indicatorOpacity = Math.max(0, 1 - heroProgress * 3);
+-  const scaleValue = useMemo(() => {
+-    const scale = 1e-9 * Math.pow(100, heroProgress);
+-    const exponent = Math.floor(Math.log10(scale));
+-    const mantissa = scale / Math.pow(10, exponent);
+-    return { mantissa: mantissa.toFixed(1), exponent };
+-  }, [heroProgress]);
+-
+   return (
+     <section
+       id="home"
+-      className="relative min-h-screen flex items-center justify-center"
++      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+       aria-labelledby="hero-title"
+     >
+-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70 pointer-events-none" aria-hidden="true" />
++      <FoldLines />
++      <div
++        className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background pointer-events-none"
++        aria-hidden="true"
++      />
+ 
+-      <div className="relative z-10 px-6 max-w-7xl mx-auto w-full">
+-        <div className="text-center">
+-          <div
+-            className={`inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 animate-fade-in animate-slide-up tech-panel`}
+-            style={{
+-              opacity: isVisible ? 1 : 0,
+-              transform: isVisible ? "translateY(0)" : "translateY(20px)",
+-            }}
+-            aria-hidden="true"
+-          >
+-            <span
+-              className="w-2 h-2 rounded-full bg-primary animate-pulse"
+-              style={{ animationDuration: "2s" }}
+-            />
+-            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              SEMICONDUCTOR TECHNOLOGY
+-            </span>
+-          </div>
++      <div className="relative z-10 px-6 max-w-5xl mx-auto w-full text-center">
++        <div
++          className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
++        >
++          <p className="font-mono text-xs tracking-[0.4em] uppercase text-muted-foreground mb-8">
++            SAN-D · Fabless Semiconductor
++          </p>
+ 
+           <h1
+             id="hero-title"
+-            className="font-display font-bold tracking-tight text-foreground mb-6 animate-fade-in animate-slide-up"
++            className="font-display font-bold tracking-tight text-foreground mb-8"
+             style={{
+-              fontSize: "clamp(3rem, 12vw, 10rem)",
+-              lineHeight: 0.95,
+-              letterSpacing: "-0.03em",
+-              opacity: titleOpacity,
+-              transform: `translateY(${titleTransform}px)`,
++              fontSize: "clamp(2.75rem, 9vw, 7rem)",
++              lineHeight: 1.02,
++              letterSpacing: "-0.02em",
+             }}
+           >
+-            <span className="block">ENGINEERING THE</span>
+-            <span className="block">FUTURE AT THE</span>
+-            <span className="block">SMALLEST SCALE</span>
++            MEMORY THAT
++            <br />
++            <span className="text-primary">NEVER FORGETS</span>
+           </h1>
+ 
+-          <p
+-            className="font-sans text-lg md:text-xl max-w-2xl mx-auto text-muted-foreground leading-relaxed animate-fade-in animate-slide-up"
+-            style={{
+-              opacity: subtitleOpacity,
+-              animationDelay: "0.2s",
+-            }}
+-          >
+-            A next-generation semiconductor technology company advancing computing
+-            through atomic-scale engineering and precision manufacturing.
++          <p className="font-sans text-lg md:text-xl max-w-2xl mx-auto text-muted-foreground leading-relaxed mb-12">
++            We are building universal memory — a single pool that is both fast and
++            permanent. No boot wait. No lost work. Not “RAM plus storage.” Just one
++            memory number.
+           </p>
+ 
+-          <div
+-            className="mt-16 flex items-center justify-center gap-8 animate-fade-in animate-slide-up"
+-            style={{
+-              opacity: indicatorOpacity,
+-              animationDelay: "0.4s",
+-            }}
+-            aria-hidden="true"
+-          >
+-            <div className="flex flex-col items-center gap-2">
+-              <div
+-                className="w-px h-24 bg-gradient-to-b from-primary/60 to-transparent"
+-                style={{ opacity: indicatorOpacity }}
+-              />
+-              <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-                SCROLL
+-              </span>
+-            </div>
+-
+-            <div className="hidden lg:block relative">
+-              <div className="w-px h-64 bg-gradient-to-b from-primary/40 to-transparent" />
+-              <div className="absolute left-0 bottom-0 w-full h-px bg-primary/20" />
+-              <div
+-                className="absolute left-0 bottom-0 w-full h-1 bg-primary"
+-                style={{ transform: `scaleY(${1 - heroProgress})`, transformOrigin: "bottom" }}
+-              />
+-            </div>
++          <div className="flex items-center justify-center gap-4 flex-wrap">
++            <Link
++              href="#technology"
++              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-transform hover:scale-[1.03]"
++            >
++              Explore the chip
++            </Link>
++            <Link
++              href="#roadmap"
++              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-colors hover:border-primary/60"
++            >
++              The path to silicon
++            </Link>
+           </div>
+         </div>
+       </div>
+ 
+       <div
+-        className="absolute bottom-8 left-6 right-6 flex items-end justify-between px-6 pointer-events-none"
++        className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 transition-opacity duration-1000 ${isVisible ? "opacity-100" : "opacity-0"}`}
+         aria-hidden="true"
+       >
+-        <div className="section-marker active" data-scale="10⁻⁹ m">
+-          ATOMIC SCALE
+-        </div>
+-        <div className="hidden md:flex items-end gap-4 pb-2">
+-          <div className="font-mono text-xs text-muted-foreground/50">
+-            SCALE
+-          </div>
+-          <div className="font-display font-bold text-2xl md:text-4xl text-foreground tabular-nums">
+-            10<span className="text-xs">⁻⁹</span> m
+-          </div>
+-        </div>
+-        <div className="hidden md:flex flex-col items-end gap-1 pb-2 text-right">
+-          <div className="font-mono text-xs text-muted-foreground/50">
+-            PROGRESS
+-          </div>
+-          <div className="font-display font-bold text-2xl md:text-4xl text-primary tabular-nums">
+-            {Math.round(globalProgress * 100)}%
+-          </div>
+-        </div>
++        <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-muted-foreground">
++          Descend
++        </span>
++        <span className="w-px h-12 bg-gradient-to-b from-primary/70 to-transparent" />
+       </div>
+     </section>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/sections/RoadmapSection.tsx b/src/components/sections/RoadmapSection.tsx
+index 0cc7357..409c4ed 100644
+--- a/src/components/sections/RoadmapSection.tsx
++++ b/src/components/sections/RoadmapSection.tsx
+@@ -1,7 +1,8 @@
+ "use client";
+ 
+-import { useEffect, useState } from "react";
+ import Link from "next/link";
++import { Reveal } from "@/components/ui/Reveal";
++import { LevelEyebrow } from "@/components/ui/LevelEyebrow";
+ 
+ const PHASES = [
+   {
+@@ -27,67 +28,38 @@ const PHASES = [
+ ];
+ 
+ export function RoadmapSection() {
+-  const [isVisible, setIsVisible] = useState(false);
+-
+-  useEffect(() => {
+-    const observer = new IntersectionObserver(
+-      ([entry]) => {
+-        if (entry.isIntersecting) {
+-          setIsVisible(true);
+-          observer.disconnect();
+-        }
+-      },
+-      { threshold: 0.1 }
+-    );
+-    const el = document.getElementById("roadmap");
+-    if (el) observer.observe(el);
+-    return () => observer.disconnect();
+-  }, []);
+-
+   return (
+-    <section
+-      id="roadmap"
+-      className="relative min-h-screen bg-background"
+-      aria-labelledby="roadmap-title"
+-    >
+-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none" aria-hidden="true" />
+-
+-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+-        <div
+-          className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}
+-        >
+-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
+-            <span className="w-2 h-2 rounded-full bg-primary" />
+-            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              FROM PDK &amp; JDA TO SILICON
+-            </span>
+-          </div>
++    <section id="roadmap" className="relative" aria-labelledby="roadmap-title">
++      <div className="max-w-7xl mx-auto px-6 py-28">
++        <Reveal>
++          <LevelEyebrow level="Level 03" label="The path" />
+ 
+           <h2
+             id="roadmap-title"
+             className="font-display font-bold tracking-tight text-foreground mb-6"
+-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
++            style={{ fontSize: "clamp(2.25rem, 5.5vw, 4.25rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
+           >
+             WHAT THE FUNDING
+             <br />
+             <span className="text-primary">BUILDS</span>
+           </h2>
+ 
+-          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-16">
++          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-14">
+             A forward-looking plan, not a status report. The PDK makes the design
+             fab-real, the JDA makes the device fab-real, the MPW makes it silicon,
+             and testing makes the claims proof. Phase by phase, capital converts
+             directly into de-risked milestones.
+           </p>
++        </Reveal>
+ 
+-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+-            {PHASES.map((phase, i) => (
+-              <article
+-                key={i}
+-                className="tech-panel-elevated p-8 rounded-xl animate-fade-in animate-slide-up"
+-                style={{ animationDelay: `${i * 0.1}s` }}
+-              >
+-                <div className="font-display font-bold text-primary mb-4" style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}>
++        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
++          {PHASES.map((phase, i) => (
++            <Reveal key={phase.n} delay={i * 80}>
++              <article className="dream-card p-8 rounded-xl h-full">
++                <div
++                  className="font-display font-bold text-primary mb-4"
++                  style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
++                >
+                   {phase.n}
+                 </div>
+                 <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-3">
+@@ -95,15 +67,17 @@ export function RoadmapSection() {
+                 </h3>
+                 <p className="text-muted-foreground text-sm leading-relaxed">{phase.desc}</p>
+               </article>
+-            ))}
+-          </div>
++            </Reveal>
++          ))}
++        </div>
+ 
+-          <div className="mt-8 p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10">
+-            <div className="flex items-center gap-4">
+-              <div className="w-px h-12 bg-primary/30" aria-hidden="true" />
++        <Reveal>
++          <div className="dream-card p-8 rounded-xl mb-12">
++            <div className="flex items-center gap-5">
++              <span className="w-1 self-stretch bg-accent/60 rounded-full" aria-hidden="true" />
+               <div>
+-                <p className="font-mono text-xs tracking-widest uppercase text-primary mb-1">
+-                  HONEST BY DESIGN
++                <p className="font-mono text-xs tracking-widest uppercase text-accent mb-1">
++                  Honest by design
+                 </p>
+                 <p className="text-foreground/80 max-w-3xl">
+                   No foundry partnership exists yet — PDK access and the JDA are milestones
+@@ -115,20 +89,16 @@ export function RoadmapSection() {
+             </div>
+           </div>
+ 
+-          <div className="mt-12">
+-            <Link
+-              href="/roadmap"
+-              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+-            >
+-              READ THE FULL ROADMAP
+-              <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+-                  <path d="M5 12h14M12 5l7 7-7 7" />
+-                </svg>
+-              </span>
+-            </Link>
+-          </div>
+-        </div>
++          <Link
++            href="/roadmap"
++            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-transform hover:scale-[1.03]"
++          >
++            Read the full roadmap
++            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
++              <path d="M5 12h14M12 5l7 7-7 7" />
++            </svg>
++          </Link>
++        </Reveal>
+       </div>
+     </section>
+   );
+diff --git a/src/components/sections/ScrollSection.tsx b/src/components/sections/ScrollSection.tsx
+deleted file mode 100644
+index bafbc15..0000000
+--- a/src/components/sections/ScrollSection.tsx
++++ /dev/null
+@@ -1,304 +0,0 @@
+-"use client";
+-
+-import { useEffect, useRef, useState, useMemo } from "react";
+-import { VideoSegment } from "@/lib/video-sequence";
+-import { useSectionVisibility } from "@/hooks/useScrollSync";
+-
+-interface ScrollSectionProps {
+-  segment: VideoSegment;
+-  index: number;
+-  isActive: boolean;
+-  localProgress: number;
+-  globalProgress: number;
+-  viewportHeight: number;
+-  scrollY: number;
+-  reducedMotion?: boolean;
+-  direction?: "up" | "down" | "none";
+-  velocity?: number;
+-}
+-
+-const SECTION_CONTENT: Record<string, { title: string; description: string; details: string[]; technicalSpecs: { label: string; value: string }[] }> = {
+-  "atomic-scale": {
+-    title: "ATOMIC SCALE",
+-    description: "At the fundamental level, semiconductor technology begins with the precise arrangement of atoms in a crystal lattice. Silicon atoms form a diamond cubic structure with 5.43 Ångström lattice spacing, creating the foundation for all electronic devices.",
+-    details: [
+-      "Crystal lattice: Diamond cubic structure",
+-      "Lattice constant: 5.431 Å",
+-      "Atomic density: 5×10²² atoms/cm³",
+-      "Covalent bonding: sp³ hybridization",
+-    ],
+-    technicalSpecs: [
+-      { label: "MATERIAL", value: "Single-crystal Silicon" },
+-      { label: "ORIENTATION", value: "<100> / <111>" },
+-      { label: "PURITY", value: "99.9999999% (9N)" },
+-      { label: "DEFECT DENSITY", value: "< 0.1 cm⁻³" },
+-    ],
+-  },
+-  transistor: {
+-    title: "TRANSISTOR",
+-    description: "The transistor emerges as engineered dopants create source, drain, and channel regions. A gate dielectric separates the gate electrode from the channel, enabling field-effect control of electron flow at nanometer dimensions.",
+-    details: [
+-      "Gate length: < 20 nm (advanced nodes)",
+-      "High-κ dielectric: HfO₂ / Al₂O₃",
+-      "Metal gate: TiN / TaN work function tuning",
+-      "Strained channels: SiGe / Si:C stressors",
+-    ],
+-    technicalSpecs: [
+-      { label: "ARCHITECTURE", value: "Gate-All-Around (GAA)" },
+-      { label: "GATE LENGTH", value: "12–18 nm" },
+-      { label: "DIELECTRIC", value: "HfO₂ / ZrO₂ stack" },
+-      { label: "SUBTHRESHOLD SWING", value: "~65 mV/dec" },
+-    ],
+-  },
+-  "transistor-group": {
+-    title: "TRANSISTOR GROUP",
+-    description: "Multiple transistors connect through local interconnects to form basic circuit elements. Shared diffusion regions and common gates create dense, matched device pairs essential for analog and digital circuit design.",
+-    details: [
+-      "Shared source/drain contacts",
+-      "Common centroid layout for matching",
+-      "Dummy devices for edge effects",
+-      "Local interconnect: M0 / MD layers",
+-    ],
+-    technicalSpecs: [
+-      { label: "MATCHING", value: "σ(ΔVth) < 1 mV" },
+-      { label: "DEVICE COUNT", value: "2–64 transistors" },
+-      { label: "LOCAL ROUTING", value: "M0 / M1 / MD" },
+-      { label: "AREA EFFICIENCY", value: "> 85% utilization" },
+-    ],
+-  },
+-  "logic-cell": {
+-    title: "LOGIC CELL",
+-    description: "Transistors organize into functional logic cells — inverters, NAND gates, flip-flops. Standard cell libraries provide characterized timing, power, and area metrics enabling automated place-and-route design flows.",
+-    details: [
+-      "Standard cell height: 6-12 tracks",
+-      "Logic functions: INV, NAND, NOR, XOR, MUX",
+-      "Sequential: DFF, latch, scan flop",
+-      "Power rails: VDD / VSS on M1/M2",
+-    ],
+-    technicalSpecs: [
+-      { label: "CELL HEIGHT", value: "7.5T / 6T / 5T" },
+-      { label: "LIBRARY SIZE", value: "500+ variants" },
+-      { label: "TIMING MODELS", value: "CCS / ECSM" },
+-      { label: "PVT CORNERS", value: "100+ corners" },
+-    ],
+-  },
+-  "cell-array": {
+-    title: "CELL ARRAY",
+-    description: "Thousands of logic cells tile into regular arrays. Hierarchical routing distributes clocks, power, and signals. The repetitive structure enables density optimization and statistical timing analysis at scale.",
+-    details: [
+-      "Array dimensions: 100s × 100s of cells",
+-      "Hierarchical routing: local → global",
+-      "Clock spines and distribution mesh",
+-      "Power grid: mesh + stripe topology",
+-    ],
+-    technicalSpecs: [
+-      { label: "ARRAY SIZE", value: "Up to 1M+ cells" },
+-      { label: "ROUTING LAYERS", value: "M1–M4 local" },
+-      { label: "CLOCK SKEW", value: "< 10 ps" },
+-      { label: "IR DROP", value: "< 5% VDD" },
+-    ],
+-  },
+-  "functional-blocks": {
+-    title: "FUNCTIONAL BLOCKS",
+-    description: "Cell arrays compose into macro blocks: compute cores, cache hierarchies, memory controllers, I/O interfaces. Each block optimizes for its function while standard interfaces enable system integration.",
+-    details: [
+-      "Compute: ALU, FPU, vector units",
+-      "Memory: SRAM, register files, caches",
+-      "Interconnect: NoC, AXI, CHI protocols",
+-      "I/O: SerDes, GPIO, DDR/PHY",
+-    ],
+-    technicalSpecs: [
+-      { label: "BLOCK TYPES", value: "12+ categories" },
+-      { label: "INTERFACE WIDTH", value: "128–1024 bit" },
+-      { label: "FREQUENCY", value: "3–6 GHz target" },
+-      { label: "POWER DOMAINS", value: "10–50 per block" },
+-    ],
+-  },
+-  "complete-die": {
+-    title: "COMPLETE DIE",
+-    description: "Functional blocks integrate into a complete system-on-chip. Floorplanning optimizes block placement, routing congestion, thermal distribution, and signal integrity across the die area.",
+-    details: [
+-      "Die area: 100-600 mm² (advanced)",
+-      "Transistor count: 10B-100B+",
+-      "Metal layers: 12-20+ routing layers",
+-      "Thermal: hotspot management, TSVs",
+-    ],
+-    technicalSpecs: [
+-      { label: "DIE AREA", value: "200–600 mm²" },
+-      { label: "TRANSISTORS", value: "50B–200B" },
+-      { label: "METAL LAYERS", value: "16–22" },
+-      { label: "TSV COUNT", value: "100K–1M+" },
+-    ],
+-  },
+-  "macro-chip": {
+-    title: "MACRO CHIP",
+-    description: "The completed die mounts in advanced packaging: chiplets, HBM stacks, interposers, and substrate redistribution layers. Heterogeneous integration combines logic, memory, and I/O into a single package.",
+-    details: [
+-      "Packaging: 2.5D / 3D hybrid bonding",
+-      "Chiplet interconnect: UCIe, BoW",
+-      "HBM: 8-12 Hi stacks, TB/s bandwidth",
+-      "Substrate: organic / glass core, RDL",
+-    ],
+-    technicalSpecs: [
+-      { label: "PACKAGE TYPE", value: "2.5D / 3D hybrid" },
+-      { label: "CHIPLETS", value: "4–16 per package" },
+-      { label: "I/O DENSITY", value: "> 1000/mm²" },
+-      { label: "BANDWIDTH", value: "TB/s aggregate" },
+-    ],
+-  },
+-};
+-
+-export function ScrollSection({
+-  segment,
+-  index,
+-  isActive,
+-  localProgress,
+-  globalProgress,
+-  viewportHeight,
+-  scrollY,
+-  reducedMotion = false,
+-  direction = "none",
+-  velocity = 0,
+-}: ScrollSectionProps) {
+-  const { ref, isVisible: inView, intersectionRatio } = useSectionVisibility(segment.id, 0.1);
+-  const [isAnimating, setIsAnimating] = useState(false);
+-
+-  const content = SECTION_CONTENT[segment.id] || {
+-    title: segment.label,
+-    description: "",
+-    details: [],
+-    technicalSpecs: [],
+-  };
+-
+-  useEffect(() => {
+-    if (isActive && inView && !isAnimating) {
+-      setIsAnimating(true);
+-      const timer = setTimeout(() => setIsAnimating(false), 800);
+-      return () => clearTimeout(timer);
+-    }
+-  }, [isActive, inView, isAnimating]);
+-
+-  const contentOpacity = isActive
+-    ? Math.min(1, localProgress * 1.5 + intersectionRatio * 0.5)
+-    : globalProgress > (index + 1) / 8
+-    ? Math.max(0, 1 - (globalProgress - (index + 1) / 8) * 3)
+-    : intersectionRatio;
+-
+-  const titleTransform = reducedMotion ? 0 : (1 - localProgress) * 20 * (direction === "down" ? 1 : -1);
+-  const detailStagger = useMemo(
+-    () => content.details.map((_, i) => i * 80),
+-    [content.details]
+-  );
+-
+-  const specsOpacity = isActive ? Math.min(1, (localProgress - 0.3) * 2) : 0;
+-
+-  return (
+-    <section
+-      ref={ref}
+-      id={segment.id}
+-      className="relative min-h-screen flex items-center"
+-      aria-labelledby={`section-${segment.id}`}
+-      style={{ opacity: isActive ? 1 : 0.25 }}
+-    >
+-      <div
+-        className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none"
+-        aria-hidden="true"
+-      />
+-
+-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-32">
+-        <div
+-          className="transition-all duration-700 ease-out"
+-          style={{
+-            opacity: contentOpacity,
+-            transform: reducedMotion ? "none" : `translateY(${titleTransform}px)`,
+-          }}
+-        >
+-          <div className="mb-8 flex items-center gap-4">
+-            <div className="relative w-12 h-px bg-primary/50 overflow-hidden" aria-hidden="true">
+-              <div
+-                className="absolute top-0 left-0 h-full bg-primary transition-all duration-300 ease-out"
+-                style={{ width: `${localProgress * 100}%` }}
+-              />
+-            </div>
+-            <span className="scale-indicator">{segment.scaleLabel}</span>
+-          </div>
+-
+-          <h2
+-            id={`section-${segment.id}`}
+-            className="font-display font-bold tracking-tight text-foreground mb-6"
+-            style={{
+-              fontSize: "clamp(2rem, 6vw, 4.5rem)",
+-              lineHeight: 1.05,
+-              letterSpacing: "-0.02em",
+-            }}
+-          >
+-            {content.title}
+-          </h2>
+-
+-          <p className="text-muted-foreground max-w-2xl text-base md:text-lg leading-relaxed mb-10">
+-            {content.description}
+-          </p>
+-
+-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mb-12">
+-            {content.details.map((detail, i) => (
+-              <div
+-                key={i}
+-                className="tech-panel p-4 rounded-lg border-l-2 border-primary/30 animate-fade-in animate-slide-up"
+-                style={{
+-                  animationDelay: `${detailStagger[i]}ms`,
+-                  opacity: isActive ? Math.min(1, (localProgress - 0.1) * 3) : 0,
+-                  transform: reducedMotion ? "none" : `translateX(${(1 - localProgress) * 30}px)`,
+-                }}
+-              >
+-                <span className="font-mono text-xs text-primary/70">▸ </span>
+-                <span className="font-sans text-sm text-foreground/80">{detail}</span>
+-              </div>
+-            ))}
+-          </div>
+-
+-          {content.technicalSpecs.length > 0 && (
+-            <div
+-              className="grid grid-cols-2 gap-3 max-w-2xl"
+-              style={{
+-                opacity: specsOpacity,
+-                transform: reducedMotion ? "none" : `translateY(${(1 - specsOpacity) * 20}px)`,
+-              }}
+-            >
+-              {content.technicalSpecs.map((spec, i) => (
+-                <div
+-                  key={i}
+-                  className="tech-panel p-4 rounded-lg border border-border/50 animate-fade-in animate-slide-up"
+-                  style={{ animationDelay: `${200 + i * 60}ms` }}
+-                >
+-                  <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-1">
+-                    {spec.label}
+-                  </div>
+-                  <div className="font-sans text-sm font-medium text-foreground/90 font-mono">
+-                    {spec.value}
+-                  </div>
+-                </div>
+-              ))}
+-            </div>
+-          )}
+-        </div>
+-
+-        <div
+-          className="absolute bottom-8 left-6 right-6 flex items-end justify-between px-6 pointer-events-none"
+-          aria-hidden="true"
+-        >
+-          <div className={`section-marker ${isActive ? "active" : ""}`} data-scale={segment.scaleLabel}>
+-            {segment.label}
+-          </div>
+-          <div className="hidden md:flex items-end gap-4 pb-2 opacity-50">
+-            <div className="font-mono text-xs text-muted-foreground/50">
+-              SCALE
+-            </div>
+-            <div className="font-display font-bold text-2xl md:text-4xl text-foreground tabular-nums">
+-              {segment.scaleLabel}
+-            </div>
+-          </div>
+-        </div>
+-      </div>
+-    </section>
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/components/sections/TechnologySection.tsx b/src/components/sections/TechnologySection.tsx
+index 8c059f5..4b37277 100644
+--- a/src/components/sections/TechnologySection.tsx
++++ b/src/components/sections/TechnologySection.tsx
+@@ -1,109 +1,87 @@
+ "use client";
+ 
+-import { useEffect, useState } from "react";
+ import Link from "next/link";
++import { Reveal } from "@/components/ui/Reveal";
++import { LevelEyebrow } from "@/components/ui/LevelEyebrow";
+ 
+-export function TechnologySection() {
+-  const [isVisible, setIsVisible] = useState(false);
+-
+-  useEffect(() => {
+-    const observer = new IntersectionObserver(
+-      ([entry]) => {
+-        if (entry.isIntersecting) {
+-          setIsVisible(true);
+-          observer.disconnect();
+-        }
+-      },
+-      { threshold: 0.1 }
+-    );
+-    const el = document.getElementById("technology");
+-    if (el) observer.observe(el);
+-    return () => observer.disconnect();
+-  }, []);
+-
+-  const elements = [
+-    {
+-      tag: "T_DRAM + 1C",
+-      title: "THE VOLATILE PATH",
+-      description: "Thin-oxide transistor + capacitor: the working memory. DRAM-class speed (~2.8 ns access, modeled); stored as charge, so it needs refresh and dies with power.",
+-    },
+-    {
+-      tag: "T_NVM + 1M",
+-      title: "THE NONVOLATILE SHADOW",
+-      description: "Thick-oxide transistor + hafnium-oxide memristor: the shadow. Stores data as resistance — a filament formed or broken in the oxide. Needs no power, but stays off the daily critical path.",
+-    },
+-    {
+-      tag: "ON-DIE",
+-      title: "THE CONTROLLER",
+-      description: "Power-fail detection, SAVE/RESTORE sequencing, and ECC — in the array periphery of the same die. Each die is self-sufficient; no host involvement, no software, no bus traffic.",
+-    },
+-    {
+-      tag: "DDR-STYLE",
+-      title: "THE HOST VIEW",
+-      description: "A standard NVDIMM-N-like memory interface. No CPU or GPU changes required — the processor issues ordinary memory reads and writes to one unified pool.",
+-    },
+-  ];
++const ELEMENTS = [
++  {
++    tag: "T_DRAM + 1C",
++    title: "THE VOLATILE PATH",
++    description:
++      "Thin-oxide transistor + capacitor: the working memory. DRAM-class speed (~2.8 ns access, modeled); stored as charge, so it needs refresh and dies with power.",
++  },
++  {
++    tag: "T_NVM + 1M",
++    title: "THE NONVOLATILE SHADOW",
++    description:
++      "Thick-oxide transistor + hafnium-oxide memristor: the shadow. Stores data as resistance — a filament formed or broken in the oxide. Needs no power, but stays off the daily critical path.",
++  },
++  {
++    tag: "ON-DIE",
++    title: "THE CONTROLLER",
++    description:
++      "Power-fail detection, SAVE/RESTORE sequencing, and ECC — in the array periphery of the same die. Each die is self-sufficient; no host involvement, no software, no bus traffic.",
++  },
++  {
++    tag: "DDR-STYLE",
++    title: "THE HOST VIEW",
++    description:
++      "A standard NVDIMM-N-like memory interface. No CPU or GPU changes required — the processor issues ordinary memory reads and writes to one unified pool.",
++  },
++];
+ 
++export function TechnologySection() {
+   return (
+-    <section
+-      id="technology"
+-      className="relative min-h-screen bg-background"
+-      aria-labelledby="technology-title"
+-    >
+-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none" aria-hidden="true" />
+-
+-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+-        <div
+-          className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}
+-        >
+-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm mb-8 tech-panel">
+-            <span className="w-2 h-2 rounded-full bg-primary" />
+-            <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              THE UM002B CELL · 2T1C1M
+-            </span>
+-          </div>
++    <section id="technology" className="relative" aria-labelledby="technology-title">
++      <div className="max-w-7xl mx-auto px-6 py-28">
++        <Reveal>
++          <LevelEyebrow level="Level 01" label="The chip" />
+ 
+           <h2
+             id="technology-title"
+             className="font-display font-bold tracking-tight text-foreground mb-6"
+-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
++            style={{ fontSize: "clamp(2.25rem, 5.5vw, 4.25rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
+           >
+             TWO TRANSISTORS.
+             <br />
+             <span className="text-primary">ONE UNIVERSAL BIT.</span>
+           </h2>
+ 
+-          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-16">
++          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-14">
+             Two transistors, one capacitor, one memristor per cell. The capacitor does
+             all normal operation at DRAM speed; the memristor wakes only on power
+             events. Four modes — NORMAL, SAVE, OFF, RESTORE — managed entirely by the
+             on-die controller.
+           </p>
++        </Reveal>
+ 
+-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
+-            {elements.map((el, i) => (
+-              <article
+-                key={i}
+-                className="tech-panel-elevated p-8 rounded-xl animate-fade-in animate-slide-up"
+-                style={{ animationDelay: `${i * 0.1}s` }}
+-              >
++        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-14">
++          {ELEMENTS.map((el, i) => (
++            <Reveal key={el.tag} delay={i * 80}>
++              <article className="dream-card p-8 rounded-xl h-full">
+                 <p className="font-mono text-xs tracking-widest uppercase text-primary mb-3">
+                   {el.tag}
+                 </p>
+-                <h3 className="font-display font-bold text-foreground mb-3" style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}>
++                <h3
++                  className="font-display font-bold text-foreground mb-3"
++                  style={{ fontSize: "clamp(1.2rem, 2.4vw, 1.6rem)" }}
++                >
+                   {el.title}
+                 </h3>
+                 <p className="text-muted-foreground leading-relaxed">{el.description}</p>
+               </article>
+-            ))}
+-          </div>
++            </Reveal>
++          ))}
++        </div>
+ 
+-          <div className="p-8 rounded-xl bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border border-primary/10 mb-12">
+-            <div className="flex items-center gap-4">
+-              <div className="w-px h-12 bg-primary/30" aria-hidden="true" />
++        <Reveal>
++          <div className="dream-card p-8 rounded-xl mb-12">
++            <div className="flex items-center gap-5">
++              <span className="w-1 self-stretch bg-accent/60 rounded-full" aria-hidden="true" />
+               <div>
+-                <p className="font-mono text-xs tracking-widest uppercase text-primary mb-1">
+-                  EVIDENCE STATUS
++                <p className="font-mono text-xs tracking-widest uppercase text-accent mb-1">
++                  Evidence status
+                 </p>
+                 <p className="text-foreground/80 max-w-3xl">
+                   Pre-silicon architecture: analytical models, simulation, controller
+@@ -116,16 +94,14 @@ export function TechnologySection() {
+ 
+           <Link
+             href="/technology"
+-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
++            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono text-sm tracking-wider uppercase rounded-full transition-transform hover:scale-[1.03]"
+           >
+-            THE FULL ARCHITECTURE
+-            <span className="w-4 h-4 flex items-center justify-center" aria-hidden="true">
+-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+-                <path d="M5 12h14M12 5l7 7-7 7" />
+-              </svg>
+-            </span>
++            The full architecture
++            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
++              <path d="M5 12h14M12 5l7 7-7 7" />
++            </svg>
+           </Link>
+-        </div>
++        </Reveal>
+       </div>
+     </section>
+   );
+diff --git a/src/components/ui/LevelEyebrow.tsx b/src/components/ui/LevelEyebrow.tsx
+new file mode 100644
+index 0000000..847a8fd
+--- /dev/null
++++ b/src/components/ui/LevelEyebrow.tsx
+@@ -0,0 +1,13 @@
++export function LevelEyebrow({ level, label }: { level: string; label: string }) {
++  return (
++    <div className="flex items-center gap-4 mb-8" aria-hidden="true">
++      <span className="font-mono text-xs tracking-[0.35em] uppercase text-accent">
++        {level}
++      </span>
++      <span className="h-px w-14 bg-border" />
++      <span className="font-mono text-xs tracking-[0.35em] uppercase text-muted-foreground">
++        {label}
++      </span>
++    </div>
++  );
++}
+diff --git a/src/components/ui/Reveal.tsx b/src/components/ui/Reveal.tsx
+new file mode 100644
+index 0000000..f4c893e
+--- /dev/null
++++ b/src/components/ui/Reveal.tsx
+@@ -0,0 +1,34 @@
++"use client";
++
++import { useEffect, useRef, useState, type ReactNode } from "react";
++
++export function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
++  const ref = useRef<HTMLDivElement>(null);
++  const [isVisible, setIsVisible] = useState(false);
++
++  useEffect(() => {
++    const el = ref.current;
++    if (!el) return;
++    const observer = new IntersectionObserver(
++      ([entry]) => {
++        if (entry.isIntersecting) {
++          setIsVisible(true);
++          observer.disconnect();
++        }
++      },
++      { threshold: 0.12 }
++    );
++    observer.observe(el);
++    return () => observer.disconnect();
++  }, []);
++
++  return (
++    <div
++      ref={ref}
++      className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
++      style={{ transitionDelay: `${delay}ms` }}
++    >
++      {children}
++    </div>
++  );
++}
+diff --git a/src/components/video/CoordinateGridOverlay.tsx b/src/components/video/CoordinateGridOverlay.tsx
+deleted file mode 100644
+index a4a9001..0000000
+--- a/src/components/video/CoordinateGridOverlay.tsx
++++ /dev/null
+@@ -1,262 +0,0 @@
+-"use client";
+-
+-import { useEffect, useRef, useState, useMemo } from "react";
+-
+-interface CoordinateGridOverlayProps {
+-  currentSegment: { id: string; label: string; scaleLabel: string };
+-  localProgress: number;
+-  globalProgress: number;
+-  reducedMotion: boolean;
+-  viewportWidth: number;
+-  viewportHeight: number;
+-}
+-
+-const SEGMENT_GRID_CONFIG: Record<string, {
+-  majorSpacing: number;
+-  minorDivisions: number;
+-  labelInterval: number;
+-  units: string;
+-  showLabels: boolean;
+-  color: string;
+-  opacity: number;
+-}> = {
+-  "atomic-scale": { majorSpacing: 50, minorDivisions: 5, labelInterval: 5, units: "nm", showLabels: true, color: "rgba(100,180,255,0.08)", opacity: 0.6 },
+-  "transistor": { majorSpacing: 60, minorDivisions: 4, labelInterval: 4, units: "nm", showLabels: true, color: "rgba(120,200,255,0.1)", opacity: 0.5 },
+-  "transistor-group": { majorSpacing: 80, minorDivisions: 4, labelInterval: 3, units: "nm", showLabels: true, color: "rgba(140,210,255,0.08)", opacity: 0.4 },
+-  "logic-cell": { majorSpacing: 100, minorDivisions: 5, labelInterval: 2, units: "μm", showLabels: true, color: "rgba(160,220,255,0.08)", opacity: 0.35 },
+-  "cell-array": { majorSpacing: 120, minorDivisions: 4, labelInterval: 2, units: "μm", showLabels: true, color: "rgba(180,230,255,0.06)", opacity: 0.3 },
+-  "functional-blocks": { majorSpacing: 150, minorDivisions: 3, labelInterval: 2, units: "μm", showLabels: true, color: "rgba(200,240,255,0.05)", opacity: 0.25 },
+-  "complete-die": { majorSpacing: 200, minorDivisions: 4, labelInterval: 3, units: "mm", showLabels: true, color: "rgba(220,245,255,0.04)", opacity: 0.2 },
+-  "macro-chip": { majorSpacing: 250, minorDivisions: 5, labelInterval: 4, units: "mm", showLabels: true, color: "rgba(240,250,255,0.03)", opacity: 0.15 },
+-};
+-
+-const SCALE_VALUES: Record<string, number> = {
+-  "atomic-scale": 1e-9,
+-  "transistor": 1e-8,
+-  "transistor-group": 1e-7,
+-  "logic-cell": 1e-6,
+-  "cell-array": 1e-5,
+-  "functional-blocks": 1e-4,
+-  "complete-die": 1e-3,
+-  "macro-chip": 1e-2,
+-};
+-
+-function formatCoordinate(value: number, units: string): string {
+-  if (units === "nm") {
+-    if (value >= 1000) return `${(value / 1000).toFixed(1)} μm`;
+-    return `${value.toFixed(0)} nm`;
+-  }
+-  if (units === "μm") {
+-    if (value >= 1000) return `${(value / 1000).toFixed(2)} mm`;
+-    return `${value.toFixed(1)} μm`;
+-  }
+-  if (units === "mm") {
+-    return `${value.toFixed(2)} mm`;
+-  }
+-  return `${value.toFixed(2)} ${units}`;
+-}
+-
+-export function CoordinateGridOverlay({
+-  currentSegment,
+-  localProgress,
+-  globalProgress,
+-  reducedMotion,
+-  viewportWidth,
+-  viewportHeight,
+-}: CoordinateGridOverlayProps) {
+-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+-  const rafRef = useRef<number | null>(null);
+-  const startTimeRef = useRef(performance.now());
+-  const [isReady, setIsReady] = useState(false);
+-
+-  const config = useMemo(() => SEGMENT_GRID_CONFIG[currentSegment.id] || SEGMENT_GRID_CONFIG["atomic-scale"], [currentSegment.id]);
+-  const scaleValue = useMemo(() => SCALE_VALUES[currentSegment.id] || 1e-9, [currentSegment.id]);
+-
+-  useEffect(() => {
+-    if (reducedMotion) return;
+-
+-    const canvas = canvasRef.current;
+-    if (!canvas) return;
+-
+-    const ctx = canvas.getContext("2d");
+-    if (!ctx) return;
+-
+-    const resize = () => {
+-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+-      canvas.width = window.innerWidth * dpr;
+-      canvas.height = window.innerHeight * dpr;
+-      canvas.style.width = "100%";
+-      canvas.style.height = "100%";
+-      ctx.scale(dpr, dpr);
+-    };
+-
+-    resize();
+-    window.addEventListener("resize", resize);
+-    setIsReady(true);
+-    startTimeRef.current = performance.now();
+-
+-    const render = () => {
+-      const ctx = canvas.getContext("2d");
+-      if (!ctx) return;
+-
+-      const w = window.innerWidth;
+-      const h = window.innerHeight;
+-      const time = (performance.now() - startTimeRef.current) * 0.001;
+-
+-      ctx.clearRect(0, 0, w, h);
+-      ctx.globalCompositeOperation = "source-over";
+-
+-      const baseOpacity = config.opacity * (0.5 + localProgress * 0.5);
+-      const pulseOpacity = baseOpacity * (0.8 + 0.2 * Math.sin(time * 0.5));
+-
+-      // Major grid lines
+-      ctx.strokeStyle = config.color;
+-      ctx.lineWidth = 0.5;
+-      ctx.lineCap = "round";
+-
+-      // Vertical major lines
+-      for (let x = 0; x <= w; x += config.majorSpacing) {
+-        const alpha = pulseOpacity * (0.7 + 0.3 * Math.sin(time * 0.3 + x * 0.01));
+-        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+-        ctx.beginPath();
+-        ctx.moveTo(x, 0);
+-        ctx.lineTo(x, h);
+-        ctx.stroke();
+-      }
+-
+-      // Horizontal major lines
+-      for (let y = 0; y <= h; y += config.majorSpacing) {
+-        const alpha = pulseOpacity * (0.7 + 0.3 * Math.sin(time * 0.3 + y * 0.01));
+-        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+-        ctx.beginPath();
+-        ctx.moveTo(0, y);
+-        ctx.lineTo(w, y);
+-        ctx.stroke();
+-      }
+-
+-      // Minor grid lines (fainter)
+-      ctx.lineWidth = 0.25;
+-      const minorSpacing = config.majorSpacing / config.minorDivisions;
+-
+-      for (let x = 0; x <= w; x += minorSpacing) {
+-        if (x % config.majorSpacing === 0) continue;
+-        const alpha = pulseOpacity * 0.3 * (0.5 + 0.5 * Math.sin(time * 0.4 + x * 0.02));
+-        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+-        ctx.beginPath();
+-        ctx.moveTo(x, 0);
+-        ctx.lineTo(x, h);
+-        ctx.stroke();
+-      }
+-
+-      for (let y = 0; y <= h; y += minorSpacing) {
+-        if (y % config.majorSpacing === 0) continue;
+-        const alpha = pulseOpacity * 0.3 * (0.5 + 0.5 * Math.sin(time * 0.4 + y * 0.02));
+-        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+-        ctx.beginPath();
+-        ctx.moveTo(0, y);
+-        ctx.lineTo(w, y);
+-        ctx.stroke();
+-      }
+-
+-      // Axis lines (center)
+-      ctx.lineWidth = 1;
+-      ctx.globalAlpha = pulseOpacity * 1.5;
+-      ctx.strokeStyle = config.color.replace(/[\d.]+\)$/, "0.4)");
+-
+-      ctx.beginPath();
+-      ctx.moveTo(w / 2, 0);
+-      ctx.lineTo(w / 2, h);
+-      ctx.stroke();
+-
+-      ctx.beginPath();
+-      ctx.moveTo(0, h / 2);
+-      ctx.lineTo(w, h / 2);
+-      ctx.stroke();
+-
+-      // Coordinate labels
+-      if (config.showLabels) {
+-        ctx.globalAlpha = pulseOpacity * 0.8;
+-        ctx.fillStyle = config.color.replace(/[\d.]+\)$/, "0.6)");
+-        ctx.font = "9px 'JetBrains Mono', monospace";
+-        ctx.textAlign = "center";
+-        ctx.textBaseline = "middle";
+-
+-        // X-axis labels
+-        const xLabels = Math.floor(w / config.majorSpacing / config.labelInterval) + 1;
+-        for (let i = -xLabels; i <= xLabels; i++) {
+-          const x = w / 2 + i * config.majorSpacing * config.labelInterval;
+-          if (x < 20 || x > w - 20) continue;
+-
+-          const coordValue = Math.abs(i) * config.labelInterval * (config.majorSpacing / 100) * (scaleValue * 1e9); // Convert to nm base
+-          const label = formatCoordinate(coordValue, config.units);
+-
+-          ctx.fillText(label, x, h / 2 - 16);
+-          ctx.fillText(label, x, h / 2 + 16);
+-        }
+-
+-        // Y-axis labels
+-        const yLabels = Math.floor(h / config.majorSpacing / config.labelInterval) + 1;
+-        ctx.textAlign = "right";
+-        for (let i = -yLabels; i <= yLabels; i++) {
+-          const y = h / 2 + i * config.majorSpacing * config.labelInterval;
+-          if (y < 16 || y > h - 16) continue;
+-
+-          const coordValue = Math.abs(i) * config.labelInterval * (config.majorSpacing / 100) * (scaleValue * 1e9);
+-          const label = formatCoordinate(coordValue, config.units);
+-
+-          ctx.fillText(label, w / 2 - 16, y);
+-          ctx.fillText(label, w / 2 + 16 + ctx.measureText(label).width, y);
+-        }
+-
+-        // Origin marker
+-        ctx.globalAlpha = pulseOpacity;
+-        ctx.fillStyle = "rgba(255,255,255,0.4)";
+-        ctx.beginPath();
+-        ctx.arc(w / 2, h / 2, 4, 0, Math.PI * 2);
+-        ctx.fill();
+-
+-        ctx.strokeStyle = "rgba(255,255,255,0.6)";
+-        ctx.lineWidth = 1;
+-        ctx.beginPath();
+-        ctx.arc(w / 2, h / 2, 8, 0, Math.PI * 2);
+-        ctx.stroke();
+-
+-        // Origin label
+-        ctx.globalAlpha = pulseOpacity;
+-        ctx.fillStyle = "rgba(255,255,255,0.5)";
+-        ctx.font = "8px 'JetBrains Mono', monospace";
+-        ctx.textAlign = "left";
+-        ctx.textBaseline = "top";
+-        ctx.fillText("(0,0)", w / 2 + 10, h / 2 + 10);
+-      }
+-
+-      // Corner scale reference
+-      ctx.globalAlpha = pulseOpacity * 0.7;
+-      ctx.fillStyle = "rgba(255,255,255,0.3)";
+-      ctx.font = "8px 'JetBrains Mono', monospace";
+-      ctx.textAlign = "left";
+-      ctx.textBaseline = "bottom";
+-      ctx.fillText(`GRID: ${config.majorSpacing / 100} ${config.units} / div`, 16, h - 16);
+-
+-      rafRef.current = requestAnimationFrame(render);
+-    };
+-
+-    rafRef.current = requestAnimationFrame(render);
+-
+-    return () => {
+-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+-      window.removeEventListener("resize", resize);
+-    };
+-  }, [reducedMotion, currentSegment.id, localProgress, globalProgress, viewportWidth, viewportHeight, config, scaleValue]);
+-
+-  if (reducedMotion || !isReady) return null;
+-
+-  return (
+-    <canvas
+-      ref={canvasRef}
+-      className="fixed inset-0 -z-10 pointer-events-none"
+-      style={{ width: "100%", height: "100%" }}
+-      aria-hidden="true"
+-    />
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/components/video/ScanLinesOverlay.tsx b/src/components/video/ScanLinesOverlay.tsx
+deleted file mode 100644
+index aabbd03..0000000
+--- a/src/components/video/ScanLinesOverlay.tsx
++++ /dev/null
+@@ -1,201 +0,0 @@
+-"use client";
+-
+-import { useEffect, useRef, useState, useMemo } from "react";
+-
+-interface ScanLinesOverlayProps {
+-  currentSegment: { id: string; label: string; scaleLabel: string };
+-  localProgress: number;
+-  globalProgress: number;
+-  reducedMotion: boolean;
+-  velocity: number;
+-}
+-
+-const SEGMENT_SCAN_CONFIG: Record<string, {
+-  lineCount: number;
+-  speed: number;
+-  thickness: number;
+-  color: string;
+-  direction: "horizontal" | "vertical" | "diagonal" | "grid";
+-  pattern: "solid" | "dashed" | "dotted" | "grid";
+-}> = {
+-  "atomic-scale": { lineCount: 60, speed: 0.8, thickness: 0.5, color: "rgba(100,180,255,0.15)", direction: "horizontal", pattern: "grid" },
+-  "transistor": { lineCount: 40, speed: 1.0, thickness: 1, color: "rgba(120,200,255,0.2)", direction: "horizontal", pattern: "dashed" },
+-  "transistor-group": { lineCount: 30, speed: 1.2, thickness: 1, color: "rgba(140,210,255,0.18)", direction: "vertical", pattern: "dotted" },
+-  "logic-cell": { lineCount: 24, speed: 1.5, thickness: 1.5, color: "rgba(160,220,255,0.2)", direction: "horizontal", pattern: "solid" },
+-  "cell-array": { lineCount: 20, speed: 2.0, thickness: 2, color: "rgba(180,230,255,0.22)", direction: "grid", pattern: "grid" },
+-  "functional-blocks": { lineCount: 16, speed: 2.5, thickness: 2, color: "rgba(200,240,255,0.2)", direction: "horizontal", pattern: "dashed" },
+-  "complete-die": { lineCount: 12, speed: 3.0, thickness: 3, color: "rgba(220,245,255,0.25)", direction: "diagonal", pattern: "solid" },
+-  "macro-chip": { lineCount: 8, speed: 4.0, thickness: 4, color: "rgba(240,250,255,0.3)", direction: "horizontal", pattern: "solid" },
+-};
+-
+-export function ScanLinesOverlay({
+-  currentSegment,
+-  localProgress,
+-  globalProgress,
+-  reducedMotion,
+-  velocity,
+-}: ScanLinesOverlayProps) {
+-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+-  const rafRef = useRef<number | null>(null);
+-  const startTimeRef = useRef(performance.now());
+-  const [isReady, setIsReady] = useState(false);
+-
+-  const config = useMemo(() => SEGMENT_SCAN_CONFIG[currentSegment.id] || SEGMENT_SCAN_CONFIG["atomic-scale"], [currentSegment.id]);
+-
+-  useEffect(() => {
+-    if (reducedMotion) return;
+-
+-    const canvas = canvasRef.current;
+-    if (!canvas) return;
+-
+-    const ctx = canvas.getContext("2d");
+-    if (!ctx) return;
+-
+-    const resize = () => {
+-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+-      canvas.width = window.innerWidth * dpr;
+-      canvas.height = window.innerHeight * dpr;
+-      canvas.style.width = "100%";
+-      canvas.style.height = "100%";
+-      ctx.scale(dpr, dpr);
+-    };
+-
+-    resize();
+-    window.addEventListener("resize", resize);
+-    setIsReady(true);
+-    startTimeRef.current = performance.now();
+-
+-    const render = () => {
+-      const ctx = canvas.getContext("2d");
+-      if (!ctx) return;
+-
+-      const w = window.innerWidth;
+-      const h = window.innerHeight;
+-      const time = (performance.now() - startTimeRef.current) * 0.001;
+-
+-      ctx.clearRect(0, 0, w, h);
+-      ctx.globalCompositeOperation = "source-over";
+-
+-      const baseAlpha = 0.3 + Math.min(velocity * 0.001, 0.4);
+-      const progressAlpha = 0.5 + localProgress * 0.5;
+-
+-      ctx.strokeStyle = config.color;
+-      ctx.lineWidth = config.thickness;
+-      ctx.lineCap = "round";
+-
+-      const spacing = h / config.lineCount;
+-      const offset = (time * config.speed * 100) % spacing;
+-
+-      if (config.pattern === "grid" || config.direction === "horizontal") {
+-        // Horizontal scan lines
+-        for (let i = -1; i <= config.lineCount; i++) {
+-          const y = i * spacing + offset;
+-          if (y < -spacing || y > h + spacing) continue;
+-
+-          const alpha = baseAlpha * progressAlpha * (0.5 + 0.5 * Math.sin(time * 2 + i * 0.3));
+-          ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+-
+-          if (config.pattern === "dashed") {
+-            ctx.setLineDash([20, 40]);
+-            ctx.lineDashOffset = time * 50;
+-          } else if (config.pattern === "dotted") {
+-            ctx.setLineDash([4, 12]);
+-            ctx.lineDashOffset = time * 30;
+-          } else {
+-            ctx.setLineDash([]);
+-          }
+-
+-          ctx.beginPath();
+-          ctx.moveTo(0, y);
+-          ctx.lineTo(w, y);
+-          ctx.stroke();
+-        }
+-      }
+-
+-      if (config.pattern === "grid" || config.direction === "vertical") {
+-        // Vertical scan lines
+-        const vSpacing = w / (config.lineCount * 0.6);
+-        const vOffset = (time * config.speed * 80) % vSpacing;
+-
+-        for (let i = -1; i <= config.lineCount * 0.6; i++) {
+-          const x = i * vSpacing + vOffset;
+-          if (x < -vSpacing || x > w + vSpacing) continue;
+-
+-          const alpha = baseAlpha * progressAlpha * 0.6 * (0.5 + 0.5 * Math.sin(time * 1.5 + i * 0.5));
+-          ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+-
+-          if (config.pattern === "dashed") {
+-            ctx.setLineDash([15, 30]);
+-            ctx.lineDashOffset = time * 40;
+-          } else if (config.pattern === "dotted") {
+-            ctx.setLineDash([3, 10]);
+-            ctx.lineDashOffset = time * 25;
+-          } else {
+-            ctx.setLineDash([]);
+-          }
+-
+-          ctx.beginPath();
+-          ctx.moveTo(x, 0);
+-          ctx.lineTo(x, h);
+-          ctx.stroke();
+-        }
+-      }
+-
+-      if (config.direction === "diagonal") {
+-        // Diagonal scan lines
+-        const dSpacing = Math.max(w, h) / config.lineCount;
+-        const dOffset = (time * config.speed * 120) % dSpacing;
+-
+-        for (let i = -config.lineCount; i <= config.lineCount * 2; i++) {
+-          const start = i * dSpacing + dOffset;
+-          const alpha = baseAlpha * progressAlpha * 0.7 * (0.5 + 0.5 * Math.sin(time * 1 + i * 0.4));
+-          ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+-
+-          ctx.setLineDash(config.pattern === "dashed" ? [30, 60] : []);
+-          if (config.pattern === "dashed") ctx.lineDashOffset = time * 60;
+-
+-          ctx.beginPath();
+-          ctx.moveTo(start, 0);
+-          ctx.lineTo(start - h, h);
+-          ctx.stroke();
+-        }
+-      }
+-
+-      // Progress indicator line
+-      ctx.setLineDash([]);
+-      ctx.globalAlpha = 0.6;
+-      ctx.strokeStyle = "rgba(255,255,255,0.4)";
+-      ctx.lineWidth = 1;
+-      ctx.beginPath();
+-      ctx.moveTo(w * 0.1, h * 0.95);
+-      ctx.lineTo(w * 0.1 + w * 0.8 * globalProgress, h * 0.95);
+-      ctx.stroke();
+-
+-      // Scale marker
+-      ctx.font = "10px 'JetBrains Mono', monospace";
+-      ctx.fillStyle = "rgba(255,255,255,0.3)";
+-      ctx.textAlign = "left";
+-      ctx.fillText(currentSegment.scaleLabel, w * 0.1, h * 0.93);
+-
+-      rafRef.current = requestAnimationFrame(render);
+-    };
+-
+-    rafRef.current = requestAnimationFrame(render);
+-
+-    return () => {
+-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+-      window.removeEventListener("resize", resize);
+-    };
+-  }, [reducedMotion, currentSegment.id, localProgress, globalProgress, velocity, config]);
+-
+-  if (reducedMotion || !isReady) return null;
+-
+-  return (
+-    <canvas
+-      ref={canvasRef}
+-      className="fixed inset-0 -z-10 pointer-events-none"
+-      style={{ width: "100%", height: "100%" }}
+-      aria-hidden="true"
+-    />
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/components/video/TechnicalCallouts.tsx b/src/components/video/TechnicalCallouts.tsx
+deleted file mode 100644
+index 84b50f0..0000000
+--- a/src/components/video/TechnicalCallouts.tsx
++++ /dev/null
+@@ -1,189 +0,0 @@
+-"use client";
+-
+-import { useEffect, useRef, useState, useMemo } from "react";
+-
+-interface TechnicalCallout {
+-  id: string;
+-  position: { x: number; y: number }; // Normalized 0-1
+-  label: string;
+-  detail: string;
+-  type: "measurement" | "region" | "signal" | "component";
+-  scaleRange: [number, number]; // globalProgress range where visible
+-}
+-
+-const SEGMENT_CALLOUTS: Record<string, TechnicalCallout[]> = {
+-  "atomic-scale": [
+-    { id: "lattice", position: { x: 0.3, y: 0.4 }, label: "Si Lattice", detail: "5.431 Å spacing", type: "measurement", scaleRange: [0, 0.15] },
+-    { id: "doping", position: { x: 0.7, y: 0.6 }, label: "Dopant Atoms", detail: "B / P / As implantation", type: "component", scaleRange: [0.05, 0.15] },
+-    { id: "bonding", position: { x: 0.5, y: 0.2 }, label: "sp³ Bonds", detail: "Tetrahedral coordination", type: "measurement", scaleRange: [0, 0.12] },
+-  ],
+-  "transistor": [
+-    { id: "gate", position: { x: 0.5, y: 0.35 }, label: "Gate Stack", detail: "HfO₂ / Metal Gate", type: "component", scaleRange: [0.12, 0.28] },
+-    { id: "channel", position: { x: 0.5, y: 0.55 }, label: "Channel", detail: "Strained Si / SiGe", type: "region", scaleRange: [0.12, 0.28] },
+-    { id: "source", position: { x: 0.25, y: 0.7 }, label: "Source", detail: "n⁺ / p⁺ doped", type: "component", scaleRange: [0.15, 0.28] },
+-    { id: "drain", position: { x: 0.75, y: 0.7 }, label: "Drain", detail: "n⁺ / p⁺ doped", type: "component", scaleRange: [0.15, 0.28] },
+-    { id: "gate-length", position: { x: 0.5, y: 0.2 }, label: "Lg = 14 nm", detail: "Effective gate length", type: "measurement", scaleRange: [0.12, 0.28] },
+-  ],
+-  "transistor-group": [
+-    { id: "shared-sd", position: { x: 0.5, y: 0.5 }, label: "Shared S/D", detail: "Common diffusion", type: "component", scaleRange: [0.25, 0.38] },
+-    { id: "local-interconnect", position: { x: 0.3, y: 0.3 }, label: "M0 / MD", detail: "Local routing", type: "signal", scaleRange: [0.25, 0.38] },
+-    { id: "dummy", position: { x: 0.8, y: 0.2 }, label: "Dummy Gates", detail: "Edge uniformity", type: "component", scaleRange: [0.25, 0.38] },
+-  ],
+-  "logic-cell": [
+-    { id: "inverter", position: { x: 0.4, y: 0.4 }, label: "INV Cell", detail: "7.5T height", type: "component", scaleRange: [0.35, 0.48] },
+-    { id: "nand", position: { x: 0.6, y: 0.55 }, label: "NAND2", detail: "4× drive strength", type: "component", scaleRange: [0.35, 0.48] },
+-    { id: "power-rails", position: { x: 0.5, y: 0.15 }, label: "VDD / VSS", detail: "M1 / M2 straps", type: "signal", scaleRange: [0.35, 0.48] },
+-    { id: "cell-boundary", position: { x: 0.2, y: 0.5 }, label: "Cell Boundary", detail: "Abutment box", type: "measurement", scaleRange: [0.35, 0.48] },
+-  ],
+-  "cell-array": [
+-    { id: "clock-spine", position: { x: 0.5, y: 0.25 }, label: "Clock Spine", detail: "H-tree distribution", type: "signal", scaleRange: [0.45, 0.58] },
+-    { id: "power-mesh", position: { x: 0.7, y: 0.6 }, label: "Power Mesh", detail: "M3/M4 grid", type: "signal", scaleRange: [0.45, 0.58] },
+-    { id: "array-row", position: { x: 0.2, y: 0.5 }, label: "Row Decoder", detail: "Word line driver", type: "component", scaleRange: [0.45, 0.58] },
+-    { id: "io-pitch", position: { x: 0.8, y: 0.3 }, label: "I/O Pitch", detail: "0.8 μm", type: "measurement", scaleRange: [0.45, 0.58] },
+-  ],
+-  "functional-blocks": [
+-    { id: "compute-core", position: { x: 0.3, y: 0.35 }, label: "Compute Core", detail: "4-wide OoO", type: "region", scaleRange: [0.55, 0.68] },
+-    { id: "l2-cache", position: { x: 0.7, y: 0.3 }, label: "L2 Cache", detail: "4 MB SRAM", type: "region", scaleRange: [0.55, 0.68] },
+-    { id: "noc", position: { x: 0.5, y: 0.6 }, label: "NoC Router", detail: "CHI-E protocol", type: "signal", scaleRange: [0.55, 0.68] },
+-    { id: "phy", position: { x: 0.2, y: 0.7 }, label: "DDR PHY", detail: "LPDDR5X 8.5 Gbps", type: "component", scaleRange: [0.55, 0.68] },
+-  ],
+-  "complete-die": [
+-    { id: "die-edge", position: { x: 0.1, y: 0.5 }, label: "Die Edge", detail: "Scribe line", type: "measurement", scaleRange: [0.65, 0.8] },
+-    { id: "tsv-array", position: { x: 0.85, y: 0.5 }, label: "TSV Array", detail: "10μm pitch", type: "component", scaleRange: [0.65, 0.8] },
+-    { id: "thermal-bump", position: { x: 0.5, y: 0.15 }, label: "Thermal Bumps", detail: "Cu pillar", type: "component", scaleRange: [0.65, 0.8] },
+-    { id: "io-ring", position: { x: 0.5, y: 0.85 }, label: "I/O Ring", detail: "Pad limited", type: "region", scaleRange: [0.65, 0.8] },
+-  ],
+-  "macro-chip": [
+-    { id: "chiplet", position: { x: 0.3, y: 0.4 }, label: "Compute Chiplet", detail: "5nm GAA", type: "region", scaleRange: [0.78, 0.9] },
+-    { id: "hbm-stack", position: { x: 0.7, y: 0.35 }, label: "HBM3E Stack", detail: "12-Hi, 1.2 TB/s", type: "region", scaleRange: [0.78, 0.9] },
+-    { id: "interposer", position: { x: 0.5, y: 0.6 }, label: "Si Interposer", detail: "RDL 2/2/2 μm", type: "component", scaleRange: [0.78, 0.9] },
+-    { id: "substrate", position: { x: 0.5, y: 0.8 }, label: "Org. Substrate", detail: "FCBGA 100μm", type: "component", scaleRange: [0.78, 0.9] },
+-  ],
+-};
+-
+-const TYPE_STYLES: Record<string, { color: string; bg: string; border: string; icon: string }> = {
+-  measurement: { color: "rgba(255,255,255,0.9)", bg: "rgba(100,180,255,0.15)", border: "rgba(100,180,255,0.4)", icon: "◢" },
+-  region: { color: "rgba(255,255,255,0.9)", bg: "rgba(140,210,255,0.12)", border: "rgba(140,210,255,0.3)", icon: "▣" },
+-  signal: { color: "rgba(255,255,255,0.9)", bg: "rgba(180,240,255,0.1)", border: "rgba(180,240,255,0.3)", icon: "◈" },
+-  component: { color: "rgba(255,255,255,0.9)", bg: "rgba(200,255,200,0.1)", border: "rgba(160,240,160,0.3)", icon: "◆" },
+-};
+-
+-export function TechnicalCallouts({
+-  currentSegment,
+-  localProgress,
+-  globalProgress,
+-  reducedMotion,
+-  viewportWidth,
+-  viewportHeight,
+-}: {
+-  currentSegment: { id: string; label: string; scaleLabel: string };
+-  localProgress: number;
+-  globalProgress: number;
+-  reducedMotion: boolean;
+-  viewportWidth: number;
+-  viewportHeight: number;
+-}) {
+-  const [visibleCallouts, setVisibleCallouts] = useState<TechnicalCallout[]>([]);
+-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+-
+-  const callouts = useMemo(() => SEGMENT_CALLOUTS[currentSegment.id] || [], [currentSegment.id]);
+-
+-  useEffect(() => {
+-    if (reducedMotion) {
+-      setVisibleCallouts([]);
+-      return;
+-    }
+-
+-    const visible = callouts.filter(
+-      (c) => globalProgress >= c.scaleRange[0] && globalProgress <= c.scaleRange[1]
+-    );
+-
+-    // Stagger appearance
+-    const timers = visible.map((c, i) => {
+-      const delay = i * 150;
+-      return setTimeout(() => {
+-        setVisibleCallouts((prev) => [...prev.filter((vc) => vc.id !== c.id), c]);
+-      }, delay);
+-    });
+-
+-    return () => timers.forEach(clearTimeout);
+-  }, [currentSegment.id, globalProgress, reducedMotion, callouts]);
+-
+-  if (reducedMotion || visibleCallouts.length === 0) return null;
+-
+-  return (
+-    <div
+-      className="fixed inset-0 -z-10 pointer-events-none"
+-      style={{ width: "100%", height: "100%" }}
+-      aria-hidden="true"
+-    >
+-      {visibleCallouts.map((callout) => {
+-        const style = TYPE_STYLES[callout.type];
+-        const x = callout.position.x * viewportWidth;
+-        const y = callout.position.y * viewportHeight;
+-        const isHovered = hoveredId === callout.id;
+-
+-        return (
+-          <div
+-            key={callout.id}
+-            className="absolute pointer-events-auto"
+-            style={{
+-              left: x,
+-              top: y,
+-              transform: "translate(-50%, -50%)",
+-              transition: "all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
+-              opacity: isHovered ? 1 : 0.7,
+-              zIndex: isHovered ? 10 : 5,
+-            }}
+-            onMouseEnter={() => setHoveredId(callout.id)}
+-            onMouseLeave={() => setHoveredId(null)}
+-          >
+-            {/* Connector line to center */}
+-            <div
+-              className="absolute"
+-              style={{
+-                left: "50%",
+-                top: "50%",
+-                width: "1px",
+-                height: isHovered ? "120px" : "60px",
+-                background: `linear-gradient(180deg, ${style.border}, transparent)`,
+-                transform: "translate(-50%, -100%) rotate(0deg)",
+-                transformOrigin: "bottom center",
+-              }}
+-            />
+-
+-            {/* Callout marker */}
+-            <div
+-              className="relative flex items-center gap-2"
+-              style={{
+-                background: style.bg,
+-                border: `1px solid ${style.border}`,
+-                borderRadius: "6px",
+-                padding: "8px 12px",
+-                backdropFilter: "blur(8px)",
+-                minWidth: "160px",
+-                maxWidth: "220px",
+-                boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset",
+-              }}
+-            >
+-              <span
+-                className="font-mono text-xs text-primary"
+-                style={{ color: style.color }}
+-              >
+-                {style.icon}
+-              </span>
+-              <div className="flex flex-col">
+-                <span className="font-mono text-xs tracking-wider uppercase" style={{ color: style.color }}>
+-                  {callout.label}
+-                </span>
+-                <span className="font-sans text-[10px] text-muted-foreground/80">
+-                  {callout.detail}
+-                </span>
+-              </div>
+-            </div>
+-          </div>
+-        );
+-      })}
+-    </div>
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/components/video/VideoBackground.tsx b/src/components/video/VideoBackground.tsx
+deleted file mode 100644
+index a1b686d..0000000
+--- a/src/components/video/VideoBackground.tsx
++++ /dev/null
+@@ -1,244 +0,0 @@
+-"use client";
+-
+-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+-import { VIDEO_SEGMENTS, VideoSegment, getChapterTime } from "@/lib/video-sequence";
+-
+-interface VideoBackgroundProps {
+-  scrollHeight: number;
+-  viewportHeight: number;
+-  globalProgress: number;
+-  currentSegment: VideoSegment;
+-  currentIndex: number;
+-  localProgress: number;
+-  reducedMotion?: boolean;
+-  velocity?: number;
+-}
+-
+-export function VideoBackground({
+-  scrollHeight,
+-  viewportHeight,
+-  globalProgress,
+-  currentSegment,
+-  currentIndex,
+-  localProgress,
+-  reducedMotion = false,
+-  velocity = 0,
+-}: VideoBackgroundProps) {
+-  const videoContainerRef = useRef<HTMLDivElement>(null);
+-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+-  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+-  const rafRef = useRef<number | null>(null);
+-  const videoRefs = useRef<Map<string, HTMLVideoElement>>(new Map());
+-  const activeVideoRef = useRef<HTMLVideoElement | null>(null);
+-  const pendingVideoRef = useRef<HTMLVideoElement | null>(null);
+-  const isInitializedRef = useRef(false);
+-  const lastGlobalProgressRef = useRef(globalProgress);
+-  const lastSegmentIndexRef = useRef(currentIndex);
+-
+-  const [isLoaded, setIsLoaded] = useState(false);
+-  const [readySegments, setReadySegments] = useState<Set<string>>(new Set());
+-
+-  const getVideoElement = useCallback((segment: VideoSegment): HTMLVideoElement => {
+-    // All segments share one source file, so a single element is reused
+-    // and seeking stays seamless across segment boundaries.
+-    let video = videoRefs.current.get(segment.src);
+-    if (!video) {
+-      video = document.createElement("video");
+-      video.src = segment.src;
+-      video.preload = "auto";
+-      video.muted = true;
+-      video.playsInline = true;
+-      video.loop = false;
+-      video.crossOrigin = "anonymous";
+-      video.style.display = "none";
+-      video.playsInline = true;
+-      videoRefs.current.set(segment.src, video);
+-
+-      video.onloadeddata = () => {
+-        setReadySegments((prev) => new Set(prev).add(segment.src));
+-        if (!isLoaded && segment.src === VIDEO_SEGMENTS[0].src) {
+-          setIsLoaded(true);
+-        }
+-      };
+-
+-      video.onerror = () => {
+-        console.warn(`Failed to load video: ${segment.src}`);
+-      };
+-    }
+-    return video;
+-  }, []);
+-
+-  const ensureVideoReady = useCallback((segment: VideoSegment) => {
+-    const video = getVideoElement(segment);
+-    if (video.readyState >= 2) return video;
+-    video.load();
+-    return video;
+-  }, [getVideoElement]);
+-
+-  const switchVideo = useCallback((segment: VideoSegment, immediate = false) => {
+-    const video = ensureVideoReady(segment);
+-
+-    if (activeVideoRef.current && activeVideoRef.current !== video) {
+-      if (immediate) {
+-        activeVideoRef.current.pause();
+-        activeVideoRef.current.currentTime = 0;
+-        activeVideoRef.current.style.display = "none";
+-      } else {
+-        pendingVideoRef.current = activeVideoRef.current;
+-      }
+-    }
+-
+-    activeVideoRef.current = video;
+-    video.style.display = "block";
+-
+-    if (immediate || video.readyState >= 3) {
+-      video.currentTime = getChapterTime(segment, localProgress);
+-      const playPromise = video.play();
+-      if (playPromise !== undefined) {
+-        playPromise.catch(() => {
+-          // Autoplay blocked - will retry on interaction
+-        });
+-      }
+-    } else {
+-      video.oncanplay = () => {
+-        video.currentTime = getChapterTime(segment, localProgress);
+-        video.play().catch(() => {});
+-        video.oncanplay = null;
+-      };
+-    }
+-
+-    lastSegmentIndexRef.current = VIDEO_SEGMENTS.findIndex((s) => s.id === segment.id);
+-  }, [ensureVideoReady, localProgress]);
+-
+-  const updateVideoTime = useCallback((segment: VideoSegment, progress: number, isSeeking = false) => {
+-    const video = videoRefs.current.get(segment.src);
+-    if (!video || video !== activeVideoRef.current) return;
+-
+-    const targetTime = getChapterTime(segment, progress);
+-    const diff = Math.abs(video.currentTime - targetTime);
+-
+-    if (isSeeking || diff > 0.1 || (velocity > 50 && diff > 0.05)) {
+-      video.currentTime = targetTime;
+-    }
+-
+-    if (video.paused && !reducedMotion) {
+-      video.play().catch(() => {});
+-    }
+-  }, [velocity, reducedMotion]);
+-
+-  const renderFrame = useCallback(() => {
+-    const video = activeVideoRef.current;
+-    const canvas = canvasRef.current;
+-    const ctx = ctxRef.current;
+-
+-    if (video && canvas && ctx && !video.paused && !video.ended && video.readyState >= 2) {
+-      const { videoWidth, videoHeight } = video;
+-      if (videoWidth && videoHeight) {
+-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+-        canvas.width = window.innerWidth * dpr;
+-        canvas.height = window.innerHeight * dpr;
+-        canvas.style.width = "100%";
+-        canvas.style.height = "100%";
+-        ctx.scale(dpr, dpr);
+-
+-        const scale = Math.max(canvas.width / dpr / videoWidth, canvas.height / dpr / videoHeight);
+-        const drawWidth = videoWidth * scale;
+-        const drawHeight = videoHeight * scale;
+-        const x = (canvas.width / dpr - drawWidth) / 2;
+-        const y = (canvas.height / dpr - drawHeight) / 2;
+-
+-        ctx.drawImage(video, x, y, drawWidth, drawHeight);
+-      }
+-    }
+-
+-    if (pendingVideoRef.current) {
+-      pendingVideoRef.current.style.display = "none";
+-      pendingVideoRef.current = null;
+-    }
+-
+-    rafRef.current = requestAnimationFrame(renderFrame);
+-  }, []);
+-
+-  useEffect(() => {
+-    const container = videoContainerRef.current;
+-    if (!container) return;
+-
+-    const canvas = document.createElement("canvas");
+-    canvas.style.position = "fixed";
+-    canvas.style.inset = "0";
+-    canvas.style.zIndex = "-1";
+-    canvas.style.width = "100%";
+-    canvas.style.height = "100%";
+-    canvasRef.current = canvas;
+-    ctxRef.current = canvas.getContext("2d", { willReadFrequently: false, alpha: false });
+-    container.appendChild(canvas);
+-
+-    VIDEO_SEGMENTS.forEach((seg) => getVideoElement(seg));
+-    isInitializedRef.current = true;
+-
+-    rafRef.current = requestAnimationFrame(renderFrame);
+-
+-    return () => {
+-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+-      videoRefs.current.forEach((v) => {
+-        v.pause();
+-        v.src = "";
+-        v.load();
+-        v.removeEventListener("canplay", () => {});
+-      });
+-      videoRefs.current.clear();
+-      canvas.remove();
+-    };
+-  }, [getVideoElement, renderFrame]);
+-
+-  useEffect(() => {
+-    if (reducedMotion) {
+-      if (activeVideoRef.current) {
+-        activeVideoRef.current.pause();
+-      }
+-      return;
+-    }
+-
+-    if (!activeVideoRef.current) {
+-      // First activation: no segment change has fired yet (e.g. the page
+-      // loaded inside the first segment), so start the video immediately.
+-      switchVideo(currentSegment, true);
+-    } else if (currentIndex !== lastSegmentIndexRef.current) {
+-      switchVideo(currentSegment, false);
+-    } else if (activeVideoRef.current === videoRefs.current.get(currentSegment.src)) {
+-      const progressDiff = Math.abs(globalProgress - lastGlobalProgressRef.current);
+-      const isSeeking = progressDiff > 0.02 || velocity > 100;
+-      updateVideoTime(currentSegment, localProgress, isSeeking);
+-    }
+-
+-    lastGlobalProgressRef.current = globalProgress;
+-  }, [globalProgress, currentIndex, currentSegment, localProgress, velocity, reducedMotion, switchVideo, updateVideoTime]);
+-
+-  const overlayStyle = useMemo(() => ({
+-    background: `linear-gradient(180deg, rgba(3,3,3,0.7) 0%, rgba(3,3,3,0.3) 40%, rgba(3,3,3,0.5) 60%, rgba(3,3,3,0.8) 100%)`,
+-  }), []);
+-
+-  return (
+-    <div
+-      ref={videoContainerRef}
+-      className="video-container"
+-      aria-hidden="true"
+-      role="presentation"
+-    >
+-      <div className="absolute inset-0 pointer-events-none" style={overlayStyle} aria-hidden="true" />
+-      {reducedMotion && (
+-        <div className="absolute inset-0 bg-black/95 pointer-events-none" aria-hidden="true" />
+-      )}
+-      {!isLoaded && !reducedMotion && (
+-        <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10 pointer-events-none" aria-hidden="true">
+-          <div className="text-center">
+-            <div className="w-12 h-12 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+-            <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+-              LOADING VISUALIZATION
+-            </p>
+-          </div>
+-        </div>
+-      )}
+-    </div>
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/components/video/WebGLOverlay.tsx b/src/components/video/WebGLOverlay.tsx
+deleted file mode 100644
+index 0c94f03..0000000
+--- a/src/components/video/WebGLOverlay.tsx
++++ /dev/null
+@@ -1,379 +0,0 @@
+-"use client";
+-
+-import { useEffect, useRef, useState, useMemo } from "react";
+-
+-interface WebGLOverlayProps {
+-  currentSegment: { id: string; label: string; scaleLabel: string };
+-  localProgress: number;
+-  globalProgress: number;
+-  reducedMotion: boolean;
+-  velocity: number;
+-  viewportWidth: number;
+-  viewportHeight: number;
+-  mousePosition: { x: number; y: number };
+-}
+-
+-const VERTEX_SHADER = `
+-  attribute vec2 aPosition;
+-  attribute float aSize;
+-  attribute vec3 aColor;
+-  attribute float aPhase;
+-
+-  uniform float uTime;
+-  uniform float uProgress;
+-  uniform float uVelocity;
+-  uniform vec2 uResolution;
+-  uniform vec2 uMouse;
+-  uniform float uScale;
+-
+-  varying vec3 vColor;
+-  varying float vAlpha;
+-  varying vec2 vPos;
+-
+-  float hash(vec2 p) {
+-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+-  }
+-
+-  float noise(vec2 p) {
+-    vec2 i = floor(p);
+-    vec2 f = fract(p);
+-    f = f * f * (3.0 - 2.0 * f);
+-    return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+-               mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+-  }
+-
+-  float fbm(vec2 p) {
+-    float value = 0.0;
+-    float amplitude = 0.5;
+-    for (int i = 0; i < 4; i++) {
+-      value += amplitude * noise(p);
+-      p *= 2.0;
+-      amplitude *= 0.5;
+-    }
+-    return value;
+-  }
+-
+-  void main() {
+-    vec2 pos = aPosition;
+-    vPos = pos;
+-
+-    float time = uTime * 0.5;
+-    float scale = uScale;
+-
+-    // Base drift based on segment progress
+-    float drift = uProgress * 10.0;
+-
+-    // Noise-based organic movement
+-    float n = fbm(pos * 0.5 + vec2(time * 0.1, time * 0.05));
+-    float n2 = fbm(pos * 1.0 + vec2(time * 0.2, -time * 0.1));
+-
+-    // Mouse influence
+-    vec2 mouseNorm = uMouse / uResolution;
+-    float mouseDist = length(pos - mouseNorm);
+-    float mouseInfluence = smoothstep(0.3, 0.0, mouseDist) * 0.02 * (1.0 - uVelocity * 0.01);
+-
+-    // Segment-specific behavior
+-    float segmentBehavior = 0.0;
+-    if (uScale < 1e-7) {
+-      // Atomic/transistor scale - lattice vibration
+-      segmentBehavior = sin(pos.x * 50.0 + time * 5.0) * sin(pos.y * 50.0 + time * 3.0) * 0.005;
+-    } else if (uScale < 1e-5) {
+-      // Cell/array scale - grid flow
+-      segmentBehavior = sin(pos.x * 20.0 + time * 2.0) * 0.003;
+-    } else {
+-      // Chip scale - slow breathing
+-      segmentBehavior = sin(time * 0.5) * 0.002;
+-    }
+-
+-    pos.x += (n - 0.5) * 0.01 * scale + mouseInfluence + segmentBehavior;
+-    pos.y += (n2 - 0.5) * 0.01 * scale - mouseInfluence * 0.5 + segmentBehavior;
+-
+-    // Pulse with progress
+-    float pulse = sin(uProgress * 6.28 + aPhase) * 0.3 + 0.7;
+-    float size = aSize * pulse * (1.0 + uVelocity * 0.005);
+-
+-    gl_Position = vec4(pos * 2.0 - 1.0, 0.0, 1.0);
+-    gl_PointSize = size * uResolution.y * 0.01;
+-
+-    vColor = aColor;
+-    vAlpha = pulse * (1.0 - mouseDist * 2.0);
+-  }
+-`;
+-
+-const FRAGMENT_SHADER = `
+-  precision highp float;
+-
+-  varying vec3 vColor;
+-  varying float vAlpha;
+-  varying vec2 vPos;
+-
+-  void main() {
+-    vec2 center = gl_PointCoord - 0.5;
+-    float dist = length(center) * 2.0;
+-
+-    // Soft circular particle with glow
+-    float alpha = smoothstep(1.0, 0.0, dist) * vAlpha;
+-
+-    // Add subtle ring for technical feel
+-    float ring = smoothstep(0.85, 0.95, dist) * 0.3 * vAlpha;
+-
+-    vec3 color = vColor * (1.0 + ring * 2.0);
+-
+-    gl_FragColor = vec4(color, alpha);
+-  }
+-`;
+-
+-interface Particle {
+-  x: number;
+-  y: number;
+-  size: number;
+-  color: readonly [number, number, number];
+-  phase: number;
+-}
+-
+-function createParticles(count: number, scale: number): Particle[] {
+-  const particles: Particle[] = [];
+-  const colors: [number, number, number][] = [
+-    [0.6, 0.8, 1.0], // Cool blue-white
+-    [0.4, 0.7, 1.0], // Deeper blue
+-    [0.8, 0.9, 1.0], // Bright
+-    [0.3, 0.6, 0.9], // Muted
+-    [1.0, 0.95, 0.8], // Warm accent
+-  ];
+-
+-  for (let i = 0; i < count; i++) {
+-    // Bias distribution based on scale
+-    let x, y;
+-    if (scale < 1e-7) {
+-      // Grid-like for atomic
+-      x = (i % 30) / 30 + (Math.random() - 0.5) * 0.02;
+-      y = Math.floor(i / 30) / 30 + (Math.random() - 0.5) * 0.02;
+-    } else if (scale < 1e-5) {
+-      // Rows for cells
+-      x = Math.random();
+-      y = (Math.floor(i / 20) % 20) / 20 + (Math.random() - 0.5) * 0.03;
+-    } else {
+-      // Organic for chip
+-      x = Math.random();
+-      y = Math.random();
+-    }
+-
+-    particles.push({
+-      x: Math.max(0.02, Math.min(0.98, x)),
+-      y: Math.max(0.02, Math.min(0.98, y)),
+-      size: 0.5 + Math.random() * 1.5,
+-      color: colors[Math.floor(Math.random() * colors.length)],
+-      phase: Math.random() * 6.28,
+-    });
+-  }
+-  return particles;
+-}
+-
+-export function WebGLOverlay({
+-  currentSegment,
+-  localProgress,
+-  globalProgress,
+-  reducedMotion,
+-  velocity,
+-  viewportWidth,
+-  viewportHeight,
+-  mousePosition,
+-}: WebGLOverlayProps) {
+-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+-  const glRef = useRef<WebGLRenderingContext | null>(null);
+-  const programRef = useRef<WebGLProgram | null>(null);
+-  const buffersRef = useRef<{
+-    position: WebGLBuffer | null;
+-    size: WebGLBuffer | null;
+-    color: WebGLBuffer | null;
+-    phase: WebGLBuffer | null;
+-  }>({ position: null, size: null, color: null, phase: null });
+-  const rafRef = useRef<number | null>(null);
+-  const startTimeRef = useRef(performance.now());
+-  const particleCountRef = useRef(0);
+-  const [isInitialized, setIsInitialized] = useState(false);
+-
+-  const scaleValue = useMemo(() => {
+-    const scales: Record<string, number> = {
+-      "atomic-scale": 1e-9,
+-      "transistor": 1e-8,
+-      "transistor-group": 1e-7,
+-      "logic-cell": 1e-6,
+-      "cell-array": 1e-5,
+-      "functional-blocks": 1e-4,
+-      "complete-die": 1e-3,
+-      "macro-chip": 1e-2,
+-    };
+-    return scales[currentSegment.id] || 1e-9;
+-  }, [currentSegment.id]);
+-
+-  const particleCount = useMemo(() => {
+-    if (reducedMotion) return 0;
+-    if (scaleValue < 1e-7) return 300;
+-    if (scaleValue < 1e-5) return 200;
+-    return 150;
+-  }, [scaleValue, reducedMotion]);
+-
+-  useEffect(() => {
+-    if (reducedMotion) return;
+-
+-    const canvas = canvasRef.current;
+-    if (!canvas) return;
+-
+-    const gl = canvas.getContext("webgl", {
+-      alpha: true,
+-      antialias: true,
+-      preserveDrawingBuffer: false,
+-      powerPreference: "high-performance",
+-    });
+-    if (!gl) return;
+-
+-    glRef.current = gl;
+-    canvas.width = viewportWidth * Math.min(window.devicePixelRatio, 2);
+-    canvas.height = viewportHeight * Math.min(window.devicePixelRatio, 2);
+-    canvas.style.width = "100%";
+-    canvas.style.height = "100%";
+-    gl.viewport(0, 0, canvas.width, canvas.height);
+-
+-    // Compile shaders
+-    const createShader = (type: number, source: string) => {
+-      const shader = gl.createShader(type)!;
+-      gl.shaderSource(shader, source);
+-      gl.compileShader(shader);
+-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+-        console.error("Shader compile error:", gl.getShaderInfoLog(shader));
+-        gl.deleteShader(shader);
+-        return null;
+-      }
+-      return shader;
+-    };
+-
+-    const vs = createShader(gl.VERTEX_SHADER, VERTEX_SHADER);
+-    const fs = createShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
+-    if (!vs || !fs) return;
+-
+-    const program = gl.createProgram()!;
+-    gl.attachShader(program, vs);
+-    gl.attachShader(program, fs);
+-    gl.linkProgram(program);
+-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+-      console.error("Program link error:", gl.getProgramInfoLog(program));
+-      return;
+-    }
+-    programRef.current = program;
+-
+-    // Create buffers
+-    const createBuffer = () => gl.createBuffer()!;
+-    buffersRef.current = {
+-      position: createBuffer(),
+-      size: createBuffer(),
+-      color: createBuffer(),
+-      phase: createBuffer(),
+-    };
+-
+-    // Initialize particles
+-    const particles = createParticles(particleCount, scaleValue);
+-    particleCountRef.current = particles.length;
+-
+-    const positions = new Float32Array(particles.length * 2);
+-    const sizes = new Float32Array(particles.length);
+-    const colors = new Float32Array(particles.length * 3);
+-    const phases = new Float32Array(particles.length);
+-
+-    particles.forEach((p, i) => {
+-      positions[i * 2] = p.x;
+-      positions[i * 2 + 1] = p.y;
+-      sizes[i] = p.size;
+-      colors[i * 3] = p.color[0];
+-      colors[i * 3 + 1] = p.color[1];
+-      colors[i * 3 + 2] = p.color[2];
+-      phases[i] = p.phase;
+-    });
+-
+-    gl.bindBuffer(gl.ARRAY_BUFFER, buffersRef.current.position);
+-    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+-    gl.bindBuffer(gl.ARRAY_BUFFER, buffersRef.current.size);
+-    gl.bufferData(gl.ARRAY_BUFFER, sizes, gl.STATIC_DRAW);
+-    gl.bindBuffer(gl.ARRAY_BUFFER, buffersRef.current.color);
+-    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+-    gl.bindBuffer(gl.ARRAY_BUFFER, buffersRef.current.phase);
+-    gl.bufferData(gl.ARRAY_BUFFER, phases, gl.STATIC_DRAW);
+-
+-    gl.enable(gl.BLEND);
+-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+-    gl.disable(gl.DEPTH_TEST);
+-
+-    setIsInitialized(true);
+-    startTimeRef.current = performance.now();
+-
+-    const render = () => {
+-      if (!glRef.current || !programRef.current) return;
+-      const gl = glRef.current;
+-      const program = programRef.current;
+-
+-      gl.useProgram(program);
+-
+-      const time = (performance.now() - startTimeRef.current) * 0.001;
+-
+-      // Uniforms
+-      const uTime = gl.getUniformLocation(program, "uTime");
+-      const uProgress = gl.getUniformLocation(program, "uProgress");
+-      const uVelocity = gl.getUniformLocation(program, "uVelocity");
+-      const uResolution = gl.getUniformLocation(program, "uResolution");
+-      const uMouse = gl.getUniformLocation(program, "uMouse");
+-      const uScale = gl.getUniformLocation(program, "uScale");
+-
+-      gl.uniform1f(uTime, time);
+-      gl.uniform1f(uProgress, globalProgress);
+-      gl.uniform1f(uVelocity, Math.min(velocity, 500));
+-      gl.uniform2f(uResolution, viewportWidth, viewportHeight);
+-      gl.uniform2f(uMouse, mousePosition.x, viewportHeight - mousePosition.y);
+-      gl.uniform1f(uScale, Math.log10(scaleValue) + 9); // Normalize: 0 = atomic, 8 = macro
+-
+-      // Attributes
+-      const attrs = {
+-        aPosition: gl.getAttribLocation(program, "aPosition"),
+-        aSize: gl.getAttribLocation(program, "aSize"),
+-        aColor: gl.getAttribLocation(program, "aColor"),
+-        aPhase: gl.getAttribLocation(program, "aPhase"),
+-      };
+-
+-      Object.entries(attrs).forEach(([name, loc]) => {
+-        if (loc >= 0) {
+-          gl.enableVertexAttribArray(loc);
+-          gl.bindBuffer(gl.ARRAY_BUFFER, buffersRef.current[name as keyof typeof buffersRef.current]!);
+-          gl.vertexAttribPointer(loc, name === "aPosition" || name === "aColor" ? 3 : 1, gl.FLOAT, false, 0, 0);
+-        }
+-      });
+-
+-      gl.clearColor(0, 0, 0, 0);
+-      gl.clear(gl.COLOR_BUFFER_BIT);
+-      gl.drawArrays(gl.POINTS, 0, particleCountRef.current);
+-
+-      rafRef.current = requestAnimationFrame(render);
+-    };
+-
+-    rafRef.current = requestAnimationFrame(render);
+-
+-    return () => {
+-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+-      if (gl) {
+-        gl.deleteProgram(program);
+-        gl.deleteShader(vs);
+-        gl.deleteShader(fs);
+-        Object.values(buffersRef.current).forEach((b) => b && gl.deleteBuffer(b));
+-      }
+-    };
+-  }, [reducedMotion, viewportWidth, viewportHeight, globalProgress, velocity, scaleValue, particleCount, currentSegment.id, mousePosition.x, mousePosition.y]);
+-
+-  if (reducedMotion || !isInitialized) return null;
+-
+-  return (
+-    <canvas
+-      ref={canvasRef}
+-      className="fixed inset-0 -z-10 pointer-events-none"
+-      style={{ width: "100%", height: "100%" }}
+-      aria-hidden="true"
+-    />
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/hooks/useMousePosition.ts b/src/hooks/useMousePosition.ts
+deleted file mode 100644
+index c02f078..0000000
+--- a/src/hooks/useMousePosition.ts
++++ /dev/null
+@@ -1,18 +0,0 @@
+-"use client";
+-
+-import { useEffect, useState } from "react";
+-
+-export function useMousePosition() {
+-  const [position, setPosition] = useState({ x: 0, y: 0 });
+-
+-  useEffect(() => {
+-    const handleMove = (e: MouseEvent) => {
+-      setPosition({ x: e.clientX, y: e.clientY });
+-    };
+-
+-    window.addEventListener("mousemove", handleMove, { passive: true });
+-    return () => window.removeEventListener("mousemove", handleMove);
+-  }, []);
+-
+-  return position;
+-}
+\ No newline at end of file
+diff --git a/src/hooks/useScrollSync.ts b/src/hooks/useScrollSync.ts
+deleted file mode 100644
+index 1da2c66..0000000
+--- a/src/hooks/useScrollSync.ts
++++ /dev/null
+@@ -1,149 +0,0 @@
+-"use client";
+-
+-import { useEffect, useRef, useState, useCallback } from "react";
+-import { VIDEO_SEGMENTS, VideoSegment, getSegmentAtProgress, getScrollProgress, TOTAL_DURATION } from "@/lib/video-sequence";
+-
+-interface ScrollSyncState {
+-  scrollY: number;
+-  viewportHeight: number;
+-  scrollHeight: number;
+-  globalProgress: number;
+-  currentSegment: VideoSegment;
+-  currentIndex: number;
+-  localProgress: number;
+-  direction: "up" | "down" | "none";
+-  velocity: number;
+-}
+-
+-interface UseScrollSyncOptions {
+-  onSegmentChange?: (segment: VideoSegment, index: number, localProgress: number, direction: "up" | "down") => void;
+-  onProgressChange?: (progress: number, velocity: number) => void;
+-  reducedMotion?: boolean;
+-}
+-
+-export function useScrollSync(options: UseScrollSyncOptions = {}) {
+-  const { onSegmentChange, onProgressChange, reducedMotion = false } = options;
+-
+-  const [state, setState] = useState<ScrollSyncState>({
+-    scrollY: 0,
+-    viewportHeight: typeof window !== "undefined" ? window.innerHeight : 1080,
+-    scrollHeight: typeof document !== "undefined" ? document.documentElement.scrollHeight : 16200,
+-    globalProgress: 0,
+-    currentSegment: VIDEO_SEGMENTS[0],
+-    currentIndex: 0,
+-    localProgress: 0,
+-    direction: "none",
+-    velocity: 0,
+-  });
+-
+-  const lastScrollYRef = useRef(0);
+-  const lastTimeRef = useRef(performance.now());
+-  const rafRef = useRef<number | null>(null);
+-  const isInitializedRef = useRef(false);
+-
+-  const updateState = useCallback((scrollY: number) => {
+-    const now = performance.now();
+-    const dt = now - lastTimeRef.current;
+-    const velocity = dt > 0 ? (scrollY - lastScrollYRef.current) / dt : 0;
+-    const direction = velocity > 0.5 ? "down" : velocity < -0.5 ? "up" : ("none" as const);
+-
+-    const viewportHeight = window.innerHeight;
+-    const scrollHeight = document.documentElement.scrollHeight;
+-    const globalProgress = getScrollProgress(scrollY, scrollHeight, viewportHeight);
+-
+-    const { segment, localProgress, index } = getSegmentAtProgress(globalProgress);
+-
+-    setState((prev) => {
+-      const newState: ScrollSyncState = {
+-        scrollY,
+-        viewportHeight,
+-        scrollHeight,
+-        globalProgress,
+-        currentSegment: segment,
+-        currentIndex: index,
+-        localProgress,
+-        direction,
+-        velocity: Math.abs(velocity),
+-      };
+-
+-      if (prev.currentIndex !== index && direction !== "none") {
+-        onSegmentChange?.(segment, index, localProgress, direction);
+-      }
+-      onProgressChange?.(globalProgress, Math.abs(velocity));
+-
+-      return newState;
+-    });
+-
+-    lastScrollYRef.current = scrollY;
+-    lastTimeRef.current = now;
+-  }, [onSegmentChange, onProgressChange]);
+-
+-  const handleScroll = useCallback(() => {
+-    if (reducedMotion) return;
+-    const scrollY = window.scrollY;
+-    if (Math.abs(scrollY - lastScrollYRef.current) < 0.5) return;
+-
+-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+-    rafRef.current = requestAnimationFrame(() => updateState(scrollY));
+-  }, [reducedMotion, updateState]);
+-
+-  useEffect(() => {
+-    if (!isInitializedRef.current) {
+-      updateState(window.scrollY);
+-      isInitializedRef.current = true;
+-    }
+-
+-    window.addEventListener("scroll", handleScroll, { passive: true });
+-    window.addEventListener("resize", () => updateState(window.scrollY), { passive: true });
+-
+-    return () => {
+-      window.removeEventListener("scroll", handleScroll);
+-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+-    };
+-  }, [handleScroll, updateState, reducedMotion]);
+-
+-  const scrollToSegment = useCallback((segmentIndex: number) => {
+-    const segment = VIDEO_SEGMENTS[segmentIndex];
+-    const targetProgress = (segmentIndex + 0.5) / VIDEO_SEGMENTS.length;
+-    const scrollHeight = document.documentElement.scrollHeight;
+-    const viewportHeight = window.innerHeight;
+-    const targetY = targetProgress * (scrollHeight - viewportHeight);
+-    window.scrollTo({ top: targetY, behavior: "smooth" });
+-  }, []);
+-
+-  const scrollToProgress = useCallback((progress: number) => {
+-    const scrollHeight = document.documentElement.scrollHeight;
+-    const viewportHeight = window.innerHeight;
+-    const targetY = Math.max(0, Math.min(1, progress)) * (scrollHeight - viewportHeight);
+-    window.scrollTo({ top: targetY, behavior: "smooth" });
+-  }, []);
+-
+-  return {
+-    ...state,
+-    segments: VIDEO_SEGMENTS,
+-    totalDuration: TOTAL_DURATION,
+-    scrollToSegment,
+-    scrollToProgress,
+-  };
+-}
+-
+-export function useSectionVisibility(sectionId: string, threshold = 0.15) {
+-  const [isVisible, setIsVisible] = useState(false);
+-  const [intersectionRatio, setIntersectionRatio] = useState(0);
+-  const elementRef = useRef<HTMLElement | null>(null);
+-
+-  useEffect(() => {
+-    const observer = new IntersectionObserver(
+-      ([entry]) => {
+-        setIsVisible(entry.isIntersecting);
+-        setIntersectionRatio(entry.intersectionRatio);
+-      },
+-      { threshold: Array.from({ length: 20 }, (_, i) => i / 20), rootMargin: "0px" }
+-    );
+-
+-    if (elementRef.current) observer.observe(elementRef.current);
+-    return () => observer.disconnect();
+-  }, [sectionId, threshold]);
+-
+-  return { ref: elementRef, isVisible, intersectionRatio };
+-}
+\ No newline at end of file
+diff --git a/src/hooks/useVideoSequence.ts b/src/hooks/useVideoSequence.ts
+deleted file mode 100644
+index c6bf95d..0000000
+--- a/src/hooks/useVideoSequence.ts
++++ /dev/null
+@@ -1,161 +0,0 @@
+-"use client";
+-
+-import { useEffect, useRef, useState, useCallback } from "react";
+-import { VIDEO_SEGMENTS, VideoSegment, getSegmentAtProgress, getScrollProgress, TOTAL_DURATION } from "@/lib/video-sequence";
+-
+-interface UseVideoSequenceOptions {
+-  scrollHeight: number;
+-  viewportHeight: number;
+-  onSegmentChange?: (segment: VideoSegment, index: number, localProgress: number) => void;
+-  onProgressChange?: (progress: number) => void;
+-}
+-
+-export function useVideoSequence({
+-  scrollHeight,
+-  viewportHeight,
+-  onSegmentChange,
+-  onProgressChange,
+-}: UseVideoSequenceOptions) {
+-  const [currentSegment, setCurrentSegment] = useState<VideoSegment>(VIDEO_SEGMENTS[0]);
+-  const [currentIndex, setCurrentIndex] = useState(0);
+-  const [localProgress, setLocalProgress] = useState(0);
+-  const [globalProgress, setGlobalProgress] = useState(0);
+-  const [isPlaying, setIsPlaying] = useState(false);
+-
+-  const videoRefs = useRef<Map<string, HTMLVideoElement>>(new Map());
+-  const activeVideoRef = useRef<HTMLVideoElement | null>(null);
+-  const rafRef = useRef<number | null>(null);
+-  const lastScrollYRef = useRef(0);
+-  const isInitializedRef = useRef(false);
+-
+-  const getVideoElement = useCallback((segment: VideoSegment): HTMLVideoElement | null => {
+-    let video = videoRefs.current.get(segment.id);
+-    if (!video) {
+-      video = document.createElement("video");
+-      video.src = segment.src;
+-      video.preload = "auto";
+-      video.muted = true;
+-      video.playsInline = true;
+-      video.loop = false;
+-      video.crossOrigin = "anonymous";
+-      videoRefs.current.set(segment.id, video);
+-    }
+-    return video;
+-  }, []);
+-
+-  const switchVideo = useCallback((segment: VideoSegment) => {
+-    const video = getVideoElement(segment);
+-    if (!video) return;
+-
+-    if (activeVideoRef.current && activeVideoRef.current !== video) {
+-      activeVideoRef.current.pause();
+-      activeVideoRef.current.currentTime = 0;
+-    }
+-
+-    activeVideoRef.current = video;
+-    video.currentTime = 0;
+-    video.play().catch(() => {
+-      // Autoplay might be blocked, will retry on user interaction
+-    });
+-
+-    setCurrentSegment(segment);
+-  }, [getVideoElement]);
+-
+-  const updateVideoTime = useCallback((segment: VideoSegment, progress: number) => {
+-    const video = videoRefs.current.get(segment.id);
+-    if (!video) return;
+-
+-    const targetTime = segment.duration * progress;
+-    const diff = Math.abs(video.currentTime - targetTime);
+-
+-    if (diff > 0.1) {
+-      video.currentTime = targetTime;
+-    }
+-
+-    if (video.paused && isPlaying) {
+-      video.play().catch(() => {});
+-    }
+-  }, [isPlaying]);
+-
+-  const handleScroll = useCallback((scrollY: number) => {
+-    const progress = getScrollProgress(scrollY, scrollHeight, viewportHeight);
+-    setGlobalProgress(progress);
+-    onProgressChange?.(progress);
+-
+-    const { segment, localProgress: local, index } = getSegmentAtProgress(progress);
+-    setLocalProgress(local);
+-    setCurrentIndex(index);
+-
+-    if (index !== currentIndex) {
+-      setCurrentSegment(segment);
+-      switchVideo(segment);
+-      onSegmentChange?.(segment, index, local);
+-    }
+-
+-    if (activeVideoRef.current === videoRefs.current.get(segment.id)) {
+-      updateVideoTime(segment, local);
+-    }
+-
+-    lastScrollYRef.current = scrollY;
+-  }, [scrollHeight, viewportHeight, currentIndex, switchVideo, updateVideoTime, onSegmentChange, onProgressChange]);
+-
+-  const tick = useCallback(() => {
+-    if (activeVideoRef.current && !activeVideoRef.current.paused) {
+-      const segment = currentSegment;
+-      const video = activeVideoRef.current;
+-      const videoProgress = video.currentTime / segment.duration;
+-
+-      if (videoProgress >= 1) {
+-        video.pause();
+-        video.currentTime = 0;
+-      }
+-    }
+-    rafRef.current = requestAnimationFrame(tick);
+-  }, [currentSegment]);
+-
+-  useEffect(() => {
+-    rafRef.current = requestAnimationFrame(tick);
+-    return () => {
+-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+-    };
+-  }, [tick]);
+-
+-  useEffect(() => {
+-    if (!isInitializedRef.current) {
+-      VIDEO_SEGMENTS.forEach((seg) => getVideoElement(seg));
+-      isInitializedRef.current = true;
+-    }
+-  }, [getVideoElement]);
+-
+-  const play = useCallback(() => {
+-    setIsPlaying(true);
+-    activeVideoRef.current?.play().catch(() => {});
+-  }, []);
+-
+-  const pause = useCallback(() => {
+-    setIsPlaying(false);
+-    activeVideoRef.current?.pause();
+-  }, []);
+-
+-  const seekToProgress = useCallback((progress: number) => {
+-    const { segment, localProgress: local } = getSegmentAtProgress(progress);
+-    switchVideo(segment);
+-    updateVideoTime(segment, local);
+-    handleScroll(progress * (scrollHeight - viewportHeight));
+-  }, [scrollHeight, viewportHeight, switchVideo, updateVideoTime, handleScroll]);
+-
+-  return {
+-    currentSegment,
+-    currentIndex,
+-    localProgress,
+-    globalProgress,
+-    isPlaying,
+-    videoRef: activeVideoRef,
+-    play,
+-    pause,
+-    seekToProgress,
+-    handleScroll,
+-    totalDuration: TOTAL_DURATION,
+-    segments: VIDEO_SEGMENTS,
+-  };
+-}
+\ No newline at end of file
+diff --git a/src/lib/video-sequence.ts b/src/lib/video-sequence.ts
+deleted file mode 100644
+index c008a24..0000000
+--- a/src/lib/video-sequence.ts
++++ /dev/null
+@@ -1,107 +0,0 @@
+-export interface VideoSegment {
+-  id: string;
+-  src: string;
+-  poster: string;
+-  /** Length of this segment's scroll window, in seconds of scroll-mapped time. */
+-  duration: number;
+-  /** Start/end offsets (seconds) into the shared video file for this segment's chapter. */
+-  clipStart: number;
+-  clipEnd: number;
+-  startScale: number;
+-  endScale: number;
+-  label: string;
+-  scaleLabel: string;
+-}
+-
+-/**
+- * The scroll journey is a single continuous video (`/scale-journey.mp4`,
+- * ~10.05s, 1080p30). Each of the 8 scale segments maps to an equal chapter
+- * window inside it. Scrolling seeks the video within the active chapter, so
+- * forward and reverse scrubbing are seamless with no clip boundaries.
+- */
+-const CLIP_SRC = "/scale-journey.mp4";
+-const CLIP_DURATION = 10.054; // seconds (measured with ffprobe)
+-
+-interface SegmentDef {
+-  id: string;
+-  label: string;
+-  scaleLabel: string;
+-  startScale: number;
+-  endScale: number;
+-}
+-
+-const SEGMENT_DEFS: SegmentDef[] = [
+-  { id: "atomic-scale",     label: "ATOMIC SCALE",     scaleLabel: "10⁻⁹ m", startScale: 1e-9, endScale: 1e-8 },
+-  { id: "transistor",       label: "TRANSISTOR",       scaleLabel: "10⁻⁸ m", startScale: 1e-8, endScale: 1e-7 },
+-  { id: "transistor-group", label: "TRANSISTOR GROUP", scaleLabel: "10⁻⁷ m", startScale: 1e-7, endScale: 1e-6 },
+-  { id: "logic-cell",       label: "LOGIC CELL",       scaleLabel: "10⁻⁶ m", startScale: 1e-6, endScale: 1e-5 },
+-  { id: "cell-array",       label: "CELL ARRAY",       scaleLabel: "10⁻⁵ m", startScale: 1e-5, endScale: 1e-4 },
+-  { id: "functional-blocks",label: "FUNCTIONAL BLOCKS",scaleLabel: "10⁻⁴ m", startScale: 1e-4, endScale: 1e-3 },
+-  { id: "complete-die",     label: "COMPLETE DIE",     scaleLabel: "10⁻³ m", startScale: 1e-3, endScale: 1e-2 },
+-  { id: "macro-chip",       label: "MACRO CHIP",       scaleLabel: "10⁻² m", startScale: 1e-2, endScale: 1e-1 },
+-];
+-
+-const CHAPTER = CLIP_DURATION / SEGMENT_DEFS.length;
+-
+-export const VIDEO_SEGMENTS: VideoSegment[] = SEGMENT_DEFS.map((def, i) => ({
+-  ...def,
+-  src: CLIP_SRC,
+-  poster: `/posters/${def.id}.jpg`,
+-  duration: CHAPTER,
+-  clipStart: CHAPTER * i,
+-  clipEnd: CHAPTER * (i + 1),
+-}));
+-
+-export const TOTAL_DURATION = VIDEO_SEGMENTS.reduce((sum, seg) => sum + seg.duration, 0);
+-
+-/** Map a segment-local progress (0..1) to an absolute time in the video file. */
+-export function getChapterTime(segment: VideoSegment, progress: number): number {
+-  const p = Math.max(0, Math.min(1, progress));
+-  return segment.clipStart + p * (segment.clipEnd - segment.clipStart);
+-}
+-
+-export function getSegmentAtProgress(progress: number): { segment: VideoSegment; localProgress: number; index: number } {
+-  const clampedProgress = Math.max(0, Math.min(1, progress));
+-  let accumulated = 0;
+-
+-  for (let i = 0; i < VIDEO_SEGMENTS.length; i++) {
+-    const segment = VIDEO_SEGMENTS[i];
+-    const segmentProgress = segment.duration / TOTAL_DURATION;
+-    const segmentStart = accumulated;
+-    const segmentEnd = accumulated + segmentProgress;
+-
+-    if (clampedProgress >= segmentStart && clampedProgress <= segmentEnd) {
+-      const localProgress = (clampedProgress - segmentStart) / segmentProgress;
+-      return { segment, localProgress: Math.max(0, Math.min(1, localProgress)), index: i };
+-    }
+-    accumulated = segmentEnd;
+-  }
+-
+-  const lastSegment = VIDEO_SEGMENTS[VIDEO_SEGMENTS.length - 1];
+-  return { segment: lastSegment, localProgress: 1, index: VIDEO_SEGMENTS.length - 1 };
+-}
+-
+-export function getScrollProgress(scrollY: number, scrollHeight: number, viewportHeight: number): number {
+-  const maxScroll = scrollHeight - viewportHeight;
+-  if (maxScroll <= 0) return 0;
+-  return Math.max(0, Math.min(1, scrollY / maxScroll));
+-}
+-
+-export function preloadVideo(src: string): Promise<HTMLVideoElement> {
+-  return new Promise((resolve, reject) => {
+-    const video = document.createElement("video");
+-    video.src = src;
+-    video.preload = "metadata";
+-    video.muted = true;
+-    video.playsInline = true;
+-
+-    video.onloadedmetadata = () => resolve(video);
+-    video.onerror = () => reject(new Error(`Failed to load video: ${src}`));
+-
+-    video.load();
+-  });
+-}
+-
+-export function preloadAllVideos(): Promise<HTMLVideoElement[]> {
+-  return Promise.all(VIDEO_SEGMENTS.map((seg) => preloadVideo(seg.src)));
+-}

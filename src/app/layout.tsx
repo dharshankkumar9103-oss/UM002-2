@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#030303",
+  themeColor: "#060b14",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -59,7 +59,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preload" as="video" href="/scale-journey.mp4" type="video/mp4" />
       </head>
       <body className="min-h-full flex flex-col relative overflow-x-hidden">
         {children}
