@@ -1,0 +1,61 @@
+diff --git a/src/components/sections/ContactSection.tsx b/src/components/sections/ContactSection.tsx
+index 63e8633..54af029 100644
+--- a/src/components/sections/ContactSection.tsx
++++ b/src/components/sections/ContactSection.tsx
+@@ -4,10 +4,19 @@ import { Reveal } from "@/components/ui/Reveal";
+ import { LevelEyebrow } from "@/components/ui/LevelEyebrow";
+ 
+ const CHANNELS = [
+-  { label: "General inquiries", value: "To be announced" },
+-  { label: "Investors", value: "To be announced" },
+-  { label: "Foundry partnerships", value: "To be announced" },
+-  { label: "Media / press", value: "To be announced" },
++  {
++    label: "General inquiries",
++    name: "Dharshan Kumar",
++    value: "dharshankkumar9103@gmail.com",
++    href: "mailto:dharshankkumar9103@gmail.com",
++  },
++  { label: "Investors", value: "To be announced", placeholder: true },
++  { label: "Foundry partnerships", value: "To be announced", placeholder: true },
++  {
++    label: "Technical inquiries",
++    value: "dharshankkumar9103@gmail.com",
++    href: "mailto:dharshankkumar9103@gmail.com",
++  },
+ ];
+ 
+ export function ContactSection() {
+@@ -48,12 +57,26 @@ export function ContactSection() {
+                     key={contact.label}
+                     className="flex items-center justify-between gap-4 p-4 rounded-lg bg-background/60 border border-border/60"
+                   >
+-                    <span className="font-mono text-xs tracking-wider uppercase text-muted-foreground">
+-                      {contact.label}
+-                    </span>
+-                    <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/60 rounded-full px-2 py-1 shrink-0">
+-                      Placeholder
+-                    </span>
++                    <div className="min-w-0">
++                      <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground">
++                        {contact.label}
++                      </div>
++                      {contact.name && (
++                        <div className="text-foreground mt-1">{contact.name}</div>
++                      )}
++                    </div>
++                    {contact.href ? (
++                      <a
++                        href={contact.href}
++                        className="font-mono text-xs text-primary hover:underline break-all text-right shrink-0"
++                      >
++                        {contact.value}
++                      </a>
++                    ) : (
++                      <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/60 border border-border/60 rounded-full px-2 py-1 shrink-0">
++                        {contact.value}
++                      </span>
++                    )}
+                   </div>
+                 ))}
+               </div>
