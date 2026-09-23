@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const NAV_ITEMS = [
@@ -35,10 +36,17 @@ export function Navigation({ activeSection }: { activeSection: string }) {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link
           href="#home"
-          className="font-display font-bold text-xl tracking-tight text-foreground hover:opacity-80 transition-opacity"
+          className="hover:opacity-80 transition-opacity"
           aria-label="SAN-D Home"
         >
-          SAN-D
+          <Image
+            src="/san-d-logo.png"
+            alt="SAN-D"
+            width={160}
+            height={48}
+            className="h-8 w-auto"
+            priority
+          />
         </Link>
 
         <div className="hidden md:flex items-center gap-8">

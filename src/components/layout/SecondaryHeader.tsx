@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function SecondaryHeader() {
@@ -6,9 +7,17 @@ export function SecondaryHeader() {
       <div className="flex items-center gap-4 px-6">
         <Link
           href="/"
-          className="font-display font-bold text-xl tracking-tight text-foreground hover:opacity-80 transition-opacity"
+          className="hover:opacity-80 transition-opacity"
+          aria-label="SAN-D Home"
         >
-          SAN-D
+          <Image
+            src="/san-d-logo.png"
+            alt="SAN-D"
+            width={160}
+            height={48}
+            className="h-8 w-auto"
+            priority
+          />
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-mono text-xs tracking-widest uppercase">
           <Link
