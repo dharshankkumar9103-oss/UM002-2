@@ -7,23 +7,27 @@ import { LevelEyebrow } from "@/components/ui/LevelEyebrow";
 const PHASES = [
   {
     n: "01",
-    title: "PDK HARDENING",
-    desc: "Re-baseline the design against the foundry's real models, rules, and metal stack. Every circuit number anchored to measured data.",
+    title: "THE 2 GB DEMONSTRATION",
+    status: "IN PROGRESS",
+    desc: "A live, filmed, un-fakeable proof: 2 GB of memory, power cable yanked live, every byte survives. Plus the legal foundation — provisional patents filed and the company incorporated — before investor conversations begin.",
   },
   {
     n: "02",
-    title: "JDA DEVICE DEVELOPMENT",
-    desc: "Co-develop the custom hafnium-oxide memristor on real wafers: test chips, measurement, iteration, stack freeze.",
+    title: "FIRST SILICON",
+    status: "NEXT · PRE-SEED",
+    desc: "The real 2T1C1M chip on an MPW shuttle — packaged parts proving SAVE/RESTORE in the physical world. Tapeout Dec 2026, silicon in hand May 2027.",
   },
   {
     n: "03",
-    title: "FULL-CHIP BUILD",
-    desc: "Integrate array, on-die controller, and frozen device model into a signed-off chip. Tapeout on an MPW shuttle.",
+    title: "THE PRODUCT CELL",
+    status: "SEED",
+    desc: "A manufacturable, dense, fast cell: custom hafnium-oxide device via JDA, advanced-node port, and the controller folded onto the memory die.",
   },
   {
     n: "04",
-    title: "SILICON VALIDATION",
-    desc: "Lab bring-up and characterization mapped to the open issues, then qualification. Claims become measurements.",
+    title: "THE 400 GB PRODUCT",
+    status: "SERIES A+",
+    desc: "SAN-D as a product the market can buy — a 400 GB multi-die module, SSD-style. Qualification, volume manufacturing, team, and market ramp.",
   },
 ];
 
@@ -45,10 +49,11 @@ export function RoadmapSection() {
           </h2>
 
           <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed mb-14">
-            A forward-looking plan, not a status report. The PDK makes the design
-            fab-real, the JDA makes the device fab-real, the MPW makes it silicon,
-            and testing makes the claims proof. Phase by phase, capital converts
-            directly into de-risked milestones.
+            The complete build plan, from lab bench to 400 GB universal memory.
+            Each phase funds the next: the 2 GB demo earns the pre-seed, the
+            pre-seed buys first silicon, the seed buys the product cell, and
+            Series A buys the product. Phase by phase, capital converts directly
+            into de-risked milestones.
           </p>
         </Reveal>
 
@@ -65,6 +70,11 @@ export function RoadmapSection() {
                 <h3 className="font-mono text-sm tracking-widest uppercase text-foreground mb-3">
                   {phase.title}
                 </h3>
+                <p className="mb-4">
+                  <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 font-mono text-[10px] tracking-widest uppercase text-primary">
+                    {phase.status}
+                  </span>
+                </p>
                 <p className="text-muted-foreground text-sm leading-relaxed">{phase.desc}</p>
               </article>
             </Reveal>
@@ -80,10 +90,10 @@ export function RoadmapSection() {
                   Honest by design
                 </p>
                 <p className="text-foreground/80 max-w-3xl">
-                  No foundry partnership exists yet — PDK access and the JDA are milestones
-                  this funding enables. Every claim we make carries an evidence label:
-                  measured, modeled, assumed, target, or requires-fab. Nothing is labeled
-                  “measured” until it is.
+                  The demo is being built on founder funding; everything after it
+                  is what investment unlocks. Every claim we make carries an
+                  evidence label: measured, modeled, assumed, target, or
+                  requires-fab. Nothing is labeled “measured” until it is.
                 </p>
               </div>
             </div>

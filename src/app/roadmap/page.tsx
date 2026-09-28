@@ -4,57 +4,86 @@ import Link from "next/link";
 const PHASES = [
   {
     n: "01",
-    title: "PDK HARDENING",
-    subtitle: "The design becomes fab-real",
-    timeline: "Typically 6–12 months · industry range, not a commitment",
+    title: "THE 2 GB DEMONSTRATION",
+    subtitle: "The un-fakeable proof",
+    timeline: "Now → Dec 2026",
+    status: "IN PROGRESS · FOUNDER-FUNDED",
     points: [
-      "Install the foundry's Process Design Kit under NDA: silicon-calibrated transistor models, real design rules, real metal-stack data.",
-      "Re-draw the 2T1C1M cell and array to the real rules — DRC/LVS-clean, a layout the fab would accept.",
-      "Re-simulate everything at all corners (−40 / 25 / 85 °C × slow / typical / fast silicon) with calibrated models.",
-      "Close what good design can close: stronger cold-corner drivers, disturb-aware biasing, wider power straps, finalized pitch.",
+      "Protect the IP first: provisional patents filed before any deep technical disclosure — the cell architecture, the power-loss SAVE/RESTORE method, and the negative-rail scheme.",
+      "Lock the open decisions: prototype array size, host interface for bring-up, and the honest demo script.",
+      "Build the demonstrator: FPGA smart controller, two memory tiers (fast + non-volatile), Linux host driver, and a power-yank rig for a clean, repeatable live power cut.",
+      "Film it in one continuous take — no cuts. Rehearsed until it is boring; boring means reliable.",
+      "Close the verification gaps: triage the testbenches, fix the firmware timeouts, run the firmware on real hardware for the first time.",
+      "Finish the module PCB: design review, fabrication, assembly, power-on bring-up.",
+      "Found the company: incorporated before any investment.",
     ],
-    derisks: "Does this design hold up on a real factory's process, or only in our own models? After this phase, every circuit number is anchored to measured foundry data.",
-    money: "Engineering salaries and compute. PDK access is typically granted under NDA with modest or no license fee — the most capital-efficient phase.",
+    exit: "Provisionals filed · company incorporated · live demo filmed · verification clean · PCB alive",
+    derisks:
+      "Can the architecture's core promise — power loss is a pause button, not data loss — be shown live, on real hardware, with no tricks? This phase is the investor grab: the demo the pre-seed is raised on.",
+    funding:
+      "Founder-funded: demo hardware, the module PCB, patent filings, and incorporation. The leanest phase — and the one that unlocks everything after it.",
   },
   {
     n: "02",
-    title: "JDA DEVICE DEVELOPMENT",
-    subtitle: "The memristor becomes real",
-    timeline: "Typically 12–24 months incl. multiple wafer spins · industry range, not a commitment",
+    title: "FIRST SILICON",
+    subtitle: "It works in atoms, not just simulation",
+    timeline: "Pre-seed → May 2027",
+    status: "NEXT · PRE-SEED",
     points: [
-      "Negotiate a Joint Development Agreement with the foundry: device targets agreed in hard numbers (switching speed in the cold, disturb immunity at heat, retention).",
-      "First JDA test chip — small test arrays carrying hafnium-oxide stack variants: oxide thickness, electrode materials, anneals.",
-      "Measure real devices, extract the real Verilog-A device model. From here, simulation runs on measured parameters.",
-      "Iterate — a second, sometimes third wafer spin — until the stack hits every target, then freeze it as a characterized device.",
+      "Raise the pre-seed on the Phase 1 demo and diligence package.",
+      "Book the MPW shuttle: slot reserved, tapeout Dec 2026, packaged chips May 2027.",
+      "Complete the chip layout — the critical path: first layout hire, row/column decoders, sense amps, wordline/bitline drivers, pad ring, full DRC + LVS clean, GDSII sign-off.",
+      "Silicon bring-up and proof: bench bring-up, host communication, characterization — retention at 85 °C, SAVE/SET, SAVE/RESET, RESTORE margins.",
+      "Publish the silicon proof: the single most valuable diligence asset in the company.",
     ],
-    derisks: "The device physics itself — the one thing no amount of clever circuit design can change. This is also where defensible IP is created: a characterized, foundry-proven custom device.",
-    money: "Negotiated JDA development fees and test-chip wafer spins. Each spin is a real manufacturing run — spins are the cost driver of this phase.",
+    exit: "Packaged chips in hand · SAVE/RESTORE proven on silicon · characterization report",
+    derisks:
+      "Does SAVE/RESTORE survive contact with the physical world? Packaged chips in hand turn every simulation claim into a measurement.",
+    funding:
+      "Pre-seed: the MPW shuttle slot, the first layout hire, and runway to bring the silicon up.",
   },
   {
     n: "03",
-    title: "FULL-CHIP BUILD",
-    subtitle: "Everything becomes one chip",
-    timeline: "Typically 9–18 months plus foundry queue time · industry range, not a commitment",
+    title: "THE PRODUCT CELL",
+    subtitle: "The cell that scales to gigabytes per die",
+    timeline: "2027–2028",
+    status: "SEED",
     points: [
-      "Full chip design with real models: memory array, on-die controller (power-fail detection, SAVE/RESTORE sequencing, ECC), IO ring, power grid.",
-      "Sign-off verification with the foundry's own check decks: timing, power, reliability across all corners.",
-      "Tapeout — first silicon on an MPW (multi-project wafer) shuttle, splitting mask costs across many projects.",
+      "Convert provisionals to full patents with a semiconductor patent attorney — before the 12-month clock expires.",
+      "JDA with SkyWater: co-develop the custom hafnium-oxide module — a qualified device, not a behavioral model. Device targets: cold RESET within 30 ns, disturb-free at 85 °C.",
+      "Port the 2T1C1M cell to an advanced node: dense capacitor for area, 64 ms retention at 85 °C (target), shrink toward a ~6 F²-class product cell (target).",
+      "Single-die integration: fold the smart controller onto the memory die, on-chip power for the special rails, harden the FPGA-proven RTL into an ASIC, productize the firmware.",
+      "Software and drivers: Linux driver toward mainline, Windows driver, host tools — memory explorer, diagnostics, firmware updates.",
     ],
-    derisks: "Integration — do all the pieces work together as one chip? Tapeout is the point of no return where the design becomes a physical object.",
-    money: "The engineering team at full size, plus the MPW slot. Sharing the wafer keeps first silicon affordable; a full dedicated mask set waits for the volume ramp.",
+    exit: "Qualified hafnium-oxide device · product cell on advanced node · single-die prototype · full patents filed",
+    derisks:
+      "Density and manufacturability — can one cell be both fast and small enough for gigabytes per die? The JDA device is the one thing clever circuit design cannot substitute.",
+    funding:
+      "Seed: JDA device development, the advanced-node product cell, single-die integration, and the driver track.",
   },
   {
     n: "04",
-    title: "SILICON VALIDATION",
-    subtitle: "Claims become measurements",
-    timeline: "Typically 6–18 months incl. possible re-spin · industry range, not a commitment",
+    title: "THE 400 GB PRODUCT",
+    subtitle: "A product the market can buy",
+    timeline: "2028+",
+    status: "SERIES A AND BEYOND",
     points: [
-      "Lab bring-up: packaged chips return; SAVE/RESTORE verified on real silicon; cold RESET timing, 85 °C disturb, and retention measured — mapped explicitly to the three open issues.",
-      "Fix what the silicon teaches us. Nearly every first chip needs a re-spin; it is budgeted and expected, not a failure.",
-      "Formal reliability qualification to industry standards. Only after this step can retention or temperature claims be made honestly.",
+      "Qualification — the unglamorous gate to revenue: high-temp operating life, retention bake, endurance cycling, ESD/latch-up per JEDEC, power-loss testing at scale.",
+      "Manufacturing: volume foundry agreement, production test program, supply chain.",
+      "Team: analog/mixed-signal, digital/DFT, firmware and drivers, layout, QA and reliability — the company grows with the silicon.",
+      "Market: customer sampling program, then production ramp to revenue.",
     ],
-    derisks: "Everything. This is where “it works” stops being a simulation result and becomes a measured fact on real parts — the basis for customer sampling and every future claim.",
-    money: "Lab and test time, qualification lab fees, and — if the re-spin is needed — its mask and wafer costs.",
+    exit: "SAN-D 400 GB module shipping · revenue",
+    derisks:
+      "Everything at scale — can thousands of power-yank cycles, OS torture tests, and a real supply chain turn a proven chip into a shippable product?",
+    funding:
+      "Series A and beyond: qualification, volume manufacturing, and the team that ships it.",
+    capacity: [
+      { milestone: "Prototype chip", capacity: "2 KB", form: "SKY130 MPW", evidence: "In progress" },
+      { milestone: "Gen-1 product die", capacity: "1–16 GB", form: "Advanced node, product cell", evidence: "Target — needs Phase 3" },
+      { milestone: "SAN-D module", capacity: "64–128 GB", form: "Multi-die module", evidence: "Target" },
+      { milestone: "SAN-D flagship", capacity: "400 GB", form: "Multi-die module, SSD-style", evidence: "Milestone goal" },
+    ],
   },
 ];
 
@@ -63,7 +92,7 @@ const OPEN_ISSUES = [
     title: "COLD-CORNER RESET MISSES ITS TARGET",
     what: "RESET means breaking the conductive filament inside the memristor. At −40 °C atoms barely move, so the filament breaks slowly. Our requirement is RESET within 30 ns with margin; the modeled design misses it in the cold.",
     how: "Real ngspice simulation with a physics-based Verilog-A model — it genuinely ran and genuinely failed, even at maximum 3.3 V drive. Honest label: real simulation, assumed device parameters.",
-    unlocks: "Two knobs: higher program voltage (needs an on-chip charge pump — a real area and power cost), or a JDA-tuned device with higher temperature sensitivity (α ≈ 0.40 eV/V, a target).",
+    unlocks: "Two knobs: higher program voltage (needs an on-chip charge pump — a real area and power cost), or a JDA-tuned device with higher temperature sensitivity (a target).",
   },
   {
     title: "SHARED-BITLINE DISTURB FAILS AT 85 °C",
@@ -108,11 +137,11 @@ export default function RoadmapPage() {
             </span>
           </div>
           <h1 className="font-display font-bold text-5xl md:text-6xl tracking-tight mb-6">
-            FROM PDK &amp; JDA<br />TO SILICON
+            FROM 2 GB DEMO<br />TO 400 GB PRODUCT
           </h1>
           <p className="font-sans text-lg max-w-2xl mx-auto text-muted-foreground leading-relaxed">
-            How a fabless memory startup turns a proven-in-simulation design into a
-            proven-in-silicon product — and what the funding builds, phase by phase.
+            The complete build plan — every step from the lab bench to a 400 GB
+            universal-memory product. Each phase funds the next.
           </p>
         </section>
 
@@ -122,14 +151,11 @@ export default function RoadmapPage() {
             WHAT THE FUNDING BUILDS
           </p>
           <p className="text-foreground/90 text-lg leading-relaxed max-w-3xl">
-            The PDK makes the design fab-real, the JDA makes the device fab-real, the
-            MPW makes it silicon, and testing makes the claims proof. Phase by phase,
-            capital converts directly into de-risked milestones: Phase 1 buys a
-            manufacturable design; Phase 2 buys a characterized custom device and
-            defensible IP; Phase 3 buys first silicon; Phase 4 buys proof. The software
-            track buys the product experience in parallel. We are a fabless company:
-            our capital goes into design, device development, and proof — never into
-            concrete and cleanrooms.
+            The 2 GB demo earns the pre-seed, the pre-seed buys first silicon, the
+            seed buys the product cell, and Series A buys the 400 GB product. Phase
+            by phase, capital converts directly into de-risked milestones. We are a
+            fabless company: our capital goes into design, device development, and
+            proof — never into concrete and cleanrooms.
           </p>
         </section>
 
@@ -154,6 +180,11 @@ export default function RoadmapPage() {
                   <p className="font-mono text-xs text-muted-foreground/70 mt-2">
                     {phase.timeline}
                   </p>
+                  <p className="mt-3">
+                    <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 font-mono text-[10px] tracking-widest uppercase text-primary">
+                      {phase.status}
+                    </span>
+                  </p>
                 </div>
               </div>
               <ul className="space-y-3 mb-6">
@@ -164,14 +195,44 @@ export default function RoadmapPage() {
                   </li>
                 ))}
               </ul>
+              {"capacity" in phase && phase.capacity && (
+                <div className="mb-6 overflow-x-auto">
+                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-3">
+                    HONEST SCALING — 400 GB IS A MULTI-DIE MODULE, NOT A SINGLE CHIP
+                  </p>
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="font-mono text-xs tracking-wider uppercase text-muted-foreground text-left">
+                        <th className="py-2 pr-4 font-medium">Milestone</th>
+                        <th className="py-2 pr-4 font-medium">Capacity</th>
+                        <th className="py-2 pr-4 font-medium">Form</th>
+                        <th className="py-2 font-medium">Evidence</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {phase.capacity.map((row, i) => (
+                        <tr key={i} className="border-t border-border/50 text-foreground/85">
+                          <td className="py-3 pr-4">{row.milestone}</td>
+                          <td className="py-3 pr-4 font-mono">{row.capacity}</td>
+                          <td className="py-3 pr-4">{row.form}</td>
+                          <td className="py-3 text-muted-foreground">{row.evidence}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              <p className="font-mono text-xs tracking-wider uppercase text-accent mb-6">
+                EXIT&nbsp;&nbsp;<span className="text-foreground/80 normal-case tracking-normal font-sans text-sm">{phase.exit}</span>
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 rounded-lg bg-background/50 border border-border/50">
                   <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">WHAT IT DE-RISKS</p>
                   <p className="text-sm text-foreground/80 leading-relaxed">{phase.derisks}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-background/50 border border-border/50">
-                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">WHERE THE MONEY GOES</p>
-                  <p className="text-sm text-foreground/80 leading-relaxed">{phase.money}</p>
+                  <p className="font-mono text-xs tracking-wider uppercase text-primary mb-2">WHAT THE FUNDING BUILDS</p>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{phase.funding}</p>
                 </div>
               </div>
             </article>
@@ -203,9 +264,10 @@ export default function RoadmapPage() {
           </h2>
           <div className="space-y-4">
             {[
+              "Each phase funds the next. The 2 GB demo is what the pre-seed is raised on; first silicon is what the seed is raised on — an investor can see exactly what their capital unlocks.",
               "A JDA is R&D, not a purchase order. Multiple wafer spins are normal; success is earned across iterations, not bought in one.",
               "First silicon almost always needs a re-spin. We budget for it; the industry expects it.",
-              "No foundry partnership exists yet. This page is the plan, not a status report — PDK access and the JDA are milestones this funding enables.",
+              "No foundry JDA exists yet — it comes after investment, and after the provisional patents are filed. This page is the plan, not a status report.",
               "All timelines are typical industry ranges, not commitments. They move with team size, foundry queues, and what the silicon tells us.",
               "No performance, retention, or temperature claims are made here as achieved facts. This roadmap exists precisely so that every future claim is earned — on measured silicon, or not at all.",
             ].map((item, i) => (
