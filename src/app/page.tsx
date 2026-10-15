@@ -6,9 +6,10 @@ import { Hero } from "@/components/sections/Hero";
 import { TechnologySection } from "@/components/sections/TechnologySection";
 import { CompanySection } from "@/components/sections/CompanySection";
 import { RoadmapSection } from "@/components/sections/RoadmapSection";
+import { EngramSection } from "@/components/sections/EngramSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 
-const SECTION_IDS = ["home", "technology", "company", "roadmap", "contact"];
+const SECTION_IDS = ["home", "technology", "company", "roadmap", "engram", "contact"];
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState("home");
@@ -38,6 +39,7 @@ export default function HomePage() {
         <TechnologySection />
         <CompanySection />
         <RoadmapSection />
+        <EngramSection />
         <ContactSection />
       </main>
     </div>

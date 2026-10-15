@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "#technology", label: "TECHNOLOGY" },
   { href: "#company", label: "COMPANY" },
   { href: "#roadmap", label: "ROADMAP" },
+  { href: "/engram", label: "ENGRAM" },
   { href: "#contact", label: "CONTACT" },
 ];
 

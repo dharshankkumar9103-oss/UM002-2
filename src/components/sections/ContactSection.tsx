@@ -24,7 +24,7 @@ export function ContactSection() {
     <section id="contact" className="relative" aria-labelledby="contact-title">
       <div className="max-w-7xl mx-auto px-6 py-28">
         <Reveal>
-          <LevelEyebrow level="Level 04" label="Contact" />
+          <LevelEyebrow level="Level 05" label="Contact" />
 
           <h2
             id="contact-title"

@@ -45,6 +45,12 @@ export function SecondaryHeader() {
             ROADMAP
           </Link>
           <Link
+            href="/engram"
+            className="hover:text-foreground transition-colors"
+          >
+            ENGRAM
+          </Link>
+          <Link
             href="/contact"
             className="hover:text-foreground transition-colors"
           >
